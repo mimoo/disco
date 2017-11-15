@@ -173,7 +173,7 @@ A `DiscoSecureChannel` can encrypt and decrypt data based on its associated `Str
 
 A `DiscoSecureChannel` responds to the following functions:
 
-* **`Encrypt(plaintext)`**:
+**`Encrypt(plaintext)`**:
 
   * If `n` is equal to 2^64^-1 the function returns an error to the caller and aborts the Disco session.
   * Call `AD(n)` on the Strobe state.
@@ -182,7 +182,7 @@ A `DiscoSecureChannel` responds to the following functions:
   * Increment the nonce `n`.
   * Return the `ciphertext` buffer containing the encrypted data.
 
-* **`Decrypt(ciphertext):`**:
+**`Decrypt(ciphertext):`**:
 
   * If `n` is equal to 2^64^-1 the function returns an error to the caller and aborts the Disco session.
   * Call `AD(n)` on the Strobe state.
@@ -190,7 +190,7 @@ A `DiscoSecureChannel` responds to the following functions:
   * Call `recv_MAC(ciphertext[-16:])` on the Strobe state, if the function returns `false`, return an error to the caller and abort the Disco session. Otherwise return the `plaintext` buffer containing the decrypted data.
   * Increment the nonce `n`.
 
-* **`IntroduceForwardSecrecy()`**: calls RATCHET(64) on the Strobe Object.  <!-- 64 being the size of the capacity of Strobe-256/1600 -->
+**`IntroduceForwardSecrecy()`**: calls RATCHET(64) on the Strobe Object.  <!-- 64 being the size of the capacity of Strobe-256/1600 -->
 
 ## 6.4 Half-duplex protocols
 
