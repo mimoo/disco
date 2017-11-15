@@ -130,7 +130,10 @@ A SymmetricState responds to the following functions:
 
 **`GetHandshakeHash()`**: Calls `PRF(32)`. This function should only be called at the end of a handshake, i.e. after the Split() function has been called. This function is used for channel binding, as described in [Section 11.2 of the Noise specification](https://noiseprotocol.org/noise.html#channel-binding).
 
-**`EncryptAndHash(plaintext)`**: If `isKeyed` is set to `true`, it calls `send_ENC(plaintext)` followed by `send_MAC(16)` on the Strobe state. Otherwise it calls `send_CLR(plaintext)`.
+**`EncryptAndHash(plaintext)`**: Returns a ready to be sent payload to the caller by following these steps:
+
+* If `isKeyed` is set to `false`, call `send_CLR(plaintext)` and return the `plaintext`.
+* Call `send_ENC(plaintext)` followed by `send_MAC(16)` on the Strobe state. Return the contatenation of both results to the caller.
 
 **`DecryptAndHash(ciphertext)`**: Returns the received payload by following steps:
 
@@ -190,6 +193,7 @@ A `DiscoSecureChannel` responds to the following functions:
 
 **`Decrypt(ciphertext):`**:
 
+  * Check that the length of the received `ciphertext` is at least 16 bytes. If it is not, return an error to the caller and abort the session.
   * If `n` is equal to 2^64^-1 the function returns an error to the caller and aborts the Disco session.
   * Create a new `StrobeState` by calling `Clone()` on the `StrobeState` object.
   * Call `AD(n)` on the new `StrobeState`.
