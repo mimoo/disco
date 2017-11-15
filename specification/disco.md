@@ -132,7 +132,12 @@ A SymmetricState responds to the following functions:
 
 **`EncryptAndHash(plaintext)`**: If `isKeyed` is set to `true`, it calls `send_ENC(plaintext)` followed by `send_MAC(16)` on the Strobe state. Otherwise it calls `send_CLR(plaintext)`.
 
-**`DecryptAndHash(ciphertext)`**: If `isKeyed` is set to `true`, it calls `recv_ENC(ciphertext[:-16])` followed by `recv_MAC(ciphertext[-16:])` on the Strobe state. If `recv_MAC` returns false, the peer must abort the connection. If `isKeyed` is set to `false` call `recv_CLR(ciphertext)`.
+**`DecryptAndHash(ciphertext)`**: Returns the received payload by following steps:
+
+* If `isKeyed` is set to `false`, call `recv_CLR(ciphertext)` and return the `ciphertext`.
+* Otherwise, check that the length of the received `ciphertext` is at least 16 bytes. If it is not, return an error to the caller and abort the handshake.
+* Call `recv_ENC(ciphertext[:-16])` and store the result in a `plaintext` buffer.
+* Call `recv_MAC(ciphertext[-16:])` on the Strobe state. If `recv_MAC` returns `false`, the peer must return an error to the caller and abort the connection. Otherwise return the `plaintext` buffer.
 
 **`Split()`**: Returns a pair of Strobe states for encrypting transport messages by executing the following steps:
 
