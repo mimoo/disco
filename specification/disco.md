@@ -126,7 +126,7 @@ A SymmetricState responds to the following functions:
 
 **`MixHash(data)`**: Calls `AD(data)` on the Strobe state.
 
-**`MixKeyAndHash(input_key_material)`**: Calls `AD(data)` on the Strobe state.
+**`MixKeyAndHash(input_key_material)`**: Calls `AD(input_key_material)` on the Strobe state.
 
 **`GetHandshakeHash()`**: Calls `PRF(32)`. This function should only be called at the end of a handshake, i.e. after the Split() function has been called. This function is used for channel binding, as described in [Section 11.2 of the Noise specification](https://noiseprotocol.org/noise.html#channel-binding).
 
@@ -204,3 +204,8 @@ The same security considerations from the Noise specification applies to this se
 # 7. Security Considerations
 
 The same security considerations that apply to both Noise and Strobe are to be considered.
+
+# 8. Acknowledgements
+
+Thanks to Trevor Perrin and Mike Hamburg for being the foundations and main help in building this specification.
+
