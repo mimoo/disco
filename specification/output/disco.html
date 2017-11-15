@@ -92,7 +92,7 @@ To implement the Disco extension, a Strobe implementation respecting the functio
 <h1 id="the-strobestate-object">3. The <code>StrobeState</code> object</h1>
 <p>A <code>StrobeState</code> depends on a Strobe object (as defined in <a href="https://strobe.sourceforge.io/specs/#object">section 5 of the Strobe Specification</a>) as well as the following associated constant:</p>
 <ul>
-<li><strong><code>R</code></strong>: The blocksize of the Strobe state (computed as <code>N - (2*sec)/8 - 2</code>, <a href="https://strobe.sourceforge.io/specs/#params">see section 4 of the Strobe specification</a>).</li>
+<li><strong><code>StrobeR</code></strong>: The blocksize of the Strobe state (computed as <code>N - (2*sec)/8 - 2</code>, <a href="https://strobe.sourceforge.io/specs/#params">see section 4 of the Strobe specification</a>).</li>
 </ul>
 <p>While a Strobe object responds to many functions (<a href="https://strobe.sourceforge.io/">see Strobe's specification</a>), only the following ones need to be implemented in order for the Disco extension to work properly:</p>
 <p><strong><code>InitializeStrobe(protocol_name)</code></strong>: Initialize the Strobe object with a custom protocol name.</p>
@@ -139,7 +139,7 @@ To implement the Disco extension, a Strobe implementation respecting the functio
 <ul>
 <li>Let <code>s1</code> be the Strobe state and <code>s2</code> the result returned by <code>Clone()</code>.</li>
 <li>Calls <code>meta_AD(&quot;initiator&quot;)</code> on <code>s1</code> and <code>meta_AD(&quot;responder&quot;)</code> on <code>s2</code>.</li>
-<li>Calls <code>RATCHET(R)</code> on <code>s1</code> and on <code>s2</code>.</li>
+<li>Calls <code>RATCHET(StrobeR)</code> on <code>s1</code> and on <code>s2</code>.</li>
 <li>Returns the pair <code>(s1, s2)</code>.</li>
 </ul>
 <h1 id="modifications-to-advanced-features">6. Modifications to Advanced Features</h1>

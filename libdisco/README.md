@@ -39,12 +39,12 @@ A `libdisco.Config` is **mandatory** for setting up both clients and servers.
 ```
 type Config struct {
   HandshakePattern noiseHandshakeType
-	KeyPair          *KeyPair
-	RemoteKey        []byte
-	Prologue         []byte
-	StaticPublicKeyProof []byte
-	PublicKeyVerifier func(publicKey, proof []byte) bool
-	HalfDuplex bool
+  KeyPair          *KeyPair
+  RemoteKey        []byte
+  Prologue         []byte
+  StaticPublicKeyProof []byte
+  PublicKeyVerifier func(publicKey, proof []byte) bool
+  HalfDuplex bool
 }
 ```
 
