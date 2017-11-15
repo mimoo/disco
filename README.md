@@ -4,4 +4,4 @@ This repository contains the **Disco extension** of the [Noise protocol framewor
 
 → The **specification** can be found online at [www.discocrypto.com](http://www.discocrypto.com/disco.html)
 
-→ A **cryptographic library** called **DiscoCrypto** and based on the Disco specification is available in [discocrypto/](discocrypto/).
+→ A **golang cryptographic library** called **LibDisco** and based on the Disco specification is available in [libdisco/](libdisco/).
