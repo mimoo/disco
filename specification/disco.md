@@ -176,19 +176,22 @@ A `DiscoSecureChannel` responds to the following functions:
 **`Encrypt(plaintext)`**:
 
   * If `n` is equal to 2^64^-1 the function returns an error to the caller and aborts the Disco session.
-  * Call `AD(n)` on the Strobe state.
-  * Call `send_ENC(plaintext)` on the Strobe state and add the result to a `ciphertext` buffer.
-  * Call `send_MAC(16)` on the Strobe state and add the result to the `ciphertext` buffer.
-  * Increment the nonce `n`.
+  * Create a new `StrobeState` by calling `Clone()` on the `StrobeState` object.
+  * Call `AD(n)` on the new `StrobeState`.
+  * Call `send_ENC(plaintext)` on the new `StrobeState` and add the result to a `ciphertext` buffer.
+  * Call `send_MAC(16)` on the new `StrobeState` and add the result to the `ciphertext` buffer.
+  * Increment the nonce `n` and discard the new `StrobeState` object.
   * Return the `ciphertext` buffer containing the encrypted data.
 
 **`Decrypt(ciphertext):`**:
 
   * If `n` is equal to 2^64^-1 the function returns an error to the caller and aborts the Disco session.
-  * Call `AD(n)` on the Strobe state.
-  * Call `recv_ENC(ciphertext[:-16])` on the Strobe state and store the result in a `plaintext` buffer.
-  * Call `recv_MAC(ciphertext[-16:])` on the Strobe state, if the function returns `false`, return an error to the caller and abort the Disco session. Otherwise return the `plaintext` buffer containing the decrypted data.
-  * Increment the nonce `n`.
+  * Create a new `StrobeState` by calling `Clone()` on the `StrobeState` object.
+  * Call `AD(n)` on the new `StrobeState`.
+  * Call `recv_ENC(ciphertext[:-16])` on the new `StrobeState` and store the result in a `plaintext` buffer.
+  * Call `recv_MAC(ciphertext[-16:])` on the new `StrobeState`, if the function returns `false`, return an error to the caller and abort the Disco session.
+  * Increment the nonce `n` and discard the new `StrobeState` object.
+  * Return the `plaintext` buffer containing the decrypted data.
 
 **`IntroduceForwardSecrecy()`**: calls RATCHET(64) on the Strobe Object.  <!-- 64 being the size of the capacity of Strobe-256/1600 -->
 
