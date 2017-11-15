@@ -64,11 +64,11 @@ func Listen(network, laddr string, config *Config) (net.Listener, error) {
 		return nil, err
 	}
 
-	// create new noise.listener
-	noiseListener := new(listener)
-	noiseListener.Listener = l
-	noiseListener.config = config
-	return noiseListener, nil
+	// create new libdisco.listener
+	discoListener := new(listener)
+	discoListener.Listener = l
+	discoListener.config = config
+	return discoListener, nil
 }
 
 type timeoutError struct{}
@@ -103,8 +103,8 @@ func checkRequirements(isClient bool, config *Config) (err error) {
 }
 
 // DialWithDialer connects to the given network address using dialer.Dial and
-// then initiates a Noise handshake, returning the resulting Noise connection. Any
-// timeout or deadline given in the dialer apply to connection and Noise
+// then initiates a Disco handshake, returning the resulting Disco connection. Any
+// timeout or deadline given in the dialer apply to connection and Disco
 // handshake as a whole.
 //
 // DialWithDialer interprets a nil configuration as equivalent to the zero
@@ -112,7 +112,7 @@ func checkRequirements(isClient bool, config *Config) (err error) {
 // TODO: make sure sane defaults for time outs are set!!!
 func DialWithDialer(dialer *net.Dialer, network, addr string, config *Config) (*Conn, error) {
 	// We want the Timeout and Deadline values from dialer to cover the
-	// whole process: TCP connection and Noise handshake. This means that we
+	// whole process: TCP connection and Disco handshake. This means that we
 	// also need to start our own timers now.
 	timeout := dialer.Timeout
 
@@ -156,7 +156,7 @@ func DialWithDialer(dialer *net.Dialer, network, addr string, config *Config) (*
 		hostname := addr[:colonPos]
 	*/
 
-	// Create the noise.Conn
+	// Create the libdisco.Conn
 	conn := Client(rawConn, config)
 
 	// Do the handshake
@@ -179,8 +179,8 @@ func DialWithDialer(dialer *net.Dialer, network, addr string, config *Config) (*
 }
 
 // Dial connects to the given network address using net.Dial
-// and then initiates a Noise handshake, returning the resulting
-// Noise connection.
+// and then initiates a Disco handshake, returning the resulting
+// Disco connection.
 // Dial interprets a nil configuration as equivalent to
 // the zero configuration; see the documentation of Config
 // for the defaults.
@@ -193,7 +193,7 @@ func Dial(network, addr string, config *Config) (*Conn, error) {
 //
 
 // CreatePublicKeyVerifier can be used to create the callback
-// function PublicKeyVerifier sometimes required in a noise.Config
+// function PublicKeyVerifier sometimes required in a libdisco.Config
 // for peers that are receiving a static public key at some
 // point during the handshake
 func CreatePublicKeyVerifier(rootPublicKey ed25519.PublicKey) func([]byte, []byte) bool {
@@ -207,7 +207,7 @@ func CreatePublicKeyVerifier(rootPublicKey ed25519.PublicKey) func([]byte, []byt
 }
 
 // CreateStaticPublicKeyProof can be used to create the proof
-// StaticPublicKeyProof sometimes required in a noise.Config
+// StaticPublicKeyProof sometimes required in a libdisco.Config
 // for peers that are sending their static public key at some
 // point during the handshake
 func CreateStaticPublicKeyProof(rootPrivateKey ed25519.PrivateKey, keyPair *KeyPair) []byte {
@@ -285,7 +285,7 @@ func LoadDiscoRootPrivateKey(discoRootPrivateKey string) (rootPrivateKey ed25519
 // Storage of Disco Static Keys
 //
 
-// GenerateAndSaveDiscoKeyPair generates a noise key pair (X25519 key pair)
+// GenerateAndSaveDiscoKeyPair generates a disco key pair (X25519 key pair)
 // and saves it to a file in hexadecimal form.
 func GenerateAndSaveDiscoKeyPair(DiscoKeyPairFile string) (keyPair *KeyPair, err error) {
 
