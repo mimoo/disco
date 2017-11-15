@@ -73,7 +73,7 @@ Noise_XX_25519_STROBEv1.0.2
 
 A `StrobeState` depends on a Strobe object (as defined in [section 5 of the Strobe Specification](https://strobe.sourceforge.io/specs/#object)) as well as the following associated constant:
 
-* **`R`**: The blocksize of the Strobe state (computed as `N - (2*sec)/8 - 2`, [see section 4 of the Strobe specification](https://strobe.sourceforge.io/specs/#params)).
+* **`StrobeR`**: The blocksize of the Strobe state (computed as `N - (2*sec)/8 - 2`, [see section 4 of the Strobe specification](https://strobe.sourceforge.io/specs/#params)).
 
 While a Strobe object responds to many functions ([see Strobe's specification](https://strobe.sourceforge.io/)), only the following ones need to be implemented in order for the Disco extension to work properly:
 
@@ -146,7 +146,7 @@ A SymmetricState responds to the following functions:
 
 * Let `s1` be the Strobe state and `s2` the result returned by `Clone()`.
 * Calls `meta_AD("initiator")` on `s1` and `meta_AD("responder")` on `s2`.
-* Calls `RATCHET(R)` on `s1` and on `s2`.
+* Calls `RATCHET(StrobeR)` on `s1` and on `s2`.
 * Returns the pair `(s1, s2)`.
 
 # 6. Modifications to Advanced Features
