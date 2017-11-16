@@ -69,7 +69,7 @@ func (s *symmetricState) decryptAndHash(ciphertext []byte) (plaintext []byte, er
 
 		plaintext := s.strobeState.Recv_ENC_unauthenticated(false, ciphertext[:len(ciphertext)-16])
 		ok := s.strobeState.Recv_MAC(false, ciphertext[len(ciphertext)-16:])
-		if ok != true {
+		if !ok {
 			return []byte{}, errors.New("Disco: cannot decrypt the payload.")
 		}
 		return plaintext, nil

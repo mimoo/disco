@@ -9,7 +9,11 @@ func TestCreationKeys(t *testing.T) {
 
 	// temporary files
 	discoKeyPairFile := "./discoKeyPairFile"
-	defer os.Remove(discoKeyPairFile)
+	defer func() {
+		if err := os.Remove(discoKeyPairFile); err != nil {
+			panic(err)
+		}
+	}()
 	rootPrivateKeyFile := "./rootPrivateKeyFile"
 	defer os.Remove(rootPrivateKeyFile)
 	rootPublicKeyFile := "./rootPublicKeyFile"
@@ -60,7 +64,7 @@ func TestCreationKeys(t *testing.T) {
 
 	// verify the proof
 	verifior := CreatePublicKeyVerifier(rootPub)
-	if verifior(keyPair.PublicKey[:], proof) != true {
+	if !verifior(keyPair.PublicKey[:], proof) {
 		t.Error("cannot verify proof")
 		return
 	}

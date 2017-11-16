@@ -13,6 +13,8 @@ const (
 	NoiseMaxPlaintextSize = NoiseMessageLength - NoiseTagLength
 )
 
+// Config is mandatory to setup a Disco peer. It represents the configuration
+// of the Disco handshake that the peer will go through.
 type Config struct {
 	// the type of Noise protocol that the client and the server will go through
 	HandshakePattern noiseHandshakeType

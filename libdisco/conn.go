@@ -2,7 +2,6 @@ package libdisco
 
 import (
 	"errors"
-	"io"
 	"net"
 	"sync"
 	"time"
@@ -74,7 +73,7 @@ func (c *Conn) Write(b []byte) (int, error) {
 
 	//
 	if hp := c.config.HandshakePattern; !c.isClient && (hp == Noise_N || hp == Noise_K || hp == Noise_X) {
-		panic("Disco: a server should not write on one-way patterns")
+		panic("disco: a server should not write on one-way patterns")
 	}
 
 	// Make sure to go through the handshake first
@@ -117,7 +116,7 @@ func (c *Conn) Write(b []byte) (int, error) {
 		/*
 			// TODO: should we test if we sent the correct number of bytes?
 			if _ != len(ciphertext) {
-				return errors.New("Disco: cannot send the whole data")
+				return errors.New("disco: cannot send the whole data")
 			}
 		*/
 
@@ -171,7 +170,7 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	}
 	length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
 	if length > NoiseMessageLength {
-		return 2, errors.New("Disco: Disco message received exceeds DiscoMessageLength")
+		return 2, errors.New("disco: Disco message received exceeds DiscoMessageLength")
 	}
 
 	// read noise message from socket
@@ -182,13 +181,13 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 
 	// decrypt
 	if length < 16 {
-		return 2 + length, errors.New("Disco: the received payload is shorter 16 bytes.")
+		return 2 + length, errors.New("disco: the received payload is shorter 16 bytes")
 	}
 
 	plaintext := c.in.Recv_ENC_unauthenticated(false, noiseMessage[:len(noiseMessage)-16])
 	ok := c.in.Recv_MAC(false, noiseMessage[len(noiseMessage)-16:])
-	if ok != true {
-		return 2 + length, errors.New("Disco: cannot decrypt the payload.")
+	if !ok {
+		return 2 + length, errors.New("disco: cannot decrypt the payload")
 	}
 
 	// append to the input buffer
@@ -239,7 +238,7 @@ func (c *Conn) Handshake() error {
 	var remoteKeyPair *KeyPair
 	if c.config.RemoteKey != nil {
 		if len(c.config.RemoteKey) != 32 {
-			return errors.New("Disco: the provided remote key is not 32-byte.")
+			return errors.New("disco: the provided remote key is not 32-byte")
 		}
 		remoteKeyPair = &KeyPair{}
 		copy(remoteKeyPair.PublicKey[:], c.config.RemoteKey)
@@ -280,7 +279,7 @@ ContinueHandshake:
 		}
 		length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
 		if length > NoiseMessageLength {
-			return errors.New("Disco: Disco message received exceeds DiscoMessageLength")
+			return errors.New("disco: Disco message received exceeds DiscoMessageLength")
 		}
 		noiseMessage, err := readFromUntil(c.conn, length) // noise message
 		if err != nil {
@@ -291,7 +290,6 @@ ContinueHandshake:
 		if err != nil {
 			return err
 		}
-		// TODO: do something with receivedPayload
 	}
 
 	// handshake not finished
@@ -314,7 +312,7 @@ ContinueHandshake:
 		if isRemoteStaticKeySet != 0 {
 			// a remote static key has been received. Verify it
 			if !c.config.PublicKeyVerifier(hs.rs.PublicKey[:], receivedPayload) {
-				return errors.New("Disco: the received public key could not be authenticated")
+				return errors.New("disco: the received public key could not be authenticated")
 			}
 		}
 	}
@@ -352,7 +350,7 @@ func (c *Conn) IsRemoteAuthenticated() bool {
 // input/output functions
 //
 
-func readFromUntil(r io.Reader, n int) ([]byte, error) {
+func readFromUntil(r net.Conn, n int) ([]byte, error) {
 	result := make([]byte, n)
 	offset := 0
 	for {

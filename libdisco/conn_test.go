@@ -32,7 +32,7 @@ func TestSeveralWriteRoutines(t *testing.T) {
 	addr := listener.Addr().String()
 
 	// run the server and Accept one connection
-	go func() {
+	go func(t *testing.T) {
 		serverSocket, err2 := listener.Accept()
 		if err2 != nil {
 			t.Fatal("a server cannot accept()")
@@ -52,7 +52,7 @@ func TestSeveralWriteRoutines(t *testing.T) {
 			//fmt.Println("server received:", string(buf[:n]))
 		}
 
-	}()
+	}(t)
 
 	// Run the client
 	clientSocket, err := Dial("tcp", addr, &clientConfig)

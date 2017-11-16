@@ -237,11 +237,7 @@ func GenerateAndSaveDiscoRootKeyPair(discoRootPrivateKeyFile string, discoRootPu
 		return err
 	}
 	err = ioutil.WriteFile(discoRootPublicKeyFile, publicKeyHex[:], 0644)
-
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // LoadDiscoRootPublicKey reads and parses a public Root key from a
