@@ -42,12 +42,13 @@
 </ul></li>
 <li><a href="#security-considerations">7. Security Considerations</a></li>
 <li><a href="#acknowledgements">8. Acknowledgements</a></li>
+<li><a href="#references">9. References</a></li>
 </ul>
 </div>
 <h1 id="introduction">1. Introduction</h1>
 <h2 id="motivation">1.1. Motivation</h2>
-<p><a href="http://noiseprotocol.org/">Noise</a> is a framework for crypto protocols based on Diffie-Hellman key agreement. One of its most interesting property is that every new message depends on all the previous ones. This is done by continuously hashing messages being sent and received, as well as continuously deriving new keys based on the continuous hash and the previous keys. This interesting property stops at the end of the handshake.<br />
-<a href="http://strobe.sourceforge.io/">Strobe</a> is a protocol framework based on a <a href="http://sponge.noekeon.org/">duplex construction</a>. It naturally benefits from the same property, effectively absorbing every operation to influence the next ones. The Strobe specification is comparable to Noise, but focusing on the symmetric part of a protocol. By merging both protocols into one, Disco achieves the following goals:</p>
+<p><a href="http://noiseprotocol.org">Noise</a><span class="citation">[1]</span> is a framework for crypto protocols based on Diffie-Hellman key agreement. One of its most interesting property is that every new message depends on all the previous ones. This is done by continuously hashing messages being sent and received, as well as continuously deriving new keys based on the continuous hash and the previous keys. This interesting property stops at the end of the handshake.<br />
+<a href="http://strobe.sourceforge.io/">Strobe</a><span class="citation">[2]</span> is a protocol framework based on a <a href="http://sponge.noekeon.org/">duplex construction</a><span class="citation">[3]</span>. It naturally benefits from the same property, effectively absorbing every operation to influence the next ones. The Strobe specification is comparable to Noise, but focusing on the symmetric part of a protocol. By merging both protocols into one, Disco achieves the following goals:</p>
 <ul>
 <li>The Noise specification can be greatly simplified by removing all the symmetric cryptographic algorithms and symmetric objects. These can be replaced by a single Strobe object.</li>
 <li>Implementations of Noise with the Disco extension will consequently greatly benefit from this simplification, allowing for a drastic reduction of the codebase, facilitating security audits.</li>
@@ -86,7 +87,7 @@ To implement the Disco extension, a Strobe implementation respecting the functio
 <h1 id="protocol-naming">2. Protocol naming</h1>
 <p>The name of a Noise protocol extended with Disco follows the same convention, but replaces the symmetric cryptographic algorithms by the version of Strobe used:</p>
 <pre><code>Noise_[PATTERN]_[KEYEXCHANGE]_STROBEvX.Y.Z</code></pre>
-<p>For example, with the current version of <a href="https://strobe.sourceforge.io/">Strobe</a> being STROBEv1.0.2:</p>
+<p>For example, with the current version of Strobe<span class="citation">[2]</span> being STROBEv1.0.2:</p>
 <pre><code>Noise_XX_25519_STROBEv1.0.2</code></pre>
 <!-- TODO: maybe change this to Noise_[PATTERN]_[KEYEXCHANGE]_STROBEvX.Y.Z_PERMUTATION -->
 <h1 id="the-strobestate-object">3. The <code>StrobeState</code> object</h1>
@@ -94,7 +95,7 @@ To implement the Disco extension, a Strobe implementation respecting the functio
 <ul>
 <li><strong><code>StrobeR</code></strong>: The blocksize of the Strobe state (computed as <code>N - (2*sec)/8 - 2</code>, <a href="https://strobe.sourceforge.io/specs/#params">see section 4 of the Strobe specification</a>).</li>
 </ul>
-<p>While a Strobe object responds to many functions (<a href="https://strobe.sourceforge.io/">see Strobe's specification</a>), only the following ones need to be implemented in order for the Disco extension to work properly:</p>
+<p>While a Strobe object responds to many functions (see Strobe's specification<span class="citation">[4]</span>), only the following ones need to be implemented in order for the Disco extension to work properly:</p>
 <p><strong><code>InitializeStrobe(protocol_name)</code></strong>: Initialize the Strobe object with a custom protocol name.</p>
 <p><strong><code>KEY(key)</code></strong>: Permutes the Strobe's state and replaces the new state with the key.</p>
 <p><strong><code>PRF(output_len)</code></strong>: Permutes the Strobe's state and removes <code>output_len</code> bytes from the new state. Outputs the removed bytes to the caller.</p>
@@ -192,5 +193,20 @@ To implement the Disco extension, a Strobe implementation respecting the functio
 <p>The same security considerations that apply to both Noise and Strobe are to be considered.</p>
 <h1 id="acknowledgements">8. Acknowledgements</h1>
 <p>Thanks to Trevor Perrin and Mike Hamburg for being the foundations and main help in building this specification.</p>
+<h1 id="references" class="unnumbered">9. References</h1>
+<div id="refs" class="references">
+<div id="ref-noise">
+<p>[1] Trevor Perrin, “Noise protocol framework.” 2017. <a href="http://noiseprotocol.org" class="uri">http://noiseprotocol.org</a></p>
+</div>
+<div id="ref-strobe">
+<p>[2] Mike Hamburg, “The STROBE protocol framework.” Cryptology ePrint Archive, Report 2017/003, 2017. <a href="http://eprint.iacr.org/2017/003" class="uri">http://eprint.iacr.org/2017/003</a></p>
+</div>
+<div id="ref-duplex">
+<p>[3] G. Bertoni, J. Daemen, M. Peeters, and G. V. Assche, “Duplexing the sponge: Single-pass authenticated encryption and other applications.” Cryptology ePrint Archive, Report 2011/499, 2011. <a href="https://eprint.iacr.org/2011/499" class="uri">https://eprint.iacr.org/2011/499</a></p>
+</div>
+<div id="ref-strobespec">
+<p>[4] Mike Hamburg, “The STROBE protocol framework specification.” 2017. <a href="https://strobe.sourceforge.io/" class="uri">https://strobe.sourceforge.io/</a></p>
+</div>
+</div>
 </body>
 </html>

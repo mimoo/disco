@@ -12,8 +12,8 @@ link-citations: 'false'
 
 ## 1.1. Motivation
 
-[Noise](http://noiseprotocol.org/) is a framework for crypto protocols based on Diffie-Hellman key agreement. One of its most interesting property is that every new message depends on all the previous ones. This is done by continuously hashing messages being sent and received, as well as continuously deriving new keys based on the continuous hash and the previous keys. This interesting property stops at the end of the handshake.  
-[Strobe](http://strobe.sourceforge.io/) is a protocol framework based on a [duplex construction](http://sponge.noekeon.org/). It naturally benefits from the same property, effectively absorbing every operation to influence the next ones. The Strobe specification is comparable to Noise, but focusing on the symmetric part of a protocol. By merging both protocols into one, Disco achieves the following goals:
+[Noise](http://noiseprotocol.org)[@noise] is a framework for crypto protocols based on Diffie-Hellman key agreement. One of its most interesting property is that every new message depends on all the previous ones. This is done by continuously hashing messages being sent and received, as well as continuously deriving new keys based on the continuous hash and the previous keys. This interesting property stops at the end of the handshake.  
+[Strobe](http://strobe.sourceforge.io/)[@strobe] is a protocol framework based on a [duplex construction](http://sponge.noekeon.org/)[@duplex]. It naturally benefits from the same property, effectively absorbing every operation to influence the next ones. The Strobe specification is comparable to Noise, but focusing on the symmetric part of a protocol. By merging both protocols into one, Disco achieves the following goals:
 
 * The Noise specification can be greatly simplified by removing all the symmetric cryptographic algorithms and symmetric objects. These can be replaced by a single Strobe object.
 * Implementations of Noise with the Disco extension will consequently greatly benefit from this simplification, allowing for a drastic reduction of the codebase, facilitating security audits.
@@ -61,7 +61,7 @@ The name of a Noise protocol extended with Disco follows the same convention, bu
 Noise_[PATTERN]_[KEYEXCHANGE]_STROBEvX.Y.Z
 ```
 
-For example, with the current version of [Strobe](https://strobe.sourceforge.io/) being STROBEv1.0.2:
+For example, with the current version of Strobe[@strobe] being STROBEv1.0.2:
 
 ```
 Noise_XX_25519_STROBEv1.0.2
@@ -75,7 +75,7 @@ A `StrobeState` depends on a Strobe object (as defined in [section 5 of the Stro
 
 * **`StrobeR`**: The blocksize of the Strobe state (computed as `N - (2*sec)/8 - 2`, [see section 4 of the Strobe specification](https://strobe.sourceforge.io/specs/#params)).
 
-While a Strobe object responds to many functions ([see Strobe's specification](https://strobe.sourceforge.io/)), only the following ones need to be implemented in order for the Disco extension to work properly:
+While a Strobe object responds to many functions (see Strobe's specification[@strobespec]), only the following ones need to be implemented in order for the Disco extension to work properly:
 
 **`InitializeStrobe(protocol_name)`**: Initialize the Strobe object with a custom protocol name.
 
@@ -218,3 +218,4 @@ The same security considerations that apply to both Noise and Strobe are to be c
 
 Thanks to Trevor Perrin and Mike Hamburg for being the foundations and main help in building this specification.
 
+# 9. References
