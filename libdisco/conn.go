@@ -2,6 +2,7 @@ package libdisco
 
 import (
 	"errors"
+	"io"
 	"net"
 	"sync"
 	"time"
@@ -350,7 +351,7 @@ func (c *Conn) IsRemoteAuthenticated() bool {
 // input/output functions
 //
 
-func readFromUntil(r net.Conn, n int) ([]byte, error) {
+func readFromUntil(r io.Reader, n int) ([]byte, error) {
 	result := make([]byte, n)
 	offset := 0
 	for {

@@ -2,13 +2,15 @@
 title:      'Noise Extension: Disco'
 author:
  - David Wong (david.wong@nccgroup.trust)
-revision:   '3'
+revision:   '4'
 status:     'unofficial/unstable'
-date:       '2017-11-14'
+date:       '2017-11-20'
 link-citations: 'false'
 ---
 
 # 1. Introduction
+
+This specification is extending **Noise revision 34**[@noise] and **Strobe v1.0.2**[@strobe].
 
 ## 1.1. Motivation
 
@@ -29,6 +31,11 @@ To implement the Disco extension, a Strobe implementation respecting the functio
 ## 1.3. Change log
 
 **this section will be removed in the final document**
+
+**draft-4**:
+
+* `DiscoSecureChannel` has been renamed to `CipherState`.
+* Added a post-handshake phase.
 
 **draft-3**:
 
@@ -105,7 +112,7 @@ The following function which is not specified in Strobe:
 **`Clone()`**: Returns a copy of the Strobe state.
 
 
-# 4. Modifications to the Handshake State
+# 4. Post-handshake phase and modifications to the Handshake State
 
 Processing the final handshake message via `WriteMessage()` and `ReadMessage()` now returns two new `StrobeState` objects by calling `Split()`. The first for encrypting transport messages from initiator to responder, and the second for messages in the other direction. At this point the `StrobeState` of the `SymmetricState` should not be deleted as it is the first `StrobeState` object returned by `Split()` (and will be used by the initiator to encrypt messages).
 
@@ -169,19 +176,20 @@ Transport messages are then encrypted and decrypted by calling `Encrypt()` and `
 
 Modify the `Split()` function to add the following steps before returning the pair `(s1, s2)` of `Strobe` objects:
 
-* Create two `DiscoSecureChannel` named `d1` and `d2`.
-* Associate `s1` (resp. `s2`) to `d1` (resp. `d2`).
-* Return the pair `(d1, d2)`.
+* Create two `CipherState` named `c1` and `c2`.
+* Associate `s1` (resp. `s2`) to `c1` (resp. `c2`).
+* Set both the nonces `n` of `c1` and `c2` to zero.
+* Return the pair `(c1, c2)`.
 
-### 6.3.2 The `DiscoSecureChannel` object
+### 6.3.2 Modifications to the `CipherState` object
 
-A `DiscoSecureChannel` can encrypt and decrypt data based on its associated `StrobeState` object as well as the following variable:
+A `CipherState` can encrypt and decrypt data based on its associated `StrobeState` object as well as the following variable:
 
 * **`n`**: An 8-byte (64-bit) unsigned integer nonce.
 
-A `DiscoSecureChannel` responds to the following functions:
+A `CipherState` responds to the following functions:
 
-**`Encrypt(plaintext)`**:
+**`EncryptWithAd(ad, plaintext)`**:
 
   * If `n` is equal to 2^64^-1 the function returns an error to the caller and aborts the Disco session.
   * Create a new `StrobeState` by calling `Clone()` on the `StrobeState` object.
@@ -191,7 +199,7 @@ A `DiscoSecureChannel` responds to the following functions:
   * Increment the nonce `n` and discard the new `StrobeState` object.
   * Return the `ciphertext` buffer containing the encrypted data.
 
-**`Decrypt(ciphertext):`**:
+**`DecryptWithAd(ad, ciphertext):`**:
 
   * Check that the length of the received `ciphertext` is at least 16 bytes. If it is not, return an error to the caller and abort the session.
   * If `n` is equal to 2^64^-1 the function returns an error to the caller and aborts the Disco session.
@@ -202,7 +210,7 @@ A `DiscoSecureChannel` responds to the following functions:
   * Increment the nonce `n` and discard the new `StrobeState` object.
   * Return the `plaintext` buffer containing the decrypted data.
 
-**`IntroduceForwardSecrecy()`**: calls RATCHET(64) on the Strobe Object.  <!-- 64 being the size of the capacity of Strobe-256/1600 -->
+**`Rekey()`**: calls RATCHET(64) on the Strobe Object. <!-- 64 being the size of the capacity of Strobe-256/1600 -->
 
 ## 6.4 Half-duplex protocols
 
