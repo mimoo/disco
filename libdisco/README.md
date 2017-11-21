@@ -44,6 +44,7 @@ type Config struct {
   Prologue         []byte
   StaticPublicKeyProof []byte
   PublicKeyVerifier func(publicKey, proof []byte) bool
+	PreSharedKey []byte
   HalfDuplex bool
 }
 ```
@@ -67,6 +68,8 @@ This means that if a man-in-the-middle attacker has removed, added or re-ordered
 
 **PublicKeyVerifier**: if the *handshake pattern* chosen has the peer receive
 a static public key at some point in the handshake, then the peer needs a function to verify the validity of the received key. During the handshake a "proof" might have been sent. `PublicKeyVerifier` is a callback function that must be implemented by the application using Disco and that will be called on both the static public key that has been received and any payload that has been received so far (usually the payload sent by the previous `StaticPublicKeyProof` function). If this function returns true, the handshake will continue. Otherwise the handshake will fail. More information is available in the [Disco Keys](#disco-keys) section.
+
+**PreSharedKey**: if the *handshake pattern* chosen requires both peers to be aware of a shared secret (of 32-byte), this pre-shared secret must be shared in the configuration prior to starting the handshake.
 
 **HalfDuplex**: In some situation, one of the peer might be constrained by the size of its memory. In such scenarios, communication over a single writing channel might be a solution. Disco provides half-duplex channels where the client and the server take turn to write or read on the secure channel. For this to work this value must be set to `true` on both side of the connection. The server and client MUST NOT write or read on the secure channel at the same time.
 
