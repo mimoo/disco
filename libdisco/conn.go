@@ -246,6 +246,9 @@ func (c *Conn) Handshake() error {
 	}
 	hs := initialize(c.config.HandshakePattern, c.isClient, c.config.Prologue, c.config.KeyPair, nil, remoteKeyPair, nil)
 
+	// pre-shared key
+	hs.psk = c.config.PreSharedKey
+
 	// start handshake
 	var c1, c2 *strobe.Strobe
 	var err error

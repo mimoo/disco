@@ -49,6 +49,7 @@ const (
 	Noise_XK
 	Noise_IK
 	Noise_IX
+	Noise_NNpsk2
 
 	// Not implemented
 	Noise_NN
@@ -66,6 +67,7 @@ const (
 	token_se
 	token_ss
 	token_ee
+	token_psk
 )
 
 type messagePattern []token
@@ -247,6 +249,23 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		messagePatterns: []messagePattern{
 			messagePattern{token_e, token_s},                               // →
 			messagePattern{token_e, token_ee, token_se, token_s, token_es}, // ←
+		},
+	},
+
+	/*
+		NNpsk2():
+		  -> e
+		  <- e, ee, psk
+	*/
+	Noise_NNpsk2: handshakePattern{
+		name: "NNpsk2",
+		preMessagePatterns: []messagePattern{
+			messagePattern{}, // →
+			messagePattern{}, // ←
+		},
+		messagePatterns: []messagePattern{
+			messagePattern{token_e},                      // →
+			messagePattern{token_e, token_ee, token_psk}, // ←
 		},
 	},
 }

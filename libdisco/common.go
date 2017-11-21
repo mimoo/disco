@@ -32,6 +32,8 @@ type Config struct {
 	// static public key as part of the handshake, this callback is mandatory in
 	// order to validate it
 	PublicKeyVerifier func(publicKey, proof []byte) bool
+	// a pre-shared key for handshake patterns including a `psk` token
+	PreSharedKey []byte
 	// by default a noise protocol is full-duplex, meaning that both the client
 	// and the server can write on the channel at the same time. Setting this value
 	// to true will require the peers to write and read in turns. If this requirement

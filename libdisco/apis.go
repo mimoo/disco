@@ -99,6 +99,9 @@ func checkRequirements(isClient bool, config *Config) (err error) {
 			return errNoPubkeyVerifier
 		}
 	}
+	if ht == Noise_NNpsk2 && len(config.PreSharedKey) != 32 {
+		return errors.New("noise: a 32-byte pre-shared key needs to be passed as noise.Config")
+	}
 	return nil
 }
 
@@ -282,11 +285,11 @@ func LoadDiscoRootPrivateKey(discoRootPrivateKey string) (rootPrivateKey ed25519
 //
 
 // GenerateAndSaveDiscoKeyPair generates a disco key pair (X25519 key pair)
-// and saves it to a file in hexadecimal form.
+// and saves it to a file in hexadecimal form. You can use ExportPublicKey() to
+// export the public key part.
 func GenerateAndSaveDiscoKeyPair(DiscoKeyPairFile string) (keyPair *KeyPair, err error) {
 
 	// TODO: should I require a passphrase and encrypt it with it?
-	// TODO: that should probably be saved in two files?
 	keyPair = GenerateKeypair(nil)
 	var dataToWrite [128]byte
 	hex.Encode(dataToWrite[:64], keyPair.PrivateKey[:])
