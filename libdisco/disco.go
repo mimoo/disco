@@ -10,7 +10,7 @@ package libdisco
 import (
 	"errors"
 
-	strobe "github.com/mimoo/StrobeGo/compact"
+	"github.com/mimoo/StrobeGo/strobe"
 )
 
 //
@@ -24,7 +24,7 @@ type symmetricState struct {
 
 func (s *symmetricState) initializeSymmetric(protocolName string) {
 	// initializing the Strobe state
-	s.strobeState = strobe.InitStrobe(protocolName)
+	s.strobeState = strobe.InitStrobe(protocolName, 128)
 }
 
 func (s *symmetricState) mixKey(inputKeyMaterial [32]byte) {
@@ -82,11 +82,11 @@ func (s symmetricState) Split() (s1, s2 *strobe.Strobe) {
 
 	s1 = s.strobeState.Clone()
 	s1.AD(true, []byte("initiator"))
-	s1.RATCHET(strobe.StrobeR)
+	s1.RATCHET(32)
 
 	s2 = &s.strobeState
 	s2.AD(true, []byte("responder"))
-	s2.RATCHET(strobe.StrobeR)
+	s2.RATCHET(32)
 	return
 }
 

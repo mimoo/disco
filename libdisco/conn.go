@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	strobe "github.com/mimoo/StrobeGo/compact"
+	"github.com/mimoo/StrobeGo/strobe"
 )
 
 // A Conn represents a secured connection.
