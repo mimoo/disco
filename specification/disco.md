@@ -78,6 +78,10 @@ Noise_XX_25519_STROBEv1.0.2
 
 # 3. The `StrobeState` object
 
+<!-- TODO: do we need descriptions for all the functions here? -->
+<!-- TODO: do we need StrobeR? -->
+<!-- TODO: we should talk about security here (128/256) -->
+
 A `StrobeState` depends on a Strobe object (as defined in [section 5 of the Strobe Specification](https://strobe.sourceforge.io/specs/#object)) as well as the following associated constant:
 
 * **`StrobeR`**: The blocksize of the Strobe state (computed as `N - (2*sec)/8 - 2`, [see section 4 of the Strobe specification](https://strobe.sourceforge.io/specs/#params)).
@@ -153,7 +157,7 @@ A SymmetricState responds to the following functions:
 
 * Let `s1` be the Strobe state and `s2` the result returned by `Clone()`.
 * Calls `meta_AD("initiator")` on `s1` and `meta_AD("responder")` on `s2`.
-* Calls `RATCHET(StrobeR)` on `s1` and on `s2`.
+* Calls `RATCHET(16)` on `s1` and on `s2`. <!-- TODO: ratchet(32) for 256-bit of security -->
 * Returns the pair `(s1, s2)`.
 
 # 6. Modifications to Advanced Features
@@ -210,7 +214,8 @@ A `CipherState` responds to the following functions:
   * Increment the nonce `n` and discard the new `StrobeState` object.
   * Return the `plaintext` buffer containing the decrypted data.
 
-**`Rekey()`**: calls RATCHET(64) on the Strobe Object. <!-- 64 being the size of the capacity of Strobe-256/1600 -->
+<!-- TODO: do 32 for Strobe-256/1600 -->
+**`Rekey()`**: calls RATCHET(16) on the Strobe Object.
 
 ## 6.4 Half-duplex protocols
 
