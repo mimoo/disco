@@ -4,7 +4,7 @@ The `libdisco` package contained in this folder is a **plug-and-play** secure pr
 
 This has use cases close to TLS: it encrypts communications between a client and a server.
 
-**This software is currently in beta. You are advised not to use it in production.**
+**This software is currently not even in beta. You must not use it in production!**
 
 ## Documentation
 
