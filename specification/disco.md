@@ -180,6 +180,7 @@ Transport messages are then encrypted and decrypted by calling `Encrypt()` and `
 
 Modify the `Split()` function to add the following steps before returning the pair `(s1, s2)` of `Strobe` objects:
 
+* Call `meta_RATCHET(0)` on both `s1` and `s2`.
 * Create two `CipherState` named `c1` and `c2`.
 * Associate `s1` (resp. `s2`) to `c1` (resp. `c2`).
 * Set both the nonces `n` of `c1` and `c2` to zero.
