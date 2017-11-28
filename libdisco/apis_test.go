@@ -60,7 +60,7 @@ func TestCreationKeys(t *testing.T) {
 	}
 
 	// create a proof
-	proof := CreateStaticPublicKeyProof(rootPriv, keyPair)
+	proof := CreateStaticPublicKeyProof(rootPriv, keyPair.PublicKey[:])
 
 	// verify the proof
 	verifior := CreatePublicKeyVerifier(rootPub)

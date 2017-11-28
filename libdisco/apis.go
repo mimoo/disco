@@ -213,11 +213,15 @@ func CreatePublicKeyVerifier(rootPublicKey ed25519.PublicKey) func([]byte, []byt
 // StaticPublicKeyProof sometimes required in a libdisco.Config
 // for peers that are sending their static public key at some
 // point during the handshake
-func CreateStaticPublicKeyProof(rootPrivateKey ed25519.PrivateKey, keyPair *KeyPair) []byte {
+func CreateStaticPublicKeyProof(rootPrivateKey ed25519.PrivateKey, publicKey []byte) []byte {
 
-	signature, err := rootPrivateKey.Sign(rand.Reader, keyPair.PublicKey[:], crypto.Hash(0))
+	if len(publicKey) != 32 {
+		panic("disco: length of public key passed is incorrect (should be 32)")
+	}
+
+	signature, err := rootPrivateKey.Sign(rand.Reader, publicKey, crypto.Hash(0))
 	if err != nil {
-		panic("Disco: can't create static public key proof")
+		panic("disco: can't create static public key proof")
 	}
 	return signature
 }

@@ -156,14 +156,14 @@ func TestNoiseXX(t *testing.T) {
 		KeyPair:              clientKeyPair,
 		HandshakePattern:     Noise_XX,
 		PublicKeyVerifier:    publicKeyVerifier,
-		StaticPublicKeyProof: CreateStaticPublicKeyProof(rootKey.privateKey, clientKeyPair),
+		StaticPublicKeyProof: CreateStaticPublicKeyProof(rootKey.privateKey, clientKeyPair.PublicKey[:]),
 	}
 	serverKeyPair := GenerateKeypair(nil)
 	serverConfig := Config{
 		KeyPair:              serverKeyPair,
 		HandshakePattern:     Noise_XX,
 		PublicKeyVerifier:    publicKeyVerifier,
-		StaticPublicKeyProof: CreateStaticPublicKeyProof(rootKey.privateKey, serverKeyPair),
+		StaticPublicKeyProof: CreateStaticPublicKeyProof(rootKey.privateKey, serverKeyPair.PublicKey[:]),
 	}
 
 	// get a Noise.listener
