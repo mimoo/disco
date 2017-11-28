@@ -44,6 +44,7 @@
               </p>
               <ul class="menu-list">
                 <li><router-link to="/protocol/Overview">Overview</router-link>
+                <li><router-link to="/protocol/Keys">Keys in Disco</router-link>
                   <ul>
                     <li v-for="pattern in patterns"><router-link :to="'/protocol/' + pattern.name">{{pattern.name}}</router-link></li>
                   </ul>
@@ -56,15 +57,16 @@
                 Cryptographic Library
               </p>
               <ul class="menu-list">
-                <li><router-link to="/library/Overview">Overview</router-link></li>
-                  <!--
-                  <li><a>Hashing</a></li>
-                  <li><a>Encrypting</a></li>
-                  <li><a>Authenticating</a></li>
-                  <li><a>Deriving Keys</a></li>
-                  <li><a>Signing</a></li>
-                  <li><a>Password Hashing</a></li>
-                -->
+                <li><router-link to="/library/Overview">Overview</router-link>
+                  <ul>
+                    <li><a>Hashing</a></li>
+                    <li><a>Encrypting</a></li>
+                    <li><a>Authenticating</a></li>
+                    <li><a>Deriving Keys</a></li>
+                    <li><a>Signing</a></li>
+                    <li><a>Password Hashing</a></li>
+                  </ul>
+                </li>
               </ul>
             </aside>
           </div> <!-- .column -->
@@ -167,7 +169,7 @@ export default {
   updated() {
     document.querySelectorAll("pre").forEach( a => {
       hljs.highlightBlock(a)
-      } )     
+    })
   },
 }
 </script>

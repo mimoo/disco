@@ -5,6 +5,7 @@ import LandingPage from '@/components/LandingPage'
 import GetStarted from '@/components/GetStarted'
 // protocol
 import protocolOverview from '@/components/handshakes/Overview'
+import Keys from '@/components/Keys'
 import Noise_K from '@/components/handshakes/Noise_K'
 import Noise_N from '@/components/handshakes/Noise_N'
 import Noise_X from '@/components/handshakes/Noise_X'
@@ -22,6 +23,9 @@ import libraryOverview from '@/components/library/Overview'
 Vue.use(Router)
 
 export default new Router({
+  scrollBehavior (to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  },
   routes: [
     {
       path: '/',
@@ -39,6 +43,13 @@ export default new Router({
       name: 'protocolOverview',
       component: protocolOverview
     },
+    {
+      path: '/protocol/Keys',
+      name: 'Keys',
+      component: Keys
+    },
+    
+
     {
       path: '/protocol/Noise_K',
       name: 'Noise_K',

@@ -17,6 +17,8 @@
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Configuration</h2>
 
+		<p>General documentation for the protocol parts of libdisco can be found on <a href="https://godoc.org/github.com/mimoo/disco/libdisco"><img src="https://godoc.org/github.com/mimoo/disco/libdisco?status.svg" alt="GoDoc" style="vertical-align: text-top;"></a></p>
+
 		<p>A <code>libdisco.Config</code> is mandatory for setting up both clients and servers.</p>
 
 		<pre><code>type Config struct {

@@ -40,7 +40,7 @@
     <Quizz></Quizz>
 
     <p>To make use of the <strong><i class="fa fa-wrench" aria-hidden="true"></i>
-    cryptographic library</strong>, check our <a href="">overview here</a> or directly access them through the menu on the left.</p>
+    cryptographic library</strong>, check our <router-link to="/library/Overview">overview here</router-link> or directly access them through the menu on the left.</p>
 
     <p>If you want help, head to the <a href="https://github.com/mimoo/disco/issues"><i class="fa fa-question" aria-hidden="true"></i>
     issues on github</a>. If you want to stay tuned on what we're doing, we don't have a mailing list but we have better: <a href="https://www.reddit.com/r/discocrypto/"><i class="fa fa-envelope-o" aria-hidden="true"></i>

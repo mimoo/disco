@@ -42,7 +42,9 @@
         <button class="button is-text" v-on:click="resetQuizz">Reset the Quizz</button>
       </div>
     </div>
+
     <hr>
+
     <progress class="progress is-small" :value="questionId" max="100"></progress>
 
   </div>
@@ -50,9 +52,12 @@
 </template>
 
 <style scoped>
-  .displayBox{
-    margin-bottom:20px;
-  }
+.displayBox{
+  margin-bottom:20px;
+}
+progress {
+  transition: all 0.5s ease;
+}
 </style>
 
 <script>

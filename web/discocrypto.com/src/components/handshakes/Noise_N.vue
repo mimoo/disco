@@ -1,6 +1,6 @@
 <template>
 	<section class="content">
-		<h1 class="title is-1">Noise_NNpsk2</h1>
+		<h1 class="title is-1">{{pattern.name}}</h1>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Description</h2>
 
@@ -8,28 +8,23 @@
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
 
-
-
+		<p>If clients always talk to a single server and the server never talks back to them. The server also doesn't require the client to authenticate itself.</p>
+	
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Example of configuration</h2>
-
-
-
-		<article class="message is-danger">
-		  <div class="message-header">
-		    <p>Security Consideration</p>
-		  </div>
-		  <div class="message-body">
-		    Note that in this example the private part of the root signing key is loaded on both peers. In practice, this and the computation of the proof should be done on a different machine.
-		  </div>
-		</article>
 
 		<h3>server:</h3>
 
-		<pre><code></code></pre>
+		<pre><code>serverConfig := libdisco.Config{
+  HandshakePattern: libdisco.Noise_N,
+  KeyPair:          serverKeyPair,
+}</code></pre>
 
 		<h3>client:</h3>
 
-		<pre><code></code></pre>
+		<pre><code>clientConfig := libdisco.Config{
+  HandshakePattern: libdisco.Noise_N,
+  remoteKey:        serverPublicKey, // replace this with the server's public key
+}</code></pre>
 
 		<h3>Security Considerations</h3>
 
@@ -46,7 +41,7 @@
 import patterns from '@/assets/patterns.json';
 
 export default {
-	name: 'Noise_NNpsk2',
+	name: 'Noise_N',
 	data () {
 		return {
 			pattern: {}
@@ -54,7 +49,7 @@ export default {
 	},
 	beforeMount () {
 		patterns.forEach( (pattern) => {
-			if(pattern.name == "Noise_NNpsk2") {
+			if(pattern.name == "Noise_N") {
 				this.pattern = pattern
 			}
 		})
