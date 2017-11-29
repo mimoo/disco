@@ -11,14 +11,13 @@ import (
 
 func main() {
 	// retrieve the server's public key from an argument
-	serverPubKey := os.Args[1]
-	serverKey, _ := hex.DecodeString(serverPubKey)
+	serverPublicKey, _ := hex.DecodeString(os.Args[1])
 
 	// configure the Disco connection with Noise_NK
 	// meaning the client knows the key (retrieved from the CLI)
 	clientConfig := libdisco.Config{
 		HandshakePattern: libdisco.Noise_NK,
-		RemoteKey:        serverKey,
+		RemoteKey:        serverPublicKey,
 	}
 	// Dial the port 6666 of localhost
 	client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
