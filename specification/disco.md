@@ -32,6 +32,10 @@ To implement the Disco extension, a Strobe implementation respecting the functio
 
 **this section will be removed in the final document**
 
+**draft-5**:
+
+* Added a pre-shared key section
+
 **draft-4**:
 
 * `DiscoSecureChannel` has been renamed to `CipherState`.
@@ -160,23 +164,27 @@ A SymmetricState responds to the following functions:
 * Calls `RATCHET(16)` on `s1` and on `s2`. <!-- TODO: ratchet(32) for 256-bit of security -->
 * Returns the pair `(s1, s2)`.
 
-# 6. Modifications to Advanced Features
+# 6. Modifications to pre-shared symmetric keys
 
-## 6.1 Channel Binding
+For PSK handshakes, the "`e`" token does not need to call <code>MixKey(e.public_key)</code>. Hence, no further modifications to the Symmetric State functions are needed for such handshakes.
+
+# 7. Modifications to Advanced Features
+
+## 7.1 Channel Binding
 
 Right before calling `Split()`, a binding value could be obtained from the StrobeState by calling `PRF()`.
 
-## 6.2 Rekey
+## 7.2 Rekey
 
 To enable this, Strobe supports a `RATCHET()` function.
 
-## 6.3 Out-of-order transport messages
+## 7.3 Out-of-order transport messages
 
 In order to build out-of-order protocols out of Disco, the `Split()` function must return nonce-based objects. For this, the `Split()` function is modified in the next section to return a pair of `DiscoSecureChannel` objects which are defined in the section following it.
 
 Transport messages are then encrypted and decrypted by calling `Encrypt()` and `Decrypt()` on the relevant `DiscoSecureChannel`.
 
-### 6.3.1 Modifications to the `Split()` function
+### 7.3.1 Modifications to the `Split()` function
 
 Modify the `Split()` function to add the following steps before returning the pair `(s1, s2)` of `Strobe` objects:
 
@@ -186,7 +194,7 @@ Modify the `Split()` function to add the following steps before returning the pa
 * Set both the nonces `n` of `c1` and `c2` to zero.
 * Return the pair `(c1, c2)`.
 
-### 6.3.2 Modifications to the `CipherState` object
+### 7.3.2 Modifications to the `CipherState` object
 
 A `CipherState` can encrypt and decrypt data based on its associated `StrobeState` object as well as the following variable:
 
@@ -218,18 +226,18 @@ A `CipherState` responds to the following functions:
 <!-- TODO: do 32 for Strobe-256/1600 -->
 **`Rekey()`**: calls RATCHET(16) on the Strobe Object.
 
-## 6.4 Half-duplex protocols
+## 7.4 Half-duplex protocols
 
 To use Disco in half-duplex mode, modify `Split()` to return the `StrobeState` without modifications.
 
 The same security considerations from the Noise specification applies to this section: if the two peers do not properly take turns to write and read on the channel, the protocol will fail catastrophically.
 
-# 7. Security Considerations
+# 8. Security Considerations
 
 The same security considerations that apply to both Noise and Strobe are to be considered.
 
-# 8. Acknowledgements
+# 9. Acknowledgements
 
 Thanks to Trevor Perrin and Mike Hamburg for being the foundations and main help in building this specification.
 
-# 9. References
+# 10. References
