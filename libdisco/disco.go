@@ -64,13 +64,13 @@ func (s *symmetricState) decryptAndHash(ciphertext []byte) (plaintext []byte, er
 
 	if s.isKeyed {
 		if len(ciphertext) < 16 {
-			return []byte{}, errors.New("Disco: the received payload is shorter 16 bytes.")
+			return []byte{}, errors.New("disco: the received payload is shorter 16 bytes.")
 		}
 
 		plaintext := s.strobeState.Recv_ENC_unauthenticated(false, ciphertext[:len(ciphertext)-16])
 		ok := s.strobeState.Recv_MAC(false, ciphertext[len(ciphertext)-16:])
 		if !ok {
-			return []byte{}, errors.New("Disco: cannot decrypt the payload.")
+			return []byte{}, errors.New("disco: cannot decrypt the payload.")
 		}
 		return plaintext, nil
 	}
@@ -132,7 +132,7 @@ func initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 
 	handshakePattern, ok := patterns[handshakeType]
 	if !ok {
-		panic("Disco: the supplied handshakePattern does not exist")
+		panic("disco: the supplied handshakePattern does not exist")
 	}
 
 	h.symmetricState.initializeSymmetric("Noise_" + handshakePattern.name + "_25519_STROBEv1.0.2")
@@ -143,13 +143,13 @@ func initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 		h.s = *s
 	}
 	if e != nil {
-		panic("Disco: fallback patterns are not implemented")
+		panic("disco: fallback patterns are not implemented")
 	}
 	if rs != nil {
 		h.rs = *rs
 	}
 	if re != nil {
-		panic("Disco: fallback patterns are not implemented")
+		panic("disco: fallback patterns are not implemented")
 	}
 
 	h.initiator = initiator
@@ -162,17 +162,17 @@ func initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 		if token == token_s {
 			if initiator {
 				if s == nil {
-					panic("Disco: the static key of the client should be set")
+					panic("disco: the static key of the client should be set")
 				}
 				h.symmetricState.mixHash(s.PublicKey[:])
 			} else {
 				if rs == nil {
-					panic("Disco: the remote static key of the server should be set")
+					panic("disco: the remote static key of the server should be set")
 				}
 				h.symmetricState.mixHash(rs.PublicKey[:])
 			}
 		} else {
-			panic("Disco: token of pre-message not supported")
+			panic("disco: token of pre-message not supported")
 		}
 	}
 
@@ -181,17 +181,17 @@ func initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 		if token == token_s {
 			if initiator {
 				if rs == nil {
-					panic("Disco: the remote static key of the client should be set")
+					panic("disco: the remote static key of the client should be set")
 				}
 				h.symmetricState.mixHash(rs.PublicKey[:])
 			} else {
 				if s == nil {
-					panic("Disco: the static key of the server should be set")
+					panic("disco: the static key of the server should be set")
 				}
 				h.symmetricState.mixHash(s.PublicKey[:])
 			}
 		} else {
-			panic("Disco: token of pre-message not supported")
+			panic("disco: token of pre-message not supported")
 		}
 	}
 
@@ -203,11 +203,11 @@ func initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 func (h *handshakeState) writeMessage(payload []byte, messageBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
 	// is it our turn to write?
 	if !h.shouldWrite {
-		panic("Disco: unexpected call to WriteMessage should be ReadMessage")
+		panic("disco: unexpected call to WriteMessage should be ReadMessage")
 	}
 	// do we have a token to process?
 	if len(h.messagePatterns) == 0 || len(h.messagePatterns[0]) == 0 {
-		panic("Disco: no more tokens or message patterns to write")
+		panic("disco: no more tokens or message patterns to write")
 	}
 
 	// process the patterns
@@ -293,11 +293,11 @@ func (h *handshakeState) writeMessage(payload []byte, messageBuffer *[]byte) (c1
 func (h *handshakeState) readMessage(message []byte, payloadBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
 	// is it our turn to read?
 	if h.shouldWrite {
-		panic("Disco: unexpected call to ReadMessage should be WriteMessage")
+		panic("disco: unexpected call to ReadMessage should be WriteMessage")
 	}
 	// do we have a token to process?
 	if len(h.messagePatterns) == 0 || len(h.messagePatterns[0]) == 0 {
-		panic("Disco: no more message pattern to read")
+		panic("disco: no more message pattern to read")
 	}
 
 	// process the patterns
@@ -308,11 +308,11 @@ func (h *handshakeState) readMessage(message []byte, payloadBuffer *[]byte) (c1,
 		switch pattern {
 
 		default:
-			panic("Disco: token not recognized")
+			panic("disco: token not recognized")
 
 		case token_e:
 			if len(message[offset:]) < dhLen {
-				return nil, nil, errors.New("Disco: the received ephemeral key is to short")
+				return nil, nil, errors.New("disco: the received ephemeral key is to short")
 			}
 			copy(h.re.PublicKey[:], message[offset:offset+dhLen])
 			offset += dhLen
@@ -327,7 +327,7 @@ func (h *handshakeState) readMessage(message []byte, payloadBuffer *[]byte) (c1,
 				tagLen = 16
 			}
 			if len(message[offset:]) < dhLen+tagLen {
-				return nil, nil, errors.New("Disco: the received static key is to short")
+				return nil, nil, errors.New("disco: the received static key is to short")
 			}
 			var plaintext []byte
 			plaintext, err = h.symmetricState.decryptAndHash(message[offset : offset+dhLen+tagLen])
