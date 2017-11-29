@@ -6,7 +6,7 @@
           <strong>libdisco</strong>
         </h1>
         <h2 class="subtitle">
-          libdisco is a <strong>modern plug-and-play secure protocol</strong> and a <strong>cryptographic library</strong> implemented in <strong>Golang</strong>. It offers different ways of securely connecting peers together, as well as different cryptographic primitives for all of an application's needs.
+          libdisco is a <strong>modern plug-and-play secure protocol</strong> and a <strong>cryptographic library</strong> implemented in <strong>1000 lines of code</strong> in <strong>Golang</strong>. It offers different ways of securely connecting peers together, as well as different cryptographic primitives for all of an application's needs.
         </h2>
       </div>
     </section>

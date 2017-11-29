@@ -37,16 +37,16 @@
                 General
               </p>
               <ul class="menu-list">
-                <li><router-link to="/get_started">Get Started</router-link></li>
+                <li><router-link to="/get_started" v-bind:class="{ 'is-active': $route.name == 'GetStarted' }">Get Started</router-link></li>
               </ul>
               <p class="menu-label">
                 Protocol
               </p>
               <ul class="menu-list">
-                <li><router-link to="/protocol/Overview">Overview</router-link>
-                <li><router-link to="/protocol/Keys">Keys in Disco</router-link>
+                <li><router-link to="/protocol/Overview" v-bind:class="{ 'is-active': $route.name == 'protocolOverview' }">Overview</router-link>
+                <li><router-link to="/protocol/Keys" v-bind:class="{ 'is-active': $route.name == 'Keys' }">Keys in Disco</router-link>
                   <ul>
-                    <li v-for="pattern in patterns"><router-link :to="'/protocol/' + pattern.name">{{pattern.name}}</router-link></li>
+                    <li v-for="pattern in patterns"><router-link :to="'/protocol/' + pattern.name" v-bind:class="{ 'is-active': $route.name == pattern.name }">{{pattern.name}}</router-link></li>
                   </ul>
                 </li>
                 <li>
@@ -57,14 +57,15 @@
                 Cryptographic Library
               </p>
               <ul class="menu-list">
-                <li><router-link to="/library/Overview">Overview</router-link>
+                <li><router-link to="/library/Overview" v-bind:class="{ 'is-active': $route.name == 'libraryOverview' }">Overview</router-link>
                   <ul>
-                    <li><a>Hashing</a></li>
-                    <li><a>Encrypting</a></li>
-                    <li><a>Authenticating</a></li>
-                    <li><a>Deriving Keys</a></li>
-                    <li><a>Signing</a></li>
-                    <li><a>Password Hashing</a></li>
+                    <li><router-link to="/library/Hashing" v-bind:class="{ 'is-active': $route.name == 'Hashing' }">Hashing</router-link></li>
+                    <li><router-link to="/library/Encryption" v-bind:class="{ 'is-active': $route.name == 'Encryption' }">Encryption</router-link></li>
+                    <li><router-link to="/library/IntegrityProtection" v-bind:class="{ 'is-active': $route.name == 'IntegrityProtection' }">Integrity Protection</router-link></li>
+                    <li><router-link to="/library/DerivingKeys" v-bind:class="{ 'is-active': $route.name == 'DerivingKeys' }">Deriving Keys</router-link></li>
+                    <li><router-link to="/library/Signing" v-bind:class="{ 'is-active': $route.name == 'Signing' }">Signing</router-link></li>
+                    <li><router-link to="/library/RandomNumbers" v-bind:class="{ 'is-active': $route.name == 'RandomNumbers' }">Generating Random Numbers</router-link></li>
+                    <li><router-link to="/library/PasswordHashing" v-bind:class="{ 'is-active': $route.name == 'PasswordHashing' }">Storing Password</router-link></li>
                   </ul>
                 </li>
               </ul>

@@ -19,6 +19,13 @@ import Noise_XX from '@/components/handshakes/Noise_XX'
 import Noise_NNoob from '@/components/handshakes/Noise_NNoob'
 // library
 import libraryOverview from '@/components/library/Overview'
+import Hashing from '@/components/library/Hashing'
+import Encryption from '@/components/library/Encryption'
+import DerivingKeys from '@/components/library/DerivingKeys'
+import Signing from '@/components/library/Signing'
+import IntegrityProtection from '@/components/library/IntegrityProtection'
+import RandomNumbers from '@/components/library/RandomNumbers'
+import PasswordHashing from '@/components/library/PasswordHashing'
 
 Vue.use(Router)
 
@@ -110,6 +117,41 @@ export default new Router({
       path: '/library/Overview',
       name: 'libraryOverview',
       component: libraryOverview
+    },
+    {
+      path: '/library/Hashing',
+      name: 'Hashing',
+      component: Hashing
+    },
+    {
+      path: '/library/Encryption',
+      name: 'Encryption',
+      component: Encryption
+    },
+    {
+      path: '/library/DerivingKeys',
+      name: 'DerivingKeys',
+      component: DerivingKeys
+    },
+    {
+      path: '/library/Signing',
+      name: 'Signing',
+      component: Signing
+    },
+    {
+      path: '/library/IntegrityProtection',
+      name: 'IntegrityProtection',
+      component: IntegrityProtection
+    },
+    {
+      path: '/library/PasswordHashing',
+      name: 'PasswordHashing',
+      component: PasswordHashing
+    },
+    {
+      path: '/library/RandomNumbers',
+      name: 'RandomNumbers',
+      component: RandomNumbers
     }
   ]
 })
