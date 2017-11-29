@@ -258,6 +258,9 @@ func (h *handshakeState) writeMessage(payload []byte, messageBuffer *[]byte) (c1
 
 		case token_ss:
 			h.symmetricState.mixKey(dh(h.s, h.rs.PublicKey))
+
+		case token_psk:
+			h.symmetricState.mixKeyAndHash(h.psk)
 		}
 	}
 
@@ -354,6 +357,9 @@ func (h *handshakeState) readMessage(message []byte, payloadBuffer *[]byte) (c1,
 
 		case token_ss:
 			h.symmetricState.mixKey(dh(h.s, h.rs.PublicKey))
+
+		case token_psk:
+			h.symmetricState.mixKeyAndHash(h.psk)
 		}
 	}
 
