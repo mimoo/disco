@@ -16,7 +16,6 @@ func main() {
 	fmt.Println("server's public key:", serverKeyPair.ExportPublicKey())
 
 	// configuring the Disco connection
-	// in which the client already knows the server's public key
 	serverConfig := libdisco.Config{
 		HandshakePattern: libdisco.Noise_K,
 		KeyPair:          serverKeyPair,
@@ -26,8 +25,8 @@ func main() {
 	fmt.Println("please enter the client's public key in hexadecimal")
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
-	serverKey, _ := hex.DecodeString(scanner.Text())
-	serverConfig.RemoteKey = serverKey
+	clientKey, _ := hex.DecodeString(scanner.Text())
+	serverConfig.RemoteKey = clientKey
 
 	// listen on port 6666
 	listener, err := libdisco.Listen("tcp", "127.0.0.1:6666", &serverConfig)
