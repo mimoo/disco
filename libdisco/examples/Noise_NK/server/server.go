@@ -10,6 +10,7 @@ import (
 func main() {
 	// generating the server key pair
 	serverKeyPair := libdisco.GenerateKeypair(nil)
+
 	// configuring the Disco connection with a Noise_NK handshake
 	// in which the client already knows the server's public key
 	serverConfig := libdisco.Config{

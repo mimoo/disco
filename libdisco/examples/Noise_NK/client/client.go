@@ -13,6 +13,7 @@ func main() {
 	// retrieve the server's public key from an argument
 	serverPubKey := os.Args[1]
 	serverKey, _ := hex.DecodeString(serverPubKey)
+
 	// configure the Disco connection with Noise_NK
 	// meaning the client knows the key (retrieved from the CLI)
 	clientConfig := libdisco.Config{
