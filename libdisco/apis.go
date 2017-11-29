@@ -54,7 +54,7 @@ func Listen(network, laddr string, config *Config) (net.Listener, error) {
 	if config == nil {
 		return nil, errors.New("Disco: no Config set")
 	}
-	if err := checkRequirements(true, config); err != nil {
+	if err := checkRequirements(false, config); err != nil {
 		panic(err)
 	}
 
