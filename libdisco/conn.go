@@ -143,6 +143,11 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 		return
 	}
 
+	// If this is a one-way pattern, do some checks
+	if hp := c.config.HandshakePattern; c.isClient && (hp == Noise_N || hp == Noise_K || hp == Noise_X) {
+		panic("disco: a client should not read on one-way patterns")
+	}
+
 	// Lock the read socket
 	if c.isHalfDuplex {
 		c.halfDuplexLock.Lock()
