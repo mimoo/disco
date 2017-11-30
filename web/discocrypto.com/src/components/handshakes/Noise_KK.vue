@@ -18,6 +18,8 @@
 
 		<p>To understand how to generate both peer's key pair, refer to <router-link to="/protocol/Keys">libdisco's documentation on keys</router-link>.</p>
 
+		<p>You can play with the full example <a href="https://github.com/mimoo/disco/tree/master/libdisco/examples/Noise_KK">here</a>.</p>
+
 		<h3>server:</h3>
 
 		<pre><code>serverConfig := libdisco.Config{

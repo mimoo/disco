@@ -19,7 +19,6 @@
 		<p>In addition, every time the server is ran it is generating a new static key pair. In practice this should only be done once, possibly using the <router-link to="protocol/Keys">key helper functions</router-link> that libdisco provides.</p>
 
 		<p>As for the client's authentication:</p>
-
 		<ul>
 			<li>the client needs to have its public static key signed by an authoritative keypair</li>
 			<li>the server needs to be aware of the authoritative public key</li>

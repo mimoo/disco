@@ -8,8 +8,8 @@
 
 		<ul>
 <li><strong>Ephemeral keys</strong>. They are freshly generated, behind the curtains, for each new client ↔ server connection. For this reason you do not have to worry about these and you can just ignore the fact that they exist.</li>
-<li><strong>Static keys</strong>. Each one of the peers, the client and the server, can have their own long-term static key that they will consistently use in handshake patterns that require them (usually a pattern with a K, an X or an I in the name means that the client or/and the server will "make use" (not necessarily send) of a static key as part of the handshake)</li>
-<li><strong>Root signing keys</strong>. These are authoritative keys that sign the static keys in patterns where static keys are being "sent" (not just used) as part of the handshake.</li>
+<li><strong>Static keys</strong>. Clients and servers can be required to have their own long-term static key in case the handshake pattern in use requires them to authenticate themselves. If this is the case, they will need to generate a static key pair once (and only once) and use it for authenticating themselves during handshakes.</li>
+<li><strong>Root signing keys</strong>. These are authoritative keys that sign the static keys in setups where static public keys are not known in advance to the other peer. These are similar to the internet's certificate authorities.</li>
 		</ul>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Generation and Storage</h2> 

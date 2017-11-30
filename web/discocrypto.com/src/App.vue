@@ -64,7 +64,7 @@
                     <li><router-link to="/library/IntegrityProtection" v-bind:class="{ 'is-active': $route.name == 'IntegrityProtection' }">Integrity Protection</router-link></li>
                     <li><router-link to="/library/DerivingKeys" v-bind:class="{ 'is-active': $route.name == 'DerivingKeys' }">Deriving Keys</router-link></li>
                     <li><router-link to="/library/Signing" v-bind:class="{ 'is-active': $route.name == 'Signing' }">Signing</router-link></li>
-                    <li><router-link to="/library/RandomNumbers" v-bind:class="{ 'is-active': $route.name == 'RandomNumbers' }">Generating Random Numbers</router-link></li>
+                    <li><router-link to="/library/RandomNumbers" v-bind:class="{ 'is-active': $route.name == 'RandomNumbers' }">Random Numbers</router-link></li>
                     <li><router-link to="/library/PasswordHashing" v-bind:class="{ 'is-active': $route.name == 'PasswordHashing' }">Storing Password</router-link></li>
                   </ul>
                 </li>
