@@ -2,7 +2,7 @@
 	<section class="content">
 	    <h1 class="title"><i class="fa fa-exchange"></i> Disco Keys</h1>
 
-		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> The Different Keys</h2> 
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> The Different Keys</h2>
 
 		<p>Disco makes use of several key pairs:</p>
 
@@ -12,7 +12,7 @@
 <li><strong>Root signing keys</strong>. These are authoritative keys that sign the static keys in setups where static public keys are not known in advance to the other peer. These are similar to the internet's certificate authorities.</li>
 		</ul>
 
-		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Generation and Storage</h2> 
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Generation and Storage</h2>
 
 <p>
 		<strong>Static keys</strong> can be generated via a call to <a href="https://godoc.org/github.com/mimoo/disco/libdisco#GenerateKeypair"><code>GenerateKeypair(nil)</code></a>. The package also provides some file utility functions:
@@ -32,7 +32,7 @@
 	    <p>Storing keys</p>
 	  </div>
 	  <div class="message-body">
-	    Private part of key pairs should be stored in secure places. Such sensitive information should not be checked in version control systems like git or svn. Instead, they can be stored outside of the program's repository, or passed as environement variables.
+	    Private part of key pairs should be stored in secure places. Such sensitive information should not be checked in version control systems like git or svn. Instead, they can be stored outside of the program's repository, or passed as environment variables.
 	  </div>
 	</article>
 
@@ -52,7 +52,7 @@
 	    <p>Storing root keys</p>
 	  </div>
 	  <div class="message-body">
-	    Note that in this example the private key of the root signing key pair is stored on disk next to the application. Extra care should be taken so that this private key stays accessible only to the root signing program, and inacessible from the peers (clients and servers).
+	    Note that in this example the private key of the root signing key pair is stored on disk next to the application. Extra care should be taken so that this private key stays accessible only to the root signing program, and inaccessible from the peers (clients and servers).
 	  </div>
 	</article>
 

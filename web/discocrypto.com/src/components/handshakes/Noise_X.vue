@@ -6,7 +6,7 @@
 
 		<p v-html="pattern.description"></p>
 
-		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2>
 
 		<p>This handshake pattern is useful when many different clients want to talk to one server while authenticating both side of the connection. In addition, since it is a one-way pattern, the server never talks back to them.</p>
 
@@ -20,7 +20,7 @@
 
 		<p>As for the client's authentication:</p>
 		<ul>
-			<li>the client needs to have its public static key signed by an authoritative keypair</li>
+			<li>the client needs to have its public static key signed by an authoritative key pair</li>
 			<li>the server needs to be aware of the authoritative public key</li>
 		</ul>
 
@@ -37,7 +37,7 @@ if err := libdisco.GenerateAndSaveDiscoRootKeyPair("./privateRoot", "./publicRoo
 	panic("cannot generate and save a root key")
 }</code></pre>
 
-		<p>This function (<a href="https://godoc.org/github.com/mimoo/disco/libdisco#GenerateAndSaveDiscoRootKeyPair">documented here</a>) will create two files, a "privateRoot" (resp. "publicRoot") file containing the private (resp. public) part of the root signing keypair.</p>
+		<p>This function (<a href="https://godoc.org/github.com/mimoo/disco/libdisco#GenerateAndSaveDiscoRootKeyPair">documented here</a>) will create two files, a "privateRoot" (resp. "publicRoot") file containing the private (resp. public) part of the root signing key pair.</p>
 
 		<p>The public part can then be retrieved via the <code>LoadDiscoRootPublicKey</code> function.</p>
 

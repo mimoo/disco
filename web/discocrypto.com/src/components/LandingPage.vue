@@ -16,13 +16,12 @@
         <p>Warning</p>
       </div>
       <div class="message-body">
-        libdisco is <strong>experimental</strong>. It still has not been thorougly reviewed and thus should not be used in production.
+        libdisco is <strong>experimental</strong>. It still has not been thoroughly reviewed and thus should not be used in production.
       </div>
     </article>
 
     <p>
-      <strong>libdisco</strong> is a library built by merging the <a href="http://noiseprotocol.org">Noise protocol framework</a> and the <a href="https://strobe.sourceforge.io">Strobe protocol framework</a>. This means that it supports a subset of Noise's handshakes while offering the cryptographic primitive Strobe has to offer. In other words, you can use libdisco to securely connect peers together, or to do basic cryptographic operations like hashing or encrypting.
-    </p>
+      <strong>libdisco</strong> is a library built by merging the <a href="http://noiseprotocol.org">Noise protocol framework</a> and the <a href="https://strobe.sourceforge.io">Strobe protocol framework</a>. This means that it supports a subset of Noise's handshakes while offering the cryptographic primitive Strobe has to offer. In other words, you can use libdisco to securely connect peers together, or to do basic cryptographic operations like hashing or encrypting.</p>
 
     <!--          If you want to know more you can read the whitepaper or watch this video -->
 

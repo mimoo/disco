@@ -6,7 +6,7 @@
 
 		<p v-html="pattern.description"></p>
 
-		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2>
 
 		<p>Noise_NX is a fitting handshake pattern if:</p>
 		<ul>
@@ -19,7 +19,7 @@
 
 				<p>Noise_NX requires the server to authenticate itself as part of the handshake. For this to work:</p>
 				<ul>
-					<li>the server needs to have its public static key signed by an authoritative keypair</li>
+					<li>the server needs to have its public static key signed by an authoritative key pair</li>
 					<li>the client needs to be aware of the authoritative public key</li>
 				</ul>
 
@@ -36,7 +36,7 @@ if err := libdisco.GenerateAndSaveDiscoRootKeyPair("./privateRoot", "./publicRoo
 	panic("cannot generate and save a root key")
 }</code></pre>
 
-				<p>This function (<a href="https://godoc.org/github.com/mimoo/disco/libdisco#GenerateAndSaveDiscoRootKeyPair">documented here</a>) will create two files, a "privateRoot" (resp. "publicRoot") file containing the private (resp. public) part of the root signing keypair.</p>
+				<p>This function (<a href="https://godoc.org/github.com/mimoo/disco/libdisco#GenerateAndSaveDiscoRootKeyPair">documented here</a>) will create two files, a "privateRoot" (resp. "publicRoot") file containing the private (resp. public) part of the root signing key pair.</p>
 
 				<p>The public part can then be retrieved via the <code>LoadDiscoRootPublicKey</code> function.</p>
 
@@ -79,7 +79,7 @@ proof := CreateStaticPublicKeyProof(rootPrivateKey, peerPublicKey)
 		    <p>Public Key Infrastructure</p>
 		  </div>
 		  <div class="message-body">
-		    Similarly to our typical browser ↔ HTTPS webserver scenario, a proof could also be an X.509 certificate containing the <code>serverKeyPair</code> as well as a signature of the certificate from a certificate authority's public key.  If such a complex public key infrastructure is required, you can construct the <code>PublicKeyVerifier</code> and <code>StaticPublicKeyProof</code> yourself to verify a certificate's signature and accept certificates as proofs. See the <router-link to="/protocol/Overview">Configuration section of the protocol Overview</router-link>. 
+		    Similarly to our typical browser ↔ HTTPS webserver scenario, a proof could also be an X.509 certificate containing the <code>serverKeyPair</code> as well as a signature of the certificate from a certificate authority's public key.  If such a complex public key infrastructure is required, you can construct the <code>PublicKeyVerifier</code> and <code>StaticPublicKeyProof</code> yourself to verify a certificate's signature and accept certificates as proofs. See the <router-link to="/protocol/Overview">Configuration section of the protocol Overview</router-link>.
 		  </div>
 		</article>
 

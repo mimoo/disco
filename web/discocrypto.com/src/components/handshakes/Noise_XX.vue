@@ -6,7 +6,7 @@
 
 		<p v-html="pattern.description"></p>
 
-		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2>
 
 		<p>Any <code>X</code> pattern where a peer authenticate itself via the signature of an authoritative key (like the <code>Noise_XX</code> pattern) is useful when the other peer doesn't know in advance what peer it will communicate to.</p>
 
@@ -125,14 +125,14 @@ fmt.Println("connected to", client.RemoteAddr())</code></pre>
 
 	<h3>Security Considerations</h3>
 
-	<p>The same security discussed in the <a href="http://noiseprotocol.org/noise.html#payload-security-properties">Noise specification</a> for the relevant handshake pattern apply.</p>	
+	<p>The same security discussed in the <a href="http://noiseprotocol.org/noise.html#payload-security-properties">Noise specification</a> for the relevant handshake pattern apply.</p>
 
 	<p>This handshake pattern is tricky (like any <code>X</code>-type handshakes) as it requires a Public Key Infrastructure (PKI) where:</p>
 
 	<ul>
 		<li>the root signing key is securely generated and kept in a secure location (this is often done via a <a href="https://en.wikipedia.org/wiki/Key_ceremony">key ceremony</a>)</li>
 		<li>the "proofs" (a signature from the root key on a peer's static public key) are generated and passed to the peer in a secure manner</li>
-		<li>keys might need to be revoked. This mean that an additional system needs to detect revokations.</li>
+		<li>keys might need to be revoked. This mean that an additional system needs to detect revocations.</li>
 	</ul>
 
 	</section>
