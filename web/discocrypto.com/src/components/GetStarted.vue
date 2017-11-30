@@ -1,5 +1,8 @@
 <template>
 	<section class="content">
+
+	    <h1 class="title"><i class="fa fa-book"></i> Get Started</h1>
+
 		<p>General documentation for the protocol parts of libdisco can be found on <a href="https://godoc.org/github.com/mimoo/disco/libdisco"><img src="https://godoc.org/github.com/mimoo/disco/libdisco?status.svg" alt="GoDoc" style="vertical-align: text-top;"></a></p>
 
 		<p>Usages help can be found through-out this website. There are two important parts to libdisco:</p>

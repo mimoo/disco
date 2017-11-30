@@ -48,6 +48,12 @@
   </section>
 </template>
 
+<style scoped>
+  .title{
+    border-bottom:0;
+  }
+</style>
+
 <script>
   import Quizz from './Quizz'
 

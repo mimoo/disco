@@ -21,8 +21,8 @@
             <p class="level-item"><router-link to="/get_started" class="button is-success">Get Started</router-link></p>
             <p class="level-item"><router-link to="/protocol/Overview">Protocol</router-link></p>
             <p class="level-item"><router-link to="/library/Overview">Cryptographic Library</router-link></p>
-            <p class="level-item"><a href="https://github.com/mimoo/disco/">Source Code</a></p>
-            <p class="level-item"><a href="https://www.cryptologie.net/contact">Contact</a></p>
+            <p class="level-item"><a href="https://github.com/mimoo/disco/" target="_blank">Source Code</a></p>
+            <p class="level-item"><a href="https://www.cryptologie.net/contact" target="_blank">Contact</a></p>
           </div>
         </nav>
       </div>
@@ -50,7 +50,7 @@
                   </ul>
                 </li>
                 <li>
-                  <a href="disco.html">Specification</a>
+                  <a href="disco.html" target="_blank">Specification</a>
                 </li>
               </ul>
               <p class="menu-label">
@@ -148,8 +148,17 @@ export default {
 
   .box span{
      margin:0 5px 10px;
-
   }
+
+  .tag{
+    margin-right:10px;
+  }
+
+  .title {
+    border-bottom:1px solid rgba(0,0,0,.7);
+    padding-bottom:10px;
+  }
+
 </style>
 <script>
   import patterns from '@/assets/patterns.json';

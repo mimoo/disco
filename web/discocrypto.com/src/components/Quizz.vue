@@ -10,7 +10,7 @@
           <div class="box" v-for="result in results">
               <div class="content">
                 <p>
-                  <strong><router-link :to="'/handshakes/' + result.name">{{result.name}}</router-link></strong> <span class="tag" v-for="tag in result.tags">{{tag}}</span>
+                  <strong><router-link :to="'/protocol/' + result.name">{{result.name}}</router-link></strong> <span class="tag" v-for="tag in result.tags">{{tag}}</span>
                   <div v-html="result.description"></div>
                 </p>
               </div>
@@ -66,21 +66,21 @@ progress {
   // this quizz works mostly by elimination.
 	var questionsreponses = [
 		{
-			q: "Does your protocol involve only one peer talking to the other one?",
+			q: "Does your protocol involve only clients talking to a server (where the server doesn't reply back)?",
 			ryes: "one_way",
       rno: "two_way",
 		},
     {
-    	q: "Do your peers already all have a shared secret (a password, a symmetric key, etc...)?",
+    	q: "Does your protocol involve a client and a server already sharing a secret (a symmetric key)?",
     	ryes: "psk"
     },
     {
    		q: "Does at least one of your peer already know the public key of the other peer?",
-   		ryes: "K"
+   		ryes: "key_pinning"
    	},
     {
-   		q: "Does at least one of your peer's public key is signed by a trusted authority?",
-   		ryes: "X"
+   		q: "Is at least one of your peer's public key signed by a trusted authority?",
+   		ryes: "PKI"
    	},
     {
    		q: "Do your peers have an out-of-band way to compare a string or a large number?",

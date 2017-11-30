@@ -1,6 +1,6 @@
 <template>
 	<section class="content">
-		<h1 class="title is-1">Deriving Keys</h1>
+		<h1 class="title"><i class="fa fa-wrench"></i> Deriving Keys</h1>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Description</h2>
 

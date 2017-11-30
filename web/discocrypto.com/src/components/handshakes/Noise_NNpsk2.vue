@@ -1,6 +1,6 @@
 <template>
 	<section class="content">
-		<h1 class="title is-1">Noise_NNpsk2</h1>
+		<h1 class="title"><i class="fa fa-exchange"></i> {{pattern.name}} <span class="tag" v-for="tag in pattern.tags">{{tag}}</span></h1>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Description</h2>
 
@@ -8,131 +8,62 @@
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
 
+		<p>If you are only dealing with one client and one server, and can manually hardcode a common 32-byte random value on each peer, you probably do not need to deal with public keys and should use this handshake pattern.</p>
 
+		<article class="message is-danger">
+		  <div class="message-header">
+		    <p>Security Consideration</p>
+		  </div>
+		  <div class="message-body">
+		    The same amount of care as with private keys should be taken to store and protect shared secrets. 
+		  </div>
+		</article>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Example of configuration</h2>
 
+		<p>The shared secret can be generated using a cryptographically random number generator (see <router-link to="/library/RandomNumers">Generating Random Numbers</router-link>). It then needs to be manually hardcoded on each peer's.</p>
 
+		<p>You can play with the full example <a href="https://github.com/mimoo/disco/tree/master/libdisco/examples/Noise_NNpsk2">here</a>.</p>
 
 		<h3>server:</h3>
 
-		<pre><code>package main
-
-import (
-	"encoding/hex"
-	"fmt"
-	"net"
-	"os"
-
-	"github.com/mimoo/disco/libdisco"
-)
-
-func main() {
-	// usage
-	if len(os.Args) != 2 {
-		fmt.Println("usage: go run client.go hex_shared_secret")
-		return
-	}
-
-	// retrieve the server's public key from an argument
-	sharedSecret, _ := hex.DecodeString(os.Args[1])
-
-	// configuring the Disco connection
-	serverConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_NNpsk2,
-		PreSharedKey:     sharedSecret,
-	}
-
-	// listen on port 6666
-	listener, err := libdisco.Listen("tcp", "127.0.0.1:6666", &serverConfig)
-	if err != nil {
-		fmt.Println("cannot setup a listener on localhost:", err)
-		return
-	}
-	addr := listener.Addr().String()
-	fmt.Println("listening on:", addr)
-
-	for {
-		// accept a connection
-		server, err := listener.Accept()
-		if err != nil {
-			fmt.Println("server cannot accept()")
-			server.Close()
-			continue
-		}
-		fmt.Println("server accepted connection from", server.RemoteAddr())
-		// read what the socket has to say until connection is closed
-		go func(server net.Conn) {
-			buf := make([]byte, 100)
-			for {
-				n, err := server.Read(buf)
-				if err != nil {
-					fmt.Println("server can't read on socket for", server.RemoteAddr(), ":", err)
-					break
-				}
-				fmt.Println("received data from", server.RemoteAddr(), ":", string(buf[:n]))
-			}
-			fmt.Println("shutting down the connection with", server.RemoteAddr())
-			server.Close()
-		}(server)
-
-	}
-
+		<pre><code>// configuring the Disco connection
+serverConfig := libdisco.Config{
+	HandshakePattern: libdisco.Noise_NNpsk2,
+	// your 32-byte shared secret
+	PreSharedKey: sharedSecret, 
 }
-</code></pre>
+
+// listen on port 6666
+listener, err := libdisco.Listen("tcp", "127.0.0.1:6666", &serverConfig)
+if err != nil {
+	fmt.Println("cannot setup a listener on localhost:", err)
+	return
+}
+addr := listener.Addr().String()
+fmt.Println("listening on:", addr)</code></pre>
 
 		<h3>client:</h3>
 
-		<pre><code>package main
-
-import (
-	"bufio"
-	"encoding/hex"
-	"fmt"
-	"os"
-
-	"github.com/mimoo/disco/libdisco"
-)
-
-func main() {
-	// usage
-	if len(os.Args) != 2 {
-		fmt.Println("usage: go run client.go hex_shared_secret")
-		return
-	}
-
-	// retrieve the server's public key from an argument
-	sharedSecret, _ := hex.DecodeString(os.Args[1])
-
-	// configure the Disco connection
-	clientConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_NNpsk2,
-		PreSharedKey:     sharedSecret,
-	}
-
-	// Dial the port 6666 of localhost
-	client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
-	if err != nil {
-		fmt.Println("client can't connect to server:", err)
-		return
-	}
-	defer client.Close()
-	fmt.Println("connected to", client.RemoteAddr())
-
-	// write whatever stdin has to say to the socket
-	scanner := bufio.NewScanner(os.Stdin)
-	for {
-		scanner.Scan()
-		_, err = client.Write([]byte(scanner.Text()))
-		if err != nil {
-			fmt.Println("client can't write on socket:", err)
-		}
-	}
+		<pre><code>// configure the Disco connection
+clientConfig := libdisco.Config{
+	HandshakePattern: libdisco.Noise_NNpsk2,
+	// your 32-byte shared secret
+	PreSharedKey: sharedSecret, 
 }
-</code></pre>
+
+// Dial the port 6666 of localhost
+client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
+if err != nil {
+	fmt.Println("client can't connect to server:", err)
+	return
+}
+defer client.Close()
+fmt.Println("connected to", client.RemoteAddr())</code></pre>
 
 		<h3>Security Considerations</h3>
 
+		<p>The same security discussed in the <a href="http://noiseprotocol.org/noise.html#payload-security-properties">Noise specification</a> for the relevant handshake pattern apply.</p>
 
 	</section>
 

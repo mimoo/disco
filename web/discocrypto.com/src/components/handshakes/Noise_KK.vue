@@ -1,6 +1,6 @@
 <template>
 	<section class="content">
-		<h1 class="title is-1">{{pattern.name}}</h1>
+		<h1 class="title"><i class="fa fa-exchange"></i> {{pattern.name}} <span class="tag" v-for="tag in pattern.tags">{{tag}}</span></h1>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Description</h2>
 
@@ -8,138 +8,55 @@
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
 
-		<p>If the client and the server are always the same two devices (meaning that the server always expect to talk to the same client).</p>
+		<p>If your protocol involves several peers and both sides of a connection have a way to know the other side's public static key prior to starting the handshake, Noise_KK is a good fit.</p>
+
+		<p>A simple illustration would be a secure messaging application where the peer's public key can be retrieved in advance via a trusted third party (key server). If the third party cannot be trusted, public keys can be further verified out-of-band (usually via a fingerprint mixing both public keys, see <a href="https://signal.org/blog/safety-number-updates/" target="_blank">Signal's safety numbers</a>).</p>
+
+		<p>If your protocol involves a single client and a single server, refer to <router-link to="/protocol/Noise_NNpsk2">Noise_NNpsk2</router-link>.</p>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Example of configuration</h2>
 
+		<p>To understand how to generate both peer's key pair, refer to <router-link to="/protocol/Keys">libdisco's documentation on keys</router-link>.</p>
+
 		<h3>server:</h3>
 
-		<pre><code>package main
-
-import (
-	"bufio"
-	"encoding/hex"
-	"fmt"
-	"net"
-	"os"
-
-	"github.com/mimoo/disco/libdisco"
-)
-
-func main() {
-	// generating the server key pair
-	serverKeyPair := libdisco.GenerateKeypair(nil)
-	fmt.Println("server's public key:", serverKeyPair.ExportPublicKey())
-
-	// configuring the Disco connection
-	serverConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_KK,
-		KeyPair:          serverKeyPair,
-	}
-
-	// retrieve the client's public key from an argument
-	fmt.Println("please enter the client's public key in hexadecimal")
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	clientKey, _ := hex.DecodeString(scanner.Text())
-	serverConfig.RemoteKey = clientKey
-
-	// listen on port 6666
-	listener, err := libdisco.Listen("tcp", "127.0.0.1:6666", &serverConfig)
-	if err != nil {
-		fmt.Println("cannot setup a listener on localhost:", err)
-		return
-	}
-	addr := listener.Addr().String()
-	fmt.Println("listening on:", addr)
-
-	for {
-		// accept a connection
-		server, err := listener.Accept()
-		if err != nil {
-			fmt.Println("server cannot accept()")
-			server.Close()
-			continue
-		}
-		fmt.Println("server accepted connection from", server.RemoteAddr())
-		// read what the socket has to say until connection is closed
-		go func(server net.Conn) {
-			buf := make([]byte, 100)
-			for {
-				n, err := server.Read(buf)
-				if err != nil {
-					fmt.Println("server can't read on socket for", server.RemoteAddr(), ":", err)
-					break
-				}
-				fmt.Println("received data from", server.RemoteAddr(), ":", string(buf[:n]))
-			}
-			fmt.Println("shutting down the connection with", server.RemoteAddr())
-			server.Close()
-		}(server)
-
-	}
-
+		<pre><code>serverConfig := libdisco.Config{
+	HandshakePattern: libdisco.Noise_KK,
+	KeyPair:          serverKeyPair,
+	// the public static key of the client
+	RemoteKey: clientPublicKey
 }
-</code></pre>
+
+// listen on port 6666
+listener, err := libdisco.Listen("tcp", "127.0.0.1:6666", &serverConfig)
+if err != nil {
+	fmt.Println("cannot setup a listener on localhost:", err)
+	return
+}
+addr := listener.Addr().String()
+fmt.Println("listening on:", addr)</code></pre>
 
 		<h3>client:</h3>
 
-		<pre><code>package main
-
-import (
-	"bufio"
-	"encoding/hex"
-	"fmt"
-	"os"
-
-	"github.com/mimoo/disco/libdisco"
-)
-
-func main() {
-	// generating the client key pair
-	clientKeyPair := libdisco.GenerateKeypair(nil)
-	fmt.Println("client's public key:", clientKeyPair.ExportPublicKey())
-
-	// configure the Disco connection
-	// in which the client knows the static public key of the server
-	// and the server knows the static public key of the client
-	clientConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_KK,
-		KeyPair:          clientKeyPair,
-	}
-
-	// retrieve the server's public key from an argument
-	fmt.Println("please enter the server's public key in hexadecimal")
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	serverKey, _ := hex.DecodeString(scanner.Text())
-	clientConfig.RemoteKey = serverKey
-
-	// Dial the port 6666 of localhost
-	client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
-	if err != nil {
-		fmt.Println("client can't connect to server:", err)
-		return
-	}
-	defer client.Close()
-	fmt.Println("connected to", client.RemoteAddr())
-
-	// write whatever stdin has to say to the socket
-	for {
-		scanner.Scan()
-		_, err = client.Write([]byte(scanner.Text()))
-		if err != nil {
-			fmt.Println("client can't write on socket:", err)
-		}
-	}
+		<pre><code>clientConfig := libdisco.Config{
+	HandshakePattern: libdisco.Noise_KK,
+	KeyPair:          clientKeyPair,
+	// the public static key of the server
+	RemoteKey: serverPublicKey
 }
-</code></pre>
+
+// Dial the port 6666 of localhost
+client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
+if err != nil {
+	fmt.Println("client can't connect to server:", err)
+	return
+}
+defer client.Close()
+fmt.Println("connected to", client.RemoteAddr())</code></pre>
 
 		<h3>Security Considerations</h3>
 
-		<ul>
-			<li></li>
-		</ul>
+		<p>The same security discussed in the <a href="http://noiseprotocol.org/noise.html#payload-security-properties">Noise specification</a> for the relevant handshake pattern apply.</p>
 
 	</section>
 

@@ -1,5 +1,8 @@
 <template>
 	<section class="content">
+
+	    <h1 class="title"><i class="fa fa-exchange"></i> Protocol Overview</h1>
+
 		<p>
 			<strong>libdisco</strong>'s protocol is based on the <a href="/disco.html"><i class="fa fa-file-text-o" aria-hidden="true"></i> Disco extension</a> of the <a href="http://noiseprotocol.org">Noise protocol framework</a>. What this means to you is that the library supports a subset (although potentially all) of the handshakes that are specified in the Noise protocol framework.
 		</p>
@@ -140,7 +143,7 @@ import (
 )
 
 func main() {
-  // replace this with the server's public key!
+	// replace this with the server's public key!
 	serverKey, _ := hex.DecodeString("e424214ab16f56def7778e9a3d36d891221c4f5b38c8b2679ccbdaed5c27e735")
 	clientConfig := libdisco.Config{
 		HandshakePattern: libdisco.Noise_NK,
@@ -179,6 +182,14 @@ func main() {
 	        </p>
 	      </div>
 		</div>
+
+
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Examples</h2>
+
+		<p>Further examples for all supported handshake patterns can be found in <a href="https://github.com/mimoo/disco/tree/master/libdisco/examples" target="_blank">the github repository</a>.</p>
+
+		<p>If you need help, head to the <a href="https://github.com/mimoo/disco/issues"><i class="fa fa-question" aria-hidden="true"></i> issues on github</a> or the <a href="https://www.reddit.com/r/discocrypto/"><i class="fa fa-envelope-o" aria-hidden="true"></i>
+     subreddit over at r/discocrypto</a>.</p>
 
 	</section>
 </template>

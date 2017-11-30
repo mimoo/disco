@@ -1,70 +1,90 @@
 <template>
 	<section class="content">
-		<h1 class="title is-1">Disco Keys</h1>
+	    <h1 class="title"><i class="fa fa-exchange"></i> Disco Keys</h1>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> The Different Keys</h2> 
 
 		<p>Disco makes use of several key pairs:</p>
 
 		<ul>
-<li>Ephemeral keys, they are freshly created for each new client ↔ server connection.</li>
-<li>Static keys. Each one of the peers, the client and the server, can have their own long-term static key that they will consistently use in handshake patterns that require them (usually a pattern with a K, an X or an I in the name means that the client or/and the server will "make use" (not necessarily send) of a static key as part of the handshake)</li>
-<li>Root signing keys. These are authoritative keys that sign the static keys in patterns where static keys are being "sent" (not just used) as part of the handshake.</li>
+<li><strong>Ephemeral keys</strong>. They are freshly generated, behind the curtains, for each new client ↔ server connection. For this reason you do not have to worry about these and you can just ignore the fact that they exist.</li>
+<li><strong>Static keys</strong>. Each one of the peers, the client and the server, can have their own long-term static key that they will consistently use in handshake patterns that require them (usually a pattern with a K, an X or an I in the name means that the client or/and the server will "make use" (not necessarily send) of a static key as part of the handshake)</li>
+<li><strong>Root signing keys</strong>. These are authoritative keys that sign the static keys in patterns where static keys are being "sent" (not just used) as part of the handshake.</li>
 		</ul>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Generation and Storage</h2> 
 
 <p>
-		<strong>Ephemeral keys</strong> are generated in the code and are never set manually anywhere, for this reason you do not have to worry about these and you can just ignore the fact that they exist.
-</p>
-<p>
-		<strong>Static keys</strong> can be generated via the GenerateKeypair(nil) function. They can be constructed from a private key with the same function. The package also provides some file utility functions:
+		<strong>Static keys</strong> can be generated via a call to <a href="https://godoc.org/github.com/mimoo/disco/libdisco#GenerateKeypair"><code>GenerateKeypair(nil)</code></a>. The package also provides some file utility functions:
 </p>
 		<ul>
-			<li><code>KeyPair.ExportPublicKey()</code> retrieves the public part of a static key pair.</li>
-			<li><code>GenerateAndSaveDiscoKeyPair()</code> creates and saves a static key pair on disk.</li>
-			<li><code>LoadDiscoKeyPair(discoPrivateKeyPairFile()</code> loads a static key pair from such a file.</li>
+			<li><a href="https://godoc.org/github.com/mimoo/disco/libdisco#KeyPair.ExportPublicKey"><code>KeyPair.ExportPublicKey()</code></a> retrieves the public part of a static key pair.</li>
+			<li><a href="https://godoc.org/github.com/mimoo/disco/libdisco#GenerateAndSaveDiscoKeyPair"><code>GenerateAndSaveDiscoKeyPair()</code></a> creates and saves a static key pair on disk.</li>
+			<li><a href="https://godoc.org/github.com/mimoo/disco/libdisco#LoadDiscoKeyPair"><code>LoadDiscoKeyPair(discoPrivateKeyPairFile()</code></a> loads a static key pair from such a file.</li>
 		</ul>
 <p>
-		<strong>Root signing keys</strong> can be generated via the <code>GenerateAndSaveDiscoRootKeyPair()</code> function. As different peers might need different parts, the private and public parts of the key pair will be saved in different files. To retrieve them you can use <code>LoadDiscoRootPublicKey()</code> and <code>LoadDiscoRootPrivateKey()</code>.
+		<strong>Root signing keys</strong> can be generated and saved on disk directly via the <a href="https://godoc.org/github.com/mimoo/disco/libdisco#GenerateAndSaveDiscoRootKeyPair"><code>GenerateAndSaveDiscoRootKeyPair()</code></a> function. As different peers might need different parts, the private and public parts of the key pair will be saved in different files. To retrieve them you can use the <a href="https://godoc.org/github.com/mimoo/disco/libdisco#LoadDiscoRootPublicKey"><code>LoadDiscoRootPublicKey()</code></a> and <a href="https://godoc.org/github.com/mimoo/disco/libdisco#LoadDiscoRootPrivateKey"><code>LoadDiscoRootPrivateKey()</code></a> functions.
 </p>
+
+
+	<article class="message is-danger">
+	  <div class="message-header">
+	    <p>Storing keys</p>
+	  </div>
+	  <div class="message-body">
+	    Private part of key pairs should be stored in secure places. Such sensitive information should not be checked in version control systems like git or svn. Instead, they can be stored outside of the program's repository, or passed as environement variables.
+	  </div>
+	</article>
 
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Configuration of Peers</h2>
 
-		<p>Imagine a handshake pattern like Noise_NX where only the server sends its static public key.</p>
+		<p>Imagine a handshake pattern like <router-link to="/protocol/Noise_NX">Noise_NX</router-link> where only the server sends its static public key along with a proof.</p>
 
-		<p>First let's create the root signing key:</p>
+		<p>1. create the root signing key:</p>
 
 		<pre><code>if err := libdisco.GenerateAndSaveDiscoRootKeyPair("./discoRootPrivateKey", "./discoRootPublicKey"); err != nil {
   panic("didn't work")
 }</code></pre>
 
-		<p>Now we can configure the server:</p>
+	<article class="message is-danger">
+	  <div class="message-header">
+	    <p>Storing root keys</p>
+	  </div>
+	  <div class="message-body">
+	    Note that in this example the private key of the root signing key pair is stored on disk next to the application. Extra care should be taken so that this private key stays accessible only to the root signing program, and inacessible from the peers (clients and servers).
+	  </div>
+	</article>
+
+		<p>2. sign the server's static public key:</p>
 
 		<pre><code>// we load the private part of the root signing key
 rootPrivateKey, err := libdisco.LoadDiscoRootPrivateKey("./discoRootPrivateKey")
 if err != nil {
-  panic("didn't work")
+  panic("couldn't load the root signing private key")
 }
-// we compute our proof over our server's public key (stored in a KeyPair)
-proof := libdisco.CreateStaticPublicKeyProof(rootPrivateKey, serverKeyPair)
-// we configure the server for Noise_NX
-serverConfig := libdisco.Config{
+// we compute our proof over the server's public static key
+proof := libdisco.CreateStaticPublicKeyProof(rootPrivateKey, serverKeyPair.PublicKey[:])</code></pre>
+
+		<p>3. configure the server to send its static public key along with its proof:</p>
+
+		<pre><code>serverConfig := libdisco.Config{
   HandshakePattern:     libdisco.Noise_NX,
   KeyPair:              serverKeyPair,
   StaticPublicKeyProof: proof,
 }</code></pre>
 
-		<p>Once the <code>discoRootPublicKey</code> file has been passed to the client, we can configure it:</p>
+		<p>4. once the <code>discoRootPublicKey</code> file has been passed to the client, we can configure it:</p>
 
 		<pre><code>// we load the public part of the root signing key
 rootPublicKey, err := LoadDiscoRootPublicKey("./discoRootPublicKey")
 if err != nil {
   panic("didn't work")
 }
+
 // we create our verifier
 someCallbackFunction := CreatePublicKeyVerifier(rootPublicKey)
+
 // we configure the client
 clientConfig := libdisco.Config{
   HandshakePattern:  libdisco.Noise_NK,
@@ -72,8 +92,9 @@ clientConfig := libdisco.Config{
 }
 </code></pre>
 
-	<p>And that's it!</p>
+	<p>5. And that's it!</p>
 
+	<p>For more example please check each handshake pattern individually on the examples on the <a href="https://github.com/mimoo/disco/tree/master/libdisco/examples" target="_blank">source code repository</a></p>
 
 	</section>
 
