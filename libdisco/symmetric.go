@@ -23,6 +23,42 @@ func Hash(input []byte, outputLength int) []byte {
 	return hash.PRF(outputLength)
 }
 
+type DiscoHash struct {
+	strobeState  strobe.Strobe
+	streaming    bool
+	outputLength int
+}
+
+func NewHash(outputLength int) DiscoHash {
+	if outputLength < 32 {
+		panic("disco: an output length smaller than 256-bit (32 bytes) has security consequences")
+	}
+	return DiscoHash{strobeState: strobe.InitStrobe("DiscoHash", 128), outputLength: outputLength}
+}
+
+// Write absorbs more data into the hash's state. It panics if input is
+// written to it after output has been read from it.
+func (d *DiscoHash) Write(inputData []byte) (written int, err error) {
+	d.strobeState.Operate(false, "AD", inputData, 0, d.streaming)
+	d.streaming = true
+	written = len(inputData)
+	return
+}
+
+// Read reads more output from the hash; reading affects the hash's
+// state. (DiscoHash.Read is thus very different from Hash.Sum)
+// It never returns an error.
+func (d *DiscoHash) Sum() []byte {
+	reader := d.strobeState.Clone()
+	return reader.Operate(false, "PRF", []byte{}, d.outputLength, false)
+}
+
+// Clone returns a copy of the DiscoHash in its current state.
+func (d *DiscoHash) Clone() DiscoHash {
+	cloned := d.strobeState.Clone()
+	return DiscoHash{strobeState: *cloned}
+}
+
 // DeriveKeys allows you to derive keys
 func DeriveKeys(inputKey []byte, outputLength int) []byte {
 	if len(inputKey) < 16 {

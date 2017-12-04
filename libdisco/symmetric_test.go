@@ -14,6 +14,59 @@ func TestHash(t *testing.T) {
 	}
 }
 
+func TestSum(t *testing.T) {
+	message1 := "hello"
+	message2 := "how are you good sir?"
+	message3 := "sure thing"
+	fullmessage := message1 + message2
+
+	// trying with NewHash with streaming and without streaming
+	h1 := NewHash(32)
+	h1.Write([]byte(message1))
+	h1.Write([]byte(message2))
+	out1 := h1.Sum()
+
+	h2 := NewHash(32)
+	h2.Write([]byte(fullmessage))
+	out2 := h2.Sum()
+
+	for idx, _ := range out1 {
+		if out1[idx] != out2[idx] {
+			t.Fatal("Sum function does not work")
+		}
+	}
+
+	// trying with Hash()
+	out3 := Hash([]byte(fullmessage), 32)
+
+	for idx, _ := range out1 {
+		if out1[idx] != out3[idx] {
+			t.Fatal("Sum function does not work")
+		}
+	}
+
+	// trying the streaming even more
+	h1.Write([]byte(message3))
+	out1 = h1.Sum()
+	h2.Write([]byte(message3))
+	out2 = h2.Sum()
+
+	for idx, _ := range out1 {
+		if out1[idx] != out2[idx] {
+			t.Fatal("Sum function does not work")
+		}
+	}
+
+	// tring with Hash()
+	out3 = Hash([]byte(fullmessage+message3), 32)
+
+	for idx, _ := range out1 {
+		if out1[idx] != out3[idx] {
+			t.Fatal("Sum function does not work")
+		}
+	}
+}
+
 func TestDeriveKeys(t *testing.T) {
 
 	input := []byte("hi, how are you?")
