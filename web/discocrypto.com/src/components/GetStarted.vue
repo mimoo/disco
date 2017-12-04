@@ -8,7 +8,7 @@
 		<p>Usages help can be found through-out this website. There are two important parts to libdisco:</p>
 
 		<ul>
-			<li><strong>the protocol</strong>. libdisco allows you to setup a secure channel between two endpoints to encrypt their communication. More information is available in the <router-link to="/handshakes/Overview">protocol</router-link> part of this documentation.</li>
+			<li><strong>the protocol</strong>. libdisco allows you to setup a secure channel between two endpoints to encrypt their communication. More information is available in the <router-link to="/protocol/Overview">protocol</router-link> part of this documentation.</li>
 			<li><strong>the library</strong>. libdisco exports several cryptographic functions to generate random numbers, hash, derive keys, encrypt, ... usage example are available in the <router-link to="/library/Overview">cryptographic library</router-link> part of this documentation.</li>
 		</ul>
 
