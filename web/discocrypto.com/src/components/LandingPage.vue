@@ -33,7 +33,7 @@
       </ul>
     </p>
 
-    <p>It's as simple as using <a href="https://golang.org/pkg/net/" target="_blank">Golang's net/conn</a> standard way of setting up a server:</p>
+    <p>To set it up, follow <a href="https://golang.org/pkg/net/" target="_blank">Golang's net/conn</a> standard way of setting up a server with a libdisco config:</p>
 
     <pre><code>serverConfig := libdisco.Config{
   HandshakePattern: libdisco.Noise_NK,
@@ -42,7 +42,7 @@
 listener, err := libdisco.Listen("tcp", "127.0.0.1:6666", &serverConfig)
 server, err := listener.Accept()</code></pre>
 
-    <p>and the standard way of setting up a client:</p>
+    <p>and the standard way of setting up a client with a libdisco config:</p>
 
     <pre><code>clientConfig := libdisco.Config{
   HandshakePattern: libdisco.Noise_NK,

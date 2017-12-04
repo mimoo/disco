@@ -3,7 +3,6 @@ import Router from 'vue-router'
 //
 import LandingPage from '@/components/LandingPage'
 import GetStarted from '@/components/GetStarted'
-import Why from '@/components/Why'
 // protocol
 import protocolOverview from '@/components/handshakes/Overview'
 import Keys from '@/components/Keys'
@@ -44,11 +43,6 @@ export default new Router({
       path: '/get_started',
       name: 'GetStarted',
       component: GetStarted
-    },
-    {
-      path: '/why',
-      name: 'Why',
-      component: Why
     },
     // protocol
     {

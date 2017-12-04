@@ -16,6 +16,18 @@ digest := libdisco.Hash(input, 32))</code></pre>
 		<pre><code>input := []byte("a very long output")
 digest := libdisco.Hash(input, 1000))</code></pre>
 
+		<p>If you're planning on running a continuous hash, use <code>NewHash</code> instead:</p>
+
+		<pre><code>h := NewHash(32)
+h.Write([]byte("hi"))
+h.Write([]byte(" how are you?"))
+out1 := h.Sum()
+h.Write([]byte(" david"))
+out2 := h.Sum()</code></pre>
+
+		<p>The final digest will be equivalent to</p>
+
+		<pre><code>digest := libdisco.Hash([]byte("hi how are you? david"), 32)</code></pre>
 
 	</section>
 
