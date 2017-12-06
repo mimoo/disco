@@ -6,6 +6,8 @@
 
 		<p v-html="pattern.description"></p>
 
+		<img src="./assets/Noise_X.png" alt="Noise_X handshake">
+
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2>
 
 		<p>This handshake pattern is useful when many different clients want to talk to one server while authenticating both side of the connection. In addition, since it is a one-way pattern, the server never talks back to them.</p>
@@ -14,9 +16,7 @@
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Example of configuration</h2>
 
-		<p>The client needs to have prior knowledge to the server's public static key. In this example we just pass it as an <code>stdin</code> argument to the client's CLI, but in practice it should be hardcoded.</p>
-
-		<p>In addition, every time the server is ran it is generating a new static key pair. In practice this should only be done once, possibly using the <router-link to="protocol/Keys">key helper functions</router-link> that libdisco provides.</p>
+		<p>The client needs to have prior knowledge to the server's public static key in order to authenticate the server during the handshake phase.</p>
 
 		<p>As for the client's authentication:</p>
 		<ul>

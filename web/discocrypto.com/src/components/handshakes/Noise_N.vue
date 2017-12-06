@@ -6,6 +6,8 @@
 
 		<p v-html="pattern.description"></p>
 
+		<img src="./assets/Noise_N.png" alt="Noise_N handshake">
+
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
 
 		<p>This handshake pattern is useful for clients that always talk to a single server. In addition, since it is a one-way pattern, the server never talks back to them. The server also doesn't require the client to authenticate itself.</p>
