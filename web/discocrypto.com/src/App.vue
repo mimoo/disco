@@ -44,20 +44,20 @@
               </p>
               <ul class="menu-list">
                 <li><router-link to="/protocol/Overview" v-bind:class="{ 'is-active': $route.name == 'protocolOverview' }">Overview</router-link>
-                <li><router-link to="/protocol/Keys" v-bind:class="{ 'is-active': $route.name == 'Keys' }">Keys in Disco</router-link>
+                <li><router-link to="/protocol/Keys" v-bind:class="{ 'is-active': $route.name == 'Keys' }">Keys in Disco</router-link></li>
+                <li><a href="disco.html" target="_blank">Specification</a></li>
+                <li>
                   <ul>
                     <li v-for="pattern in patterns"><router-link :to="'/protocol/' + pattern.name" v-bind:class="{ 'is-active': $route.name == pattern.name }">{{pattern.name}}</router-link></li>
                   </ul>
-                </li>
-                <li>
-                  <a href="disco.html" target="_blank">Specification</a>
                 </li>
               </ul>
               <p class="menu-label">
                 Cryptographic Library
               </p>
               <ul class="menu-list">
-                <li><router-link to="/library/Overview" v-bind:class="{ 'is-active': $route.name == 'libraryOverview' }">Overview</router-link>
+                <li><router-link to="/library/Overview" v-bind:class="{ 'is-active': $route.name == 'libraryOverview' }">Overview</router-link></li>
+                <li>
                   <ul>
                     <li><router-link to="/library/Hashing" v-bind:class="{ 'is-active': $route.name == 'Hashing' }">Hashing</router-link></li>
                     <li><router-link to="/library/Encryption" v-bind:class="{ 'is-active': $route.name == 'Encryption' }">Encryption</router-link></li>
