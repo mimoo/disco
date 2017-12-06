@@ -6,6 +6,8 @@
 
 		<p v-html="pattern.description"></p>
 
+		<img src="./assets/Noise_NNpsk2.png" alt="Noise_NNpsk2 handshake">
+
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
 
 		<p>If you are only dealing with one client and one server, and can manually hardcode a common 32-byte random value on each peer, you probably do not need to deal with public keys and should use this handshake pattern.</p>

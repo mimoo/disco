@@ -6,6 +6,8 @@
 
 		<p v-html="pattern.description"></p>
 
+		<img src="./assets/Noise_NK.png" alt="Noise_NK handshake">
+
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
 
 		<p>Noise_NK is a relevant handshake pattern if your clients already know a server's static public key. This pattern does not authenticate the client nor does it rely on an external root signing key.</p>

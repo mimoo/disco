@@ -6,6 +6,8 @@
 
 		<p v-html="pattern.description"></p>
 
+		<img src="./assets/Noise_XX.png" alt="Noise_XX handshake">
+
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2>
 
 		<p>Any <code>X</code> pattern where a peer authenticate itself via the signature of an authoritative key (like the <code>Noise_XX</code> pattern) is useful when the other peer doesn't know in advance what peer it will communicate to.</p>

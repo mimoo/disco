@@ -6,6 +6,8 @@
 
 		<p v-html="pattern.description"></p>
 
+		<img src="./assets/Noise_KK.png" alt="Noise_KK handshake">
+
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
 
 		<p>If your protocol involves several peers and both sides of a connection have a way to know the other side's public static key prior to starting the handshake, Noise_KK is a good fit.</p>
