@@ -6,6 +6,8 @@
 
 		<p>The <code>ProtectIntegrity</code> and <code>VerifyIntegrity</code> functions can be used to make sure that a message has not been tampered with. Note that this creates a payload containing your message in clear. This is not encryption!</p>
 
+		<img src="./assets/integrity.png" alt="integrity protection">
+
 		<p>to create your payload with a message:</p>
 
 		<pre><code>key, _ := hex.DecodeString("eda8506c1fb0bbcc3f62626fef074bbf2d09a8c7c608f3fa1482c9a625d00f75")

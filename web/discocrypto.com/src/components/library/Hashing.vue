@@ -11,12 +11,12 @@
 		<pre><code>input := []byte("hi, how are you?")
 digest := libdisco.Hash(input, 32))</code></pre>
 
-		<p>libdisco's hash function is more than just a hash function, it is actually an eXtendable Output Function (XOF) which provides a flexible output length. The minimum has been set to 32 bytes (256 bits) for security reasons, there is no practical maximum. The following example obtains an output of 1000 bytes:</p>
+		<p>libdisco's hash function is more than just a hash function, it is actually an eXtendable Output Function (XOF) which provides a <strong>flexible output length</strong>. The minimum has been set to 32 bytes (256 bits) for security reasons, there is no practical maximum. The following example obtains an output of 1000 bytes:</p>
 
 		<pre><code>input := []byte("a very long output")
 digest := libdisco.Hash(input, 1000))</code></pre>
 
-		<p>If you're planning on running a continuous hash, use <code>NewHash</code> instead:</p>
+		<p>If you're planning on running a <strong>continuous hash</strong>, use <code>NewHash</code> instead:</p>
 
 		<pre><code>h := NewHash(32)
 h.Write([]byte("hi"))
@@ -25,9 +25,10 @@ out1 := h.Sum()
 h.Write([]byte(" david"))
 out2 := h.Sum()</code></pre>
 
-		<p>The final digest will be equivalent to</p>
+		<p>The two digests will be equivalent to</p>
 
-		<pre><code>digest := libdisco.Hash([]byte("hi how are you? david"), 32)</code></pre>
+		<pre><code>out1 := libdisco.Hash([]byte("hi how are you?"), 32)
+out2 := libdisco.Hash([]byte("hi how are you? david"), 32)</code></pre>
 
 	</section>
 
