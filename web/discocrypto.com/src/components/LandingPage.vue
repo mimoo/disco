@@ -8,7 +8,7 @@
           <strong>libdisco</strong>
         </h1>
         <h2 class="subtitle">
-          libdisco is a <strong>modern plug-and-play secure protocol</strong> and a <strong>cryptographic library</strong> in <strong>Golang</strong>. It offers different ways for encrypting communications, as well as different cryptographic primitives for all of an application's needs.
+          libdisco is a <strong>modern plug-and-play secure protocol</strong> and a <strong>cryptographic library</strong> in <strong>Golang</strong>. It offers different ways of encrypting communications, as well as different cryptographic primitives for all of an application's needs.
         </h2>
       </div>
     </section>
@@ -18,7 +18,7 @@
         <p>Warning</p>
       </div>
       <div class="message-body">
-        libdisco is <strong>experimental</strong>. It still has not been thoroughly reviewed and thus should not be used in production.
+        libdisco is <strong>experimental</strong>. It has not been thoroughly reviewed and relies on an unstable specification. It should not be used in production.
       </div>
     </article>
 
