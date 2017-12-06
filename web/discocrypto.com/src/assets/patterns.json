@@ -12,7 +12,7 @@
   {
   	"name": "Noise_X",
   	"tags": ["one_way", "key_pinning", "PKI"],
-  	"description": "Noise_X is a one-way handshake pattern (in which only the client sends application data to the server and the server never replies) where:<ol><li>the client receives the server's public key as part of the handshake</li><li>the server already knows the client's public key</li></ol>"
+  	"description": "Noise_X is a one-way handshake pattern (in which only the client sends application data to the server and the server never replies) where:<ol><li>the server receives the client's public key as part of the handshake</li><li>the client already knows the server's public key</li></ol>"
   },
   {
   	"name": "Noise_NNpsk2",
