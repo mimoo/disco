@@ -240,4 +240,6 @@ The same security considerations that apply to both Noise and Strobe are to be c
 
 Thanks to Trevor Perrin and Mike Hamburg for being the foundations and main help in building this specification.
 
+Thanks to Trevor Perrin again for suggesting the name to this extension.
+
 # 10. References
