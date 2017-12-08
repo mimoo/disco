@@ -8,7 +8,7 @@ This has use cases close to TLS: it allows you to encrypt communications.
 
 ## Documentation
 
-head over at [www.discocrypto.com](http://www.discocrypto.com)
+head over at [www.discocrypto.com](https://www.discocrypto.com)
 
 ## Roadmap
 
