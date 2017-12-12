@@ -4,11 +4,11 @@
 	    <h1 class="title"><i class="fa fa-exchange"></i> Protocol Overview</h1>
 
 		<p>
-			<strong>libdisco</strong>'s protocol is based on the <a href="/disco.html"><i class="fa fa-file-text-o" aria-hidden="true"></i> Disco extension</a> of the <a href="http://noiseprotocol.org">Noise protocol framework</a>. What this means to you is that the library supports a subset (although potentially all) of the handshakes that are specified in the Noise protocol framework.
+			<strong>libdisco</strong>'s protocol is based on the <a href="/disco.html"><i class="fa fa-file-text-o" aria-hidden="true"></i> Disco extension</a> of the <a href="https://noiseprotocol.org">Noise protocol framework</a>. What this means to you is that the library supports a subset (although potentially all) of the handshakes that are specified in the Noise protocol framework.
 		</p>
 		<p>
 			Theses <strong>handshakes</strong> are different ways to <strong>setup a secure connection</strong> that your application can use to encrypt data between two endpoints. They have names like <code>Noise_XX</code> and <code>Noise_NK</code> and are explained (along with examples on how to use them) in this documentation. See the <i class="fa fa-bars" aria-hidden="true"></i> menu on the left. <br>
-			By the way, the letters after the "Noise_" have a meaning! You do not have to learn it but it can help you in your choice. <a href="http://noiseprotocol.org/noise.html#one-way-patterns">See the Noise specification for more information</a>.
+			By the way, the letters after the "Noise_" have a meaning! You do not have to learn it but it can help you in your choice. <a href="https://noiseprotocol.org/noise.html#one-way-patterns">See the Noise specification for more information</a>.
 		</p>
 		<p>
 			In addition, we provide the following short <strong>Quizz</strong> to help you figure out what is the best way for you to connect your endpoints (or <strong>peers</strong>) securely.

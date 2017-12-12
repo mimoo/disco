@@ -1,6 +1,6 @@
 # LibDisco
 
-The `libdisco` package contained in this folder is a **plug-and-play** secure protocol and library based on the [Noise protocol framework](http://noiseprotocol.org) and [Strobe protocol framework](https://strobe.sourceforge.io). It has been implemented following the same patterns used in [crypto/tls](https://golang.org/pkg/crypto/tls/).
+The `libdisco` package contained in this folder is a **plug-and-play** secure protocol and library based on the [Noise protocol framework](https://noiseprotocol.org) and [Strobe protocol framework](https://strobe.sourceforge.io). It has been implemented following the same patterns used in [crypto/tls](https://golang.org/pkg/crypto/tls/).
 
 This has use cases close to TLS: it allows you to encrypt communications.
 
@@ -8,7 +8,7 @@ This has use cases close to TLS: it allows you to encrypt communications.
 
 ## Documentation
 
-head over at [www.discocrypto.com](http://www.discocrypto.com)
+head over at [www.discocrypto.com](https://www.discocrypto.com)
 
 ## Roadmap
 
