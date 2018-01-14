@@ -84,7 +84,7 @@
       <div class="container">
         <div class="content has-text-centered">
           <p>
-            <strong>Disco</strong> and <strong>libdisco</strong> by <a href="http://www.cryptologie.net">David Wong</a>.
+            <strong>Disco</strong> and <strong>libdisco</strong> by <a href="https://www.cryptologie.net">David Wong</a>.
           </p>
         </div>
       </div>

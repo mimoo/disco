@@ -127,7 +127,7 @@ fmt.Println("connected to", client.RemoteAddr())</code></pre>
 
 	<h3>Security Considerations</h3>
 
-	<p>The same security discussed in the <a href="http://noiseprotocol.org/noise.html#payload-security-properties">Noise specification</a> for the relevant handshake pattern apply.</p>
+	<p>The same security discussed in the <a href="https://noiseprotocol.org/noise.html#payload-security-properties">Noise specification</a> for the relevant handshake pattern apply.</p>
 
 	<p>This handshake pattern is tricky (like any <code>X</code>-type handshakes) as it requires a Public Key Infrastructure (PKI) where:</p>
 
