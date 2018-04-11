@@ -4,7 +4,7 @@
 	    <h1 class="title"><i class="fa fa-exchange"></i> Protocol Overview</h1>
 
 		<p>
-			<strong>libdisco</strong>'s protocol is based on the <a href="/disco.html"><i class="fa fa-file-text-o" aria-hidden="true"></i> Disco extension</a> of the <a href="https://noiseprotocol.org">Noise protocol framework</a>. What this means to you is that the library supports a subset (although potentially all) of the handshakes that are specified in the Noise protocol framework.
+			<strong>libdisco</strong>'s protocol is based on the <a href="/disco.html"><i class="far fa-file-alt"></i> Disco extension</a> of the <a href="https://noiseprotocol.org">Noise protocol framework</a>. What this means to you is that the library supports a subset (although potentially all) of the handshakes that are specified in the Noise protocol framework.
 		</p>
 		<p>
 			Theses <strong>handshakes</strong> are different ways to <strong>setup a secure connection</strong> that your application can use to encrypt data between two endpoints. They have names like <code>Noise_XX</code> and <code>Noise_NK</code> and are explained (along with examples on how to use them) in this documentation. See the <i class="fa fa-bars" aria-hidden="true"></i> menu on the left. <br>
@@ -188,8 +188,7 @@ func main() {
 
 		<p>Further examples for all supported handshake patterns can be found in <a href="https://github.com/mimoo/disco/tree/master/libdisco/examples" target="_blank">the github repository</a>.</p>
 
-		<p>If you need help, head to the <a href="https://github.com/mimoo/disco/issues"><i class="fa fa-question" aria-hidden="true"></i> issues on github</a> or the <a href="https://www.reddit.com/r/discocrypto/"><i class="fa fa-envelope-o" aria-hidden="true"></i>
-     subreddit over at r/discocrypto</a>.</p>
+		<p>If you need help, head to the <a href="https://github.com/mimoo/disco/issues"><i class="fa fa-question" aria-hidden="true"></i> issues on github</a> or the <a href="https://www.reddit.com/r/discocrypto/"><i class="fab fa-reddit-square"></i> subreddit over at r/discocrypto</a>.</p>
 
 	</section>
 </template>

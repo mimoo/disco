@@ -25,12 +25,14 @@
     <p>
       <strong>libdisco</strong> is a library built by merging the <a href="https://noiseprotocol.org">Noise protocol framework</a> and the <a href="https://strobe.sourceforge.io">Strobe protocol framework</a>. This means that it supports a subset of Noise's handshakes while offering the cryptographic primitive Strobe has to offer. In other words, you can use libdisco to securely connect peers together, or to do basic cryptographic operations like hashing or encrypting.</p>
 
-          <p>
-      <ul class="main_list">
-        <li>The <span>secure protocol parts</span> are based on the <a href="/disco.html"><i class="fa fa-file-text-o" aria-hidden="true"></i> Disco specification</a> which extends the <strong>Noise protocol framework</strong>.</li>
-        <li>The <span>symmetric cryptographic primitives</span> are all based on the <strong>Strobe protocol framework</strong> which only relies on the <strong>SHA-3</strong> permutation (called <strong>keccak-f</strong>).</li>
-        <li>The <span>asymmetric cryptographic primitives</span> (<strong>X25519</strong> and <strong>ed25519</strong>) are based on the <a href="https://golang.org/">golang</a> standard library.</li>
-      </ul>
+    <ul class="main_list">
+      <li>The <span>secure protocol parts</span> are based on the <a href="/disco.html"><i class="far fa-file-alt"></i> Disco specification</a> which extends the <strong>Noise protocol framework</strong>.</li>
+      <li>The <span>symmetric cryptographic primitives</span> are all based on the <strong>Strobe protocol framework</strong> which only relies on the <strong>SHA-3</strong> permutation (called <strong>keccak-f</strong>).</li>
+      <li>The <span>asymmetric cryptographic primitives</span> (<strong>X25519</strong> and <strong>ed25519</strong>) are based on the <a href="https://golang.org/">golang</a> standard library.</li>
+    </ul>
+
+    <p>
+      Want to know more about the technical details? <a href="https://www.youtube.com/watch?v=bTGLO4obxco" target="_blank">Watch our <i class="fab fa-youtube"></i> presentation at Black Hat Europe 2017</a>.
     </p>
 
     <hr>
@@ -71,11 +73,6 @@ client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
   </div>
 </section>
 
-
-
-    <!--          If you want to know more you can read the whitepaper or watch this video -->
-
-
     <p>To make use of the <strong><i class="fa fa-exchange" aria-hidden="true"></i>
     protocol parts</strong>, you must first choose how you want to authenticate the connection. For that, it's easy! We have made a <strong>small quizz</strong> for you bellow, but if you already know what you want you can directly click on your favorite way of doing this in the menu under "protocol" (Noise_NK, Noise_XX, ...) and copy the usage examples.</p>
 
@@ -86,7 +83,7 @@ client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
 
     <hr>
 
-    <p>To learn more about it, you can read <a href="https://www.cryptologie.net/article/432/disco/" target="_blank">this blog post</a>.</p>
+    <p>To learn more about it, you can read <a href="https://www.cryptologie.net/article/432/disco/" target="_blank"><i class="fas fa-newspaper"></i> this blog post</a> or watch our <a href="https://www.youtube.com/watch?v=bTGLO4obxco" target="_blank"><i class="fab fa-youtube"></i> presentation at Black Hat Europe 2017</a> .</p>
 
     <p>If you want help, head to the <a href="https://github.com/mimoo/disco/issues"><i class="fa fa-question" aria-hidden="true"></i>
     issues on github</a>.</p>
