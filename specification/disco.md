@@ -204,19 +204,27 @@ The same security considerations from the Noise specification applies to this se
 
 The same security considerations that apply to both Noise and Strobe are to be considered.
 
-# 9. Acknowledgements
+# 9. IPR
+
+The Disco specification (this document) is hereby placed in the public domain.
+
+# 10. Acknowledgements
 
 Thanks to Trevor Perrin and Mike Hamburg for being the foundations and main help in building this specification.
 
 Thanks to Trevor Perrin again for suggesting the name to this extension.
 
-# 10. Change log
+# 11. Change log
 
 **this section will be removed in the final document**
 
+**draft-6**:
+
+* The specification now has an IPR.
+
 **draft-5**:
 
-* Added a pre-shared key section
+* Added a pre-shared key section.
 
 **draft-4**:
 
@@ -247,4 +255,4 @@ Thanks to Trevor Perrin again for suggesting the name to this extension.
 * The document extends Noise draft-32.
 
 
-# 11. References
+# 12. References
