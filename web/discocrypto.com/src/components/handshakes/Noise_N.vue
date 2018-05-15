@@ -1,6 +1,6 @@
 <template>
 	<section class="content">
-		<h1 class="title"><i class="fa fa-exchange"></i> {{pattern.name}} <span class="tag" v-for="tag in pattern.tags">{{tag}}</span></h1>
+		<h1 class="title"><i class="fas fa-exchange-alt"></i> {{pattern.name}} <span class="tag" v-for="tag in pattern.tags">{{tag}}</span></h1>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Description</h2>
 

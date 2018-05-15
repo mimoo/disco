@@ -73,7 +73,7 @@ client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
   </div>
 </section>
 
-    <p>To make use of the <strong><i class="fa fa-exchange" aria-hidden="true"></i>
+    <p>To make use of the <strong><i class="fas fa-exchange-alt" aria-hidden="true"></i>
     protocol parts</strong>, you must first choose how you want to authenticate the connection. For that, it's easy! We have made a <strong>small quizz</strong> for you bellow, but if you already know what you want you can directly click on your favorite way of doing this in the menu under "protocol" (Noise_NK, Noise_XX, ...) and copy the usage examples.</p>
 
     <Quizz></Quizz>
@@ -88,8 +88,7 @@ client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)
     <p>If you want help, head to the <a href="https://github.com/mimoo/disco/issues"><i class="fa fa-question" aria-hidden="true"></i>
     issues on github</a>.</p>
 
-    <p>If you want to stay tuned on what we're doing, we don't have a mailing list but we have better: <a href="https://www.reddit.com/r/discocrypto/"><i class="fa fa-envelope-o" aria-hidden="true"></i>
-    a subreddit over at r/discocrypto</a>.</p>
+    <p>If you want to stay tuned on what we're doing, we don't have a mailing list but we have better: <a href="https://www.reddit.com/r/discocrypto/"><i class="fab fa-reddit-square"></i> a subreddit over at r/discocrypto</a>.</p>
   </section>
 </template>
 

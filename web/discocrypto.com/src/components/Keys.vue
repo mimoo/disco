@@ -1,6 +1,6 @@
 <template>
 	<section class="content">
-	    <h1 class="title"><i class="fa fa-exchange"></i> Disco Keys</h1>
+	    <h1 class="title"><i class="fas fa-exchange-alt"></i> Disco Keys</h1>
 
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> The Different Keys</h2>
 

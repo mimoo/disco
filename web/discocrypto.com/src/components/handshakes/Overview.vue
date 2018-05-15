@@ -1,7 +1,7 @@
 <template>
 	<section class="content">
 
-	    <h1 class="title"><i class="fa fa-exchange"></i> Protocol Overview</h1>
+	    <h1 class="title"><i class="fas fa-exchange-alt"></i> Protocol Overview</h1>
 
 		<p>
 			<strong>libdisco</strong>'s protocol is based on the <a href="/disco.html"><i class="far fa-file-alt"></i> Disco extension</a> of the <a href="https://noiseprotocol.org">Noise protocol framework</a>. What this means to you is that the library supports a subset (although potentially all) of the handshakes that are specified in the Noise protocol framework.
