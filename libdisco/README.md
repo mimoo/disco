@@ -6,6 +6,8 @@ This has use cases close to TLS: it allows you to encrypt communications.
 
 **This software is experimental. You must not use this in production.**
 
+[![Build Status](https://travis-ci.org/mimoo/disco.svg?branch=master)](https://travis-ci.org/mimoo/disco)
+
 ## Documentation
 
 head over at [www.discocrypto.com](https://www.discocrypto.com)

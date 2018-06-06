@@ -2,9 +2,9 @@
 title:      'Noise Extension: Disco'
 author:
  - David Wong (david.wong@nccgroup.trust)
-revision:   '5'
+revision:   '6'
 status:     'unofficial/unstable'
-date:       '2018-01-14'
+date:       '2018-05-15'
 link-citations: 'false'
 ---
 
