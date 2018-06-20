@@ -104,6 +104,15 @@ func TestProtectVerifyIntegrity(t *testing.T) {
 
 }
 
+func TestNonceSize(t *testing.T) {
+	key, _ := hex.DecodeString("eda8506c1fb0bbcc3f62626fef074bbf2d09a8c7c608f3fa1482c9a625d00f75")
+	plaintext := []byte("hello, how are you?")
+	ciphertext := Encrypt(key, plaintext)
+	if len(ciphertext) != 19+16+24 {
+		t.Fatal("Length of this ciphertext should be 19B (PT) + 16B (TAG) + 24B (NONCE)")
+	}
+}
+
 func TestEncryptDecrypt(t *testing.T) {
 
 	key, _ := hex.DecodeString("eda8506c1fb0bbcc3f62626fef074bbf2d09a8c7c608f3fa1482c9a625d00f75")
