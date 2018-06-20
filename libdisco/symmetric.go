@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	nonceSize             = 129 / 8
+	nonceSize             = 192 / 8
 	tagSize               = 16
 	minimumCiphertextSize = nonceSize + tagSize
 )
@@ -114,7 +114,7 @@ func Encrypt(key, plaintext []byte) []byte {
 	ae := strobe.InitStrobe("DiscoAEAD", 128)
 	// absorb the key
 	ae.AD(false, key)
-	// generate 192-byte nonce
+	// generate 192-bit nonce
 	var nonce [nonceSize]byte
 	_, err := rand.Read(nonce[:])
 	if err != nil {
