@@ -143,12 +143,10 @@ func Decrypt(key, ciphertext []byte) ([]byte, error) {
 	ae.AD(false, key)
 	// absorb the nonce
 	ae.AD(false, ciphertext[:nonceSize])
-	offset := nonceSize
 	// decrypt
-	plaintext := ae.Recv_ENC_unauthenticated(false, ciphertext[offset:offset+len(ciphertext)-tagSize])
-	offset += len(ciphertext) - tagSize
+	plaintext := ae.Recv_ENC_unauthenticated(false, ciphertext[nonceSize:len(ciphertext)-tagSize])
 	// verify tag
-	ok := ae.Recv_MAC(false, ciphertext[offset:])
+	ok := ae.Recv_MAC(false, ciphertext[len(ciphertext)-tagSize:])
 	if !ok {
 		return []byte{}, errors.New("disco: cannot decrypt the payload")
 	}
