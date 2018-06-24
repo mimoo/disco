@@ -14,5 +14,7 @@ head over at [www.discocrypto.com](https://www.discocrypto.com)
 
 ## Roadmap
 
-* need more tests
-* need test vectors 
+- [ ] need more tests
+- [ ] need test vectors 
+- [ ] need some benchmarks
+- [ ] Noise_NN could be implemented via ShortAuthenticationString/fingerprint post-handshake. The Cipherstate wouldn't be usable before activating them via a fingerprint. You would also have an export function that would generate that fingerprint 

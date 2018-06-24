@@ -116,18 +116,31 @@ func TestNonceSize(t *testing.T) {
 func TestEncryptDecrypt(t *testing.T) {
 
 	key, _ := hex.DecodeString("eda8506c1fb0bbcc3f62626fef074bbf2d09a8c7c608f3fa1482c9a625d00f75")
-	plaintext := []byte("hello, how are you?")
-
-	ciphertext := Encrypt(key, plaintext)
-
-	decrypted, err := Decrypt(key, ciphertext)
-	if err != nil {
-		t.Fatal("Encrypt/Decrypt did not work")
+	plaintexts := []string{
+		"",
+		"a",
+		"ab",
+		"abc",
+		"abcd",
+		"short",
+		"hello, how are you?",
+		"this is very short",
+		"this is very long though, like, very very long, should we test very very long things here?",
 	}
-
-	for idx, _ := range plaintext {
-		if plaintext[idx] != decrypted[idx] {
+	for _, plaintext := range plaintexts {
+		plaintextBytes := []byte(plaintext)
+		ciphertext := Encrypt(key, plaintextBytes)
+		decrypted, err := Decrypt(key, ciphertext)
+		if err != nil {
+			t.Fatal("Encrypt/Decrypt did not work")
+		}
+		if len(plaintext) != len(decrypted) {
 			t.Fatal("Decrypt did not work")
+		}
+		for idx, _ := range plaintext {
+			if plaintext[idx] != decrypted[idx] {
+				t.Fatal("Decrypt did not work")
+			}
 		}
 	}
 }
