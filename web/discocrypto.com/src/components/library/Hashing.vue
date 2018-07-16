@@ -30,6 +30,15 @@ out2 := h.Sum()</code></pre>
 		<pre><code>out1 := libdisco.Hash([]byte("hi how are you?"), 32)
 out2 := libdisco.Hash([]byte("hi how are you? david"), 32)</code></pre>
 
+		<article class="message is-danger" style="margin:20px 0">
+		  <div class="message-header">
+		    <p>Warning</p>
+		  </div>
+		  <div class="message-body">
+		    the <code>Write()</code> function should be used for hashing contiguous chunks of data. If the data is structured (for example <code>age|gender|city</code>) use the <code>WriteTuple()</code> function instead.
+		  </div>
+		</article>
+
 	</section>
 
 </template>
