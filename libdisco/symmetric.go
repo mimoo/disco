@@ -29,6 +29,8 @@ type DiscoHash struct {
 	outputLength int
 }
 
+// NewHash creates a new hashing state, allowing you to absorb data to hash via Write or WriteTuple,
+// and to create a digest via the Sum function.
 func NewHash(outputLength int) DiscoHash {
 	if outputLength < 32 {
 		panic("disco: an output length smaller than 256-bit (32 bytes) has security consequences")
@@ -36,11 +38,20 @@ func NewHash(outputLength int) DiscoHash {
 	return DiscoHash{strobeState: strobe.InitStrobe("DiscoHash", 128), outputLength: outputLength}
 }
 
-// Write absorbs more data into the hash's state. It panics if input is
-// written to it after output has been read from it.
+// Write absorbs more data into the hash's state. This function is usually called to hash contigous chunks
+// of data. For structured data please refer to WriteTuple
 func (d *DiscoHash) Write(inputData []byte) (written int, err error) {
 	d.strobeState.Operate(false, "AD", inputData, 0, d.streaming)
 	d.streaming = true
+	written = len(inputData)
+	return
+}
+
+// WriteTuple absorbs more data to hash in a non-ambigious way. This means that data absorbed
+// via this function is separated from the data surrounding it. Use this function instead of Write
+// to hash structured data.
+func (d *DiscoHash) WriteTuple(inputData []byte) (written int, err error) {
+	d.strobeState.Operate(false, "AD", inputData, 0, false)
 	written = len(inputData)
 	return
 }

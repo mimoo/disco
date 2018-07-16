@@ -67,6 +67,82 @@ func TestSum(t *testing.T) {
 	}
 }
 
+func TestHashOutputHashOutput(t *testing.T) {
+	message1 := "hello"
+	message2 := "how are you good sir?"
+	message3 := "sure thing"
+
+	h1 := NewHash(32)
+	h1.Write([]byte(message1))
+	h1.Write([]byte(message2))
+	h1.Sum() // this should not affect the state
+	h1.Write([]byte(message3))
+	out1 := h1.Sum()
+
+	h2 := NewHash(32)
+	h2.Write([]byte(message1))
+	h2.Write([]byte(message2))
+	h2.Write([]byte(message3))
+	out2 := h2.Sum()
+
+	for idx, _ := range out1 {
+		if out1[idx] != out2[idx] {
+			t.Fatal("Sum function affects the hash state")
+		}
+	}
+}
+
+func TestTupleHash(t *testing.T) {
+	message1 := "the plasma"
+	message2 := "screen is broken, we need to do something about it!"
+	message3 := "\x00\x01\x02\x03\x04\x05\x00\x01\x02\x03\x04\x05\x00\x01\x02\x03\x04\x05\x00\x01\x02\x03\x04\x05\x00\x01\x02\x03\x04\x05\x00\x01\x02\x03\x04\x05"
+	message4 := "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA"
+
+	// trying with NewHash with streaming and without streaming
+	h1 := NewHash(32)
+	h1.Write([]byte(message1))
+	h1.Write([]byte(message2))
+	h1.Write([]byte(message3))
+	out1 := h1.Sum()
+
+	h2 := NewHash(32)
+	h2.WriteTuple([]byte(message1))
+	h1.WriteTuple([]byte(message2))
+	h1.WriteTuple([]byte(message3))
+	out2 := h2.Sum()
+
+	same := true
+	for idx, _ := range out1 {
+		if out1[idx] != out2[idx] {
+			same = false
+			break
+		}
+	}
+	if same {
+		t.Fatal("Tuple hashing should be different from stream hashing")
+	}
+
+	// trying a hybrid with streaming
+	h3 := NewHash(32)
+	h3.WriteTuple([]byte(message1))
+	h3.Write([]byte(message2))
+	h3.Write([]byte(message3))
+	h3.WriteTuple([]byte(message4))
+	out3 := h3.Sum()
+
+	h4 := NewHash(32)
+	h4.WriteTuple([]byte(message1))
+	h4.WriteTuple([]byte(message2 + message3))
+	h4.WriteTuple([]byte(message4))
+	out4 := h4.Sum()
+
+	for idx, _ := range out3 {
+		if out3[idx] != out4[idx] {
+			t.Fatal("Tuple hashing doesn't work properly with streaming")
+		}
+	}
+}
+
 func TestDeriveKeys(t *testing.T) {
 
 	input := []byte("hi, how are you?")
