@@ -101,19 +101,20 @@ func VerifyIntegrity(key, plaintextAndTag []byte) ([]byte, error) {
 	if len(plaintextAndTag) < tagSize {
 		return []byte{}, errors.New("disco: plaintext does not contain an integrity tag")
 	}
+	offset := len(plaintextAndTag) - tagSize
+	plaintext := plaintextAndTag[:offset];
+	tag := plaintextAndTag[offset:];
+
 	hash := strobe.InitStrobe("DiscoMAC", 128)
 	hash.AD(false, key)
-	hash.AD(false, plaintextAndTag[:len(plaintextAndTag)-tagSize])
-	tag := hash.Send_MAC(false, tagSize)
+	hash.AD(false, plaintext)
+
 	// verify tag
-	offset := len(plaintextAndTag) - tagSize
-	for ii := 0; ii < 16; ii++ {
-		if tag[ii] != plaintextAndTag[offset+ii] {
-			return []byte{}, errors.New("disco: the plaintext has been modified")
-		}
+	if !hash.Recv_MAC(false, tag) {
+		return []byte{}, errors.New("disco: the plaintext has been modified")
+	} else {
+		return plaintext, nil
 	}
-	//
-	return plaintextAndTag[:offset], nil
 
 }
 
