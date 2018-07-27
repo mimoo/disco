@@ -172,28 +172,28 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	// read header from socket
 	bufHeader, err := readFromUntil(c.conn, 2)
 	if err != nil {
-		return 0, err
+		return readSoFar, err
 	}
 	length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
 	if length > NoiseMessageLength {
-		return 2, errors.New("disco: Disco message received exceeds DiscoMessageLength")
+		return readSoFar, errors.New("disco: Disco message received exceeds DiscoMessageLength")
 	}
 
 	// read noise message from socket
 	noiseMessage, err := readFromUntil(c.conn, length)
 	if err != nil {
-		return 2, err
+		return readSoFar, err
 	}
 
 	// decrypt
 	if length < 16 {
-		return 2 + length, errors.New("disco: the received payload is shorter 16 bytes")
+		return readSoFar, errors.New("disco: the received payload is shorter 16 bytes")
 	}
 
 	plaintext := c.in.Recv_ENC_unauthenticated(false, noiseMessage[:len(noiseMessage)-16])
 	ok := c.in.Recv_MAC(false, noiseMessage[len(noiseMessage)-16:])
 	if !ok {
-		return 2 + length, errors.New("disco: cannot decrypt the payload")
+		return readSoFar, errors.New("disco: cannot decrypt the payload")
 	}
 
 	// append to the input buffer
