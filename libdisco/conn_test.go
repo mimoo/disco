@@ -11,7 +11,7 @@ import (
 
 func verifier([]byte, []byte) bool { return true }
 
-func TestSeveralWriteRoutines(t *testing.T) {
+func TestSeveralWriteRead(t *testing.T) {
 	// init
 	clientConfig := Config{
 		KeyPair:              GenerateKeypair(nil),
@@ -31,6 +31,7 @@ func TestSeveralWriteRoutines(t *testing.T) {
 	if err != nil {
 		t.Fatal("cannot setup a listener on localhost:", err)
 	}
+	defer listener.Close()
 	addr := listener.Addr().String()
 
 	// run the server and Accept one connection
@@ -45,6 +46,9 @@ func TestSeveralWriteRoutines(t *testing.T) {
 		for {
 			n, err2 := serverSocket.Read(buf[:])
 			if err2 != nil {
+				if err2 == io.EOF {
+					return
+				}
 				t.Fatal("server can't read on socket")
 			}
 			if !bytes.Equal(buf[:n-1], []byte("hello ")) {
@@ -63,14 +67,15 @@ func TestSeveralWriteRoutines(t *testing.T) {
 	}
 
 	for i := 0; i < 100; i++ {
-		go func(i int) {
-			message := "hello " + string(i)
-			_, err = clientSocket.Write([]byte(message))
-			if err != nil {
-				t.Fatal("client can't write on socket")
-			}
-		}(i)
+		message := "hello " + string(i)
+		_, err = clientSocket.Write([]byte(message))
+		if err != nil {
+			t.Fatal("client can't write on socket")
+		}
 	}
+
+	clientSocket.Close()
+
 }
 
 func TestHalfDuplex(t *testing.T) {
