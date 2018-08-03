@@ -2,6 +2,8 @@ package libdisco
 
 import (
 	"bytes"
+	"fmt"
+	"io"
 	"testing"
 )
 
@@ -90,6 +92,7 @@ func TestHalfDuplex(t *testing.T) {
 
 	// get a libdisco.listener
 	listener, err := Listen("tcp", "127.0.0.1:0", &serverConfig)
+
 	if err != nil {
 		t.Fatal("cannot setup a listener on localhost:", err)
 	}
@@ -102,35 +105,70 @@ func TestHalfDuplex(t *testing.T) {
 			t.Fatal("a server cannot accept()")
 		}
 
-		var buf [100]byte
+		var buf [10]byte
 
 		for {
+			// read message first
 			n, err2 := serverSocket.Read(buf[:])
 			if err2 != nil {
+				if err2 == io.EOF {
+					return
+				}
 				t.Fatal("server can't read on socket")
 			}
-			if !bytes.Equal(buf[:n-1], []byte("hello ")) {
-				t.Fatal("received message not as expected")
+			if n != 6 {
+				t.Fatal("server is supposed to read 6 bytes")
 			}
-
-			//fmt.Println("server received:", string(buf[:n]))
+			if !bytes.Equal(buf[:n-1], []byte("hello")) {
+				t.Fatal("server received message which is not hello+i")
+			}
+			// then write message
+			_, err = serverSocket.Write(buf[:n])
+			if err != nil {
+				fmt.Println("ERRROR", err) // debug
+				t.Fatal("server can't write on socket")
+			}
+			if n != 6 {
+				t.Fatal("server is supposed to write 6 bytes")
+			}
 		}
 
 	}()
 
 	// Run the client
 	clientSocket, err := Dial("tcp", addr, &clientConfig)
+
 	if err != nil {
 		t.Fatal("client can't connect to server")
 	}
 
+	var buf [10]byte
+
 	for i := 0; i < 100; i++ {
-		go func(i int) {
-			message := "hello " + string(i)
-			_, err = clientSocket.Write([]byte(message))
-			if err != nil {
-				t.Fatal("client can't write on socket")
-			}
-		}(i)
+		// first write `hello + i`
+		message := append([]byte("hello"), byte(i))
+		n, err := clientSocket.Write(message)
+		if err != nil {
+			fmt.Println("ERRROR", err) // debug
+			t.Fatal("client can't write on socket")
+		}
+		if n != 6 {
+			t.Fatal("client is supposed to write 6 bytes")
+		}
+		// then read `hello + (i+1)`
+		n, err2 := clientSocket.Read(buf[:])
+		if err2 != nil {
+			t.Fatal("server can't read on socket")
+		}
+		if n != 6 {
+			t.Fatal("server is supposed to read 6 bytes")
+		}
+		if !bytes.Equal(buf[:n], message) {
+			t.Fatal("received message not as expected")
+		}
 	}
+
+	//
+	clientSocket.Close()
+	listener.Close()
 }
