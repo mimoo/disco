@@ -20,13 +20,13 @@ func TestCreationKeys(t *testing.T) {
 	defer os.Remove(rootPublicKeyFile)
 
 	// Generate Disco Key pair
-	keyPair, err := GenerateAndSaveDiscoKeyPair(discoKeyPairFile)
+	keyPair, err := GenerateAndSaveDiscoKeyPair(discoKeyPairFile, "")
 	if err != nil {
 		t.Error("Disco key pair couldn't be written on disk")
 		return
 	}
 	// Load Disco Key pair
-	keyPairTemp, err := LoadDiscoKeyPair(discoKeyPairFile)
+	keyPairTemp, err := LoadDiscoKeyPair(discoKeyPairFile, "")
 	if err != nil {
 		t.Error("Disco key pair couldn't be loaded from disk")
 		return

@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"golang.org/x/crypto/ed25519"
+
+	"golang.org/x/crypto/argon2"
 )
 
 // Server returns a new Disco server side connection
@@ -291,14 +293,20 @@ func LoadDiscoRootPrivateKey(discoRootPrivateKey string) (rootPrivateKey ed25519
 // GenerateAndSaveDiscoKeyPair generates a disco key pair (X25519 key pair)
 // and saves it to a file in hexadecimal form. You can use ExportPublicKey() to
 // export the public key part.
-func GenerateAndSaveDiscoKeyPair(DiscoKeyPairFile string) (keyPair *KeyPair, err error) {
-
-	// TODO: should I require a passphrase and encrypt it with it?
+func GenerateAndSaveDiscoKeyPair(discoKeyPairFile string, passphrase string) (keyPair *KeyPair, err error) {
 	keyPair = GenerateKeypair(nil)
 	var dataToWrite [128]byte
 	hex.Encode(dataToWrite[:64], keyPair.PrivateKey[:])
 	hex.Encode(dataToWrite[64:], keyPair.PublicKey[:])
-	err = ioutil.WriteFile(DiscoKeyPairFile, dataToWrite[:], 0400)
+
+	if passphrase != "" {
+		key := argon2.Key([]byte(passphrase), []byte("DiscoKeyPair"), 3, 32*1024, 4, 32)
+		ciphertext := Encrypt(key, dataToWrite[:])
+		err = ioutil.WriteFile(discoKeyPairFile, ciphertext, 0400)
+	} else {
+		err = ioutil.WriteFile(discoKeyPairFile, dataToWrite[:], 0400)
+	}
+
 	if err != nil {
 		return nil, errors.New("Disco: could not write on file at path")
 	}
@@ -307,15 +315,25 @@ func GenerateAndSaveDiscoKeyPair(DiscoKeyPairFile string) (keyPair *KeyPair, err
 
 // LoadDiscoKeyPair reads and parses a public/private key pair from a pair
 // of files.
-func LoadDiscoKeyPair(discoKeyPairFile string) (keypair *KeyPair, err error) {
+func LoadDiscoKeyPair(discoKeyPairFile, passphrase string) (*KeyPair, error) {
 	// TODO: should I require a passphrase to decrypt it?
 	keyPairString, err := ioutil.ReadFile(discoKeyPairFile)
 	if err != nil {
 		return nil, err
 	}
+
+	if passphrase != "" {
+		key := argon2.Key([]byte(passphrase), []byte("DiscoKeyPair"), 3, 32*1024, 4, 32)
+		keyPairString, err = Decrypt(key, keyPairString)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if len(keyPairString) != 64*2 {
 		return nil, errors.New("Disco: Disco key pair file is not correctly formated")
 	}
+
 	var keyPair KeyPair
 	_, err = hex.Decode(keyPair.PrivateKey[:], keyPairString[:64])
 	if err != nil {

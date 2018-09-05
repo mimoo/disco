@@ -64,13 +64,13 @@ func (s *symmetricState) decryptAndHash(ciphertext []byte) (plaintext []byte, er
 
 	if s.isKeyed {
 		if len(ciphertext) < 16 {
-			return []byte{}, errors.New("disco: the received payload is shorter 16 bytes")
+			return nil, errors.New("disco: the received payload is shorter 16 bytes")
 		}
 
 		plaintext := s.strobeState.Recv_ENC_unauthenticated(false, ciphertext[:len(ciphertext)-16])
 		ok := s.strobeState.Recv_MAC(false, ciphertext[len(ciphertext)-16:])
 		if !ok {
-			return []byte{}, errors.New("disco: cannot decrypt the payload")
+			return nil, errors.New("disco: cannot decrypt the payload")
 		}
 		return plaintext, nil
 	}

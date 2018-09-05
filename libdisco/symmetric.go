@@ -61,7 +61,7 @@ func (d *DiscoHash) WriteTuple(inputData []byte) (written int, err error) {
 // It never returns an error.
 func (d *DiscoHash) Sum() []byte {
 	reader := d.strobeState.Clone()
-	return reader.Operate(false, "PRF", []byte{}, d.outputLength, false)
+	return reader.Operate(false, "PRF", nil, d.outputLength, false)
 }
 
 // Clone returns a copy of the DiscoHash in its current state.
@@ -99,11 +99,11 @@ func VerifyIntegrity(key, plaintextAndTag []byte) ([]byte, error) {
 		panic("disco: using a key smaller than 128-bit (16 bytes) has security consequences")
 	}
 	if len(plaintextAndTag) < tagSize {
-		return []byte{}, errors.New("disco: plaintext does not contain an integrity tag")
+		return nil, errors.New("disco: plaintext does not contain an integrity tag")
 	}
 	offset := len(plaintextAndTag) - tagSize
-	plaintext := plaintextAndTag[:offset];
-	tag := plaintextAndTag[offset:];
+	plaintext := plaintextAndTag[:offset]
+	tag := plaintextAndTag[offset:]
 
 	hash := strobe.InitStrobe("DiscoMAC", 128)
 	hash.AD(false, key)
@@ -111,7 +111,7 @@ func VerifyIntegrity(key, plaintextAndTag []byte) ([]byte, error) {
 
 	// verify tag
 	if !hash.Recv_MAC(false, tag) {
-		return []byte{}, errors.New("disco: the plaintext has been modified")
+		return nil, errors.New("disco: the plaintext has been modified")
 	} else {
 		return plaintext, nil
 	}
@@ -144,10 +144,10 @@ func Encrypt(key, plaintext []byte) []byte {
 // Decrypt allows you to decrypt a message that was encrypted with the Encrypt function.
 func Decrypt(key, ciphertext []byte) ([]byte, error) {
 	if len(key) < 16 {
-		panic("disco: using a key smaller than 128-bit (16 bytes) has security consequences")
+		return nil, errors.New("disco: using a key smaller than 128-bit (16 bytes) has security consequences")
 	}
 	if len(ciphertext) < minimumCiphertextSize {
-		return []byte{}, errors.New("disco: ciphertext is too small, it should contain at a minimum a 192-bit nonce and a 128-bit tag")
+		return nil, errors.New("disco: ciphertext is too small, it should contain at a minimum a 192-bit nonce and a 128-bit tag")
 	}
 	// instantiate
 	ae := strobe.InitStrobe("DiscoAEAD", 128)
@@ -160,7 +160,7 @@ func Decrypt(key, ciphertext []byte) ([]byte, error) {
 	// verify tag
 	ok := ae.Recv_MAC(false, ciphertext[len(ciphertext)-tagSize:])
 	if !ok {
-		return []byte{}, errors.New("disco: cannot decrypt the payload")
+		return nil, errors.New("disco: cannot decrypt the payload")
 	}
 	return plaintext, nil
 }
