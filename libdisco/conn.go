@@ -1,6 +1,7 @@
 package libdisco
 
 import (
+	"encoding/hex"
 	"errors"
 	"io"
 	"net"
@@ -18,12 +19,12 @@ type Conn struct {
 
 	// handshake
 	config            *Config // configuration passed to constructor
-	hs                handshakeState
 	handshakeComplete bool
 	handshakeMutex    sync.Mutex
 
 	// Authentication thingies
 	isRemoteAuthenticated bool
+	remotePublicKey       string
 
 	// input/output
 	in, out         *strobe.Strobe
@@ -323,6 +324,9 @@ ContinueHandshake:
 			if !c.config.PublicKeyVerifier(hs.rs.PublicKey[:], receivedPayload) {
 				return errors.New("disco: the received public key could not be authenticated")
 			}
+			// authenticated!
+			c.isRemoteAuthenticated = true
+			c.remotePublicKey = hex.EncodeToString(hs.rs.PublicKey[:]) // so that it can be accessed later
 		}
 	}
 
@@ -343,7 +347,7 @@ ContinueHandshake:
 
 	// TODO: preserve c.hs.symmetricState.h
 	// At that point the HandshakeState should be deleted except for the hash value h, which may be used for post-handshake channel binding (see Section 11.2).
-	c.hs.clear()
+	hs.clear()
 
 	// no errors :)
 	c.handshakeComplete = true
@@ -353,6 +357,15 @@ ContinueHandshake:
 // IsRemoteAuthenticated can be used to check if the remote peer has been properly authenticated. It serves no real purpose for the moment as the handshake will not go through if a peer is not properly authenticated in patterns where the peer needs to be authenticated.
 func (c *Conn) IsRemoteAuthenticated() bool {
 	return c.isRemoteAuthenticated
+}
+
+// RemotePublicKey returns the static key of the remote peer. It is useful in case the
+// static key is only transmitted during the handshake.
+func (c *Conn) RemotePublicKey() (string, error) {
+	if !c.handshakeComplete {
+		return "", errors.New("disco: handshake not completed")
+	}
+	return c.remotePublicKey, nil
 }
 
 //

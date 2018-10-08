@@ -334,7 +334,6 @@ func (h *handshakeState) readMessage(message []byte, payloadBuffer *[]byte) (c1,
 			if err != nil {
 				return
 			}
-			// if we already know the remote static, compare
 			copy(h.rs.PublicKey[:], plaintext)
 			offset += dhLen + tagLen
 
@@ -402,8 +401,5 @@ func (h *handshakeState) clear() {
 func (kp *KeyPair) clear() {
 	for i := 0; i < len(kp.PrivateKey); i++ {
 		kp.PrivateKey[i] = 0
-	}
-	for i := 0; i < len(kp.PublicKey); i++ {
-		kp.PublicKey[i] = 0
 	}
 }

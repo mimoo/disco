@@ -33,19 +33,31 @@ func Client(conn net.Conn, config *Config) *Conn {
 }
 
 // A listener implements a network listener (net.Listener) for Disco connections.
-type listener struct {
+type Listener struct {
 	net.Listener
 	config *Config
 }
 
 // Accept waits for and returns the next incoming Disco connection.
 // The returned connection is of type *Conn.
-func (l *listener) Accept() (net.Conn, error) {
+func (l *Listener) Accept() (net.Conn, error) {
 	c, err := l.Listener.Accept()
 	if err != nil {
 		return nil, err
 	}
 	return Server(c, l.config), nil
+}
+
+// Accept waits for and returns the next incoming Disco connection.
+// The returned connection is of type *Conn.
+func (l *Listener) AcceptDisco() (*Conn, error) {
+	c, err := l.Listener.Accept()
+	if err != nil {
+		return nil, err
+	}
+	conn := Server(c, l.config)
+	conn.Write([]byte{})
+	return conn, nil
 }
 
 // Listen creates a Disco listener accepting connections on the
@@ -67,7 +79,32 @@ func Listen(network, laddr string, config *Config) (net.Listener, error) {
 	}
 
 	// create new libdisco.listener
-	discoListener := new(listener)
+	discoListener := new(Listener)
+	discoListener.Listener = l
+	discoListener.config = config
+	return discoListener, nil
+}
+
+// ListenDisco creates a Disco listener accepting connections on the
+// given network address using net.Listen.
+// The configuration config must be non-nil.
+func ListenDisco(network, laddr string, config *Config) (*Listener, error) {
+	// check Config
+	if config == nil {
+		return nil, errors.New("Disco: no Config set")
+	}
+	if err := checkRequirements(false, config); err != nil {
+		panic(err)
+	}
+
+	// make net.Conn listen
+	l, err := net.Listen(network, laddr)
+	if err != nil {
+		return nil, err
+	}
+
+	// create new libdisco.listener
+	discoListener := new(Listener)
 	discoListener.Listener = l
 	discoListener.config = config
 	return discoListener, nil
