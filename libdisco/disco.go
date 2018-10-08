@@ -181,12 +181,12 @@ func initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 		if token == token_s {
 			if initiator {
 				if rs == nil {
-					panic("disco: the remote static key of the client should be set")
+					panic("disco: the remote static key of the server should be set")
 				}
 				h.symmetricState.mixHash(rs.PublicKey[:])
 			} else {
 				if s == nil {
-					panic("disco: the static key of the server should be set")
+					panic("disco: the static key of the client should be set")
 				}
 				h.symmetricState.mixHash(s.PublicKey[:])
 			}
