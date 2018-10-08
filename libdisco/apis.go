@@ -152,7 +152,7 @@ func checkRequirements(isClient bool, config *Config) (err error) {
 // DialWithDialer interprets a nil configuration as equivalent to the zero
 // configuration; see the documentation of Config for the defaults.
 // TODO: make sure sane defaults for time outs are set!!!
-func DialWithDialer(dialer *net.Dialer, network, addr string, config *Config) (*Conn, error) {
+func DialWithDialer(dialer *net.Dialer, network, addr string, config *Config) (net.Conn, error) {
 	// We want the Timeout and Deadline values from dialer to cover the
 	// whole process: TCP connection and Disco handshake. This means that we
 	// also need to start our own timers now.
@@ -226,7 +226,7 @@ func DialWithDialer(dialer *net.Dialer, network, addr string, config *Config) (*
 // Dial interprets a nil configuration as equivalent to
 // the zero configuration; see the documentation of Config
 // for the defaults.
-func Dial(network, addr string, config *Config) (*Conn, error) {
+func Dial(network, addr string, config *Config) (net.Conn, error) {
 	return DialWithDialer(new(net.Dialer), network, addr, config)
 }
 
