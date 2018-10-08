@@ -17,7 +17,7 @@ func main() {
 	if len(os.Args) == 2 && os.Args[1] == "setup" {
 
 		// generating the server's keypair
-		serverKeyPair, err := libdisco.GenerateAndSaveDiscoKeyPair("./serverKeyPair")
+		serverKeyPair, err := libdisco.GenerateAndSaveDiscoKeyPair("./serverKeyPair", "")
 		if err != nil {
 			panic("couldn't generate and save the server's key pair")
 		}
@@ -35,7 +35,7 @@ func main() {
 	if len(os.Args) == 4 && os.Args[1] == "accept" {
 
 		// load the server's keypair
-		serverKeyPair, err := libdisco.LoadDiscoKeyPair("./serverkeyPair")
+		serverKeyPair, err := libdisco.LoadDiscoKeyPair("./serverkeyPair", "")
 		if err != nil {
 			fmt.Println("couldn't load the server's key pair")
 			return
