@@ -200,7 +200,7 @@ func initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 	return
 }
 
-func (h *handshakeState) writeMessage(payload []byte, messageBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
+func (h *handshakeState) WriteMessage(payload []byte, messageBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
 	// is it our turn to write?
 	if !h.shouldWrite {
 		panic("disco: unexpected call to WriteMessage should be ReadMessage")
@@ -290,7 +290,7 @@ func (h *handshakeState) writeMessage(payload []byte, messageBuffer *[]byte) (c1
 
 // ReadMessage takes a byte sequence containing a Noise handshake message,
 // and a payload_buffer to write the message's plaintext payload into.
-func (h *handshakeState) readMessage(message []byte, payloadBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
+func (h *handshakeState) ReadMessage(message []byte, payloadBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
 	// is it our turn to read?
 	if h.shouldWrite {
 		panic("disco: unexpected call to ReadMessage should be WriteMessage")
