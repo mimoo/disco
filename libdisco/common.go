@@ -39,4 +39,9 @@ type Config struct {
 	// to true will require the peers to write and read in turns. If this requirement
 	// is not respected by the application, the consequences could be catastrophic
 	HalfDuplex bool
+	// the Accept() and Dial() APIs both return a `net.Conn` interface.
+	// Because of this, functions like `RemotePublicKey()` cannot be called
+	// to circumvent this issue, set the following flag. After that,
+	// `net.Conn`'s `RemoteAddress().String()` will return a tuple `ip:port:pubkey`
+	RemoteAddrContainsRemotePubkey bool
 }

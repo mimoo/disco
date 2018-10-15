@@ -45,8 +45,26 @@ func (c *Conn) LocalAddr() net.Addr {
 	return c.conn.LocalAddr()
 }
 
+type Addr struct {
+	network string
+	address string
+}
+
+func (a Addr) Network() string {
+	return a.network
+}
+func (a Addr) String() string {
+	return a.address
+}
+
 // RemoteAddr returns the remote network address.
 func (c *Conn) RemoteAddr() net.Addr {
+	if c.config.RemoteAddrContainsRemotePubkey && c.handshakeComplete {
+		return &Addr{
+			network: "tcp",
+			address: c.conn.RemoteAddr().String() + ":" + c.remotePublicKey,
+		}
+	}
 	return c.conn.RemoteAddr()
 }
 
