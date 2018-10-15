@@ -56,7 +56,6 @@ func (l *Listener) AcceptDisco() (*Conn, error) {
 		return nil, err
 	}
 	conn := Server(c, l.config)
-	conn.Write([]byte{})
 	return conn, nil
 }
 
