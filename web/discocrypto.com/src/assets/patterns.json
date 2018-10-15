@@ -25,6 +25,11 @@
   	"description": "Noise_KK is a handshake pattern where both peers already know each other's public key prior to the handshake."
   },
   {
+    "name": "Noise_IK",
+    "tags": ["two_way", "key_pinning"],
+    "description": "Noise_IK is a handshake pattern where the client already knows the server's public key prior to the handshake, and the client sends its static public key as part of the handshake."
+  },
+  {
   	"name": "Noise_NK",
   	"tags": ["two_way", "key_pinning"],
   	"description": "Noise_NK is a handshake pattern similar to mobile device applications connecting to webservers using <strong>public-key pinning</strong>. The static public key of the server is hardcoded on the client-side of the connection, thanks to this it is not \"sent\" by the server during the connection, but still used as part of the cryptographic computations. The client is not authenticated"

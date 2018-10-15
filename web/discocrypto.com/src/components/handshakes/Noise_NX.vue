@@ -144,7 +144,7 @@ fmt.Println("connected to", client.RemoteAddr())</code></pre>
 </template>
 
 <script>
-import patterns from '@/assets/patterns.json';
+import patterns from '@/assets/patterns.json'
 
 export default {
 	name: 'Noise_NX',
