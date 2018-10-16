@@ -309,6 +309,9 @@ func Initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 	return
 }
 
+// WriteMessage takes a (nil) payload and a messageBuffer. It writes the next Noise message into
+// the message buffer.
+// messageBuffer cannot be nil
 func (h *handshakeState) WriteMessage(payload []byte, messageBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
 	// is it our turn to write?
 	if !h.shouldWrite {
@@ -399,6 +402,7 @@ func (h *handshakeState) WriteMessage(payload []byte, messageBuffer *[]byte) (c1
 
 // ReadMessage takes a byte sequence containing a Noise handshake message,
 // and a payload_buffer to write the message's plaintext payload into.
+// payload_buffer cannot be nil
 func (h *handshakeState) ReadMessage(message []byte, payloadBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
 	// is it our turn to read?
 	if h.shouldWrite {
