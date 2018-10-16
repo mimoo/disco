@@ -23,8 +23,8 @@ const (
 // It can be generated via the GenerateKeyPair() function.
 // The public part can also be extracted via the ExportPublicKey() function.
 type KeyPair struct {
-	PrivateKey [32]byte
-	PublicKey  [32]byte
+	PrivateKey [32]byte // must stay a [32]byte because of Serialize()
+	PublicKey  [32]byte // must stay a [32]byte because of Serialize()
 }
 
 // GenerateKeypair creates a X25519 static keyPair out of a private key. If privateKey is nil the function generates a random key pair.

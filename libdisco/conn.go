@@ -268,7 +268,7 @@ func (c *Conn) Handshake() error {
 		remoteKeyPair = &KeyPair{}
 		copy(remoteKeyPair.PublicKey[:], c.config.RemoteKey)
 	}
-	hs := initialize(c.config.HandshakePattern, c.isClient, c.config.Prologue, c.config.KeyPair, nil, remoteKeyPair, nil)
+	hs := Initialize(c.config.HandshakePattern, c.isClient, c.config.Prologue, c.config.KeyPair, nil, remoteKeyPair, nil)
 
 	// pre-shared key
 	hs.psk = c.config.PreSharedKey

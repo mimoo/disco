@@ -1,6 +1,7 @@
 package libdisco
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"math"
@@ -190,4 +191,43 @@ func BenchmarkLatency(b *testing.B) {
 			latency(b, kbps*1000)
 		})
 	}
+}
+
+func TestSerialize(t *testing.T) {
+	// init
+	s := GenerateKeypair(nil)
+	rs := GenerateKeypair(nil)
+	hs := Initialize(Noise_IK, true, nil, s, nil, rs, nil)
+	// write first message
+	var msg []byte
+	hs.WriteMessage(nil, &msg)
+	// serialize
+	serialized := hs.Serialize()
+	// unserialize
+	hs2 := RecoverState(serialized, nil, s)
+
+	// let's write a message to parse
+	hs_bob := Initialize(Noise_IK, false, nil, rs, nil, s, nil)
+	var msg2 []byte
+	hs_bob.ReadMessage(msg, &msg2)
+	msg2 = msg2[:0]
+	hs_bob.WriteMessage([]byte("hello"), &msg2)
+
+	// let's parse it
+	var msg_rcv1, msg_rcv2 []byte
+	c1, c2, _ := hs.ReadMessage(msg2, &msg_rcv1)
+	t1, t2, _ := hs2.ReadMessage(msg2, &msg_rcv2)
+
+	if !bytes.Equal(msg_rcv1, msg_rcv2) {
+		t.Fatal("received message not as expected")
+	}
+
+	if !bytes.Equal(c1.Serialize(), t1.Serialize()) {
+		t.Fatal("obtained strobeState not matching")
+	}
+
+	if !bytes.Equal(c2.Serialize(), t2.Serialize()) {
+		t.Fatal("obtained strobeState not matching")
+	}
+
 }

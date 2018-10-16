@@ -8,6 +8,8 @@
 package libdisco
 
 import (
+	"bytes"
+	"encoding/gob"
 	"errors"
 
 	"github.com/mimoo/StrobeGo/strobe"
@@ -120,6 +122,113 @@ type handshakeState struct {
 
 	// for test vectors
 	debugEphemeral *KeyPair
+}
+
+// Serialize is a helper function to serialize a handshake state, later to be unserialized via
+// the `RecoverState()` function.
+// For security purposes, the long-term static keypair is not serialized. Same for the psk
+func (hs handshakeState) Serialize() []byte {
+	// [s.pubkey(32), e(64), rs(32), re(32), initiator(1), messagePatterns(?), shouldWrite(1), symmetricState.isKeyed(1) , serializedStrobeState(?)]
+	var serialized bytes.Buffer
+
+	// s.pubkey (not the private key!)
+	serialized.Write(hs.s.PublicKey[:])
+	// e
+	serialized.Write(hs.e.PrivateKey[:])
+	serialized.Write(hs.e.PublicKey[:]) // TODO: we can re-compute this, do we serialize it?
+	// rs.pubkey
+	serialized.Write(hs.rs.PublicKey[:])
+	// re.pubkey
+	serialized.Write(hs.re.PublicKey[:])
+
+	// initiator
+	if hs.initiator {
+		serialized.WriteByte(1)
+	} else {
+		serialized.WriteByte(0)
+	}
+
+	// we use gob to encode the messagePatterns
+	encoder := gob.NewEncoder(&serialized)
+	encoder.Encode(hs.messagePatterns)
+
+	// shouldWrite
+	if hs.shouldWrite {
+		serialized.WriteByte(1)
+	} else {
+		serialized.WriteByte(0)
+	}
+
+	// symmetricState.isKeyed
+	if hs.symmetricState.isKeyed {
+		serialized.WriteByte(1)
+	} else {
+		serialized.WriteByte(0)
+	}
+
+	// symmetricState.strobeState
+	serialized.Write(hs.symmetricState.strobeState.Serialize())
+
+	//
+	return serialized.Bytes()
+}
+
+// RecoverState is a helper function to unserialize a previously serialized handshake state
+// (via the `Serialize()` function).
+// For security purposes, the long-term static keypair needs to be passed as argument.
+// RecoverState will crash if the passed serializedState is malformed
+func RecoverState(serialized []byte, psk []byte, s *KeyPair) handshakeState {
+	// [s.pubkey(32), e(64), rs(32), re(32), initiator(1), messagePatterns(?), shouldWrite(1), symmetricState.isKeyed(1) , serializedStrobeState(?)]
+	bb := bytes.NewBuffer(serialized)
+	hs := handshakeState{}
+
+	//psk
+	if psk != nil {
+		hs.psk = make([]byte, len(psk))
+		copy(hs.psk, psk)
+	}
+
+	// verify static keypair
+	if !bytes.Equal(s.PublicKey[:], serialized[0:32]) {
+		panic("wrong static keyPair passed")
+	}
+	// store static keypair
+	hs.s = *s
+	bb.Next(32)
+	// e
+	bb.Read(hs.e.PrivateKey[:])
+	bb.Read(hs.e.PublicKey[:])
+	// rs.pubkey
+	bb.Read(hs.rs.PublicKey[:])
+	// re.pubkey
+	bb.Read(hs.re.PublicKey[:])
+
+	// initiator
+	if initiator, _ := bb.ReadByte(); initiator == 1 {
+		hs.initiator = true
+	}
+
+	// we use gob to encode the messagePatterns
+	decoder := gob.NewDecoder(bb)
+	if err := decoder.Decode(&(hs.messagePatterns)); err != nil {
+		panic(err)
+	}
+
+	// shouldWrite
+	if shouldWrite, _ := bb.ReadByte(); shouldWrite == 1 {
+		hs.shouldWrite = true
+	}
+
+	// symmetricState.isKeyed
+	if isKeyed, _ := bb.ReadByte(); isKeyed == 1 {
+		hs.symmetricState.isKeyed = true
+	}
+
+	// symmetricState.strobeState
+	hs.symmetricState.strobeState = strobe.RecoverState(bb.Bytes())
+
+	//
+	return hs
 }
 
 // This allows you to initialize a peer.
