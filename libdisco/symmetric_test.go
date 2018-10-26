@@ -220,3 +220,47 @@ func TestEncryptDecrypt(t *testing.T) {
 		}
 	}
 }
+
+func TestEncryptDecryptAndAuthenticate(t *testing.T) {
+
+	key, _ := hex.DecodeString("eda8506c1fb0bbcc3f62626fef074bbf2d09a8c7c608f3fa1482c9a625d00f75")
+	plaintexts := []string{
+		"",
+		"a",
+		"ab",
+		"abc",
+		"abcd",
+		"short",
+		"hello, how are you?",
+		"this is very short",
+		"this is very long though, like, very very long, should we test very very long things here?",
+	}
+	ad := []string{
+		"blou blou",
+		"a",
+		"haahahAHAHAHhahaHAHAHahah so funny",
+		"you must be fun at parties",
+		"this is insanely long oh lala voulait dire le boulanger. C'est a dire que. Je ne sais pas. Merci.",
+		"do I really need to do this? This is not fun anymore. Help me please. I am stuck in a keyboard and nobody knows I am here. This is getting quite uncomfortable",
+		"bunch of \x00 and stuff \x00 you know",
+		"89032",
+		"9032ir9032kf9032fk093fewk90 fkwe09fk 903i2r 0932ir 0932ir 3029ir 230rk we0rkwe 09rkwer9 w0ekrw e09rkwe 09rew",
+	}
+	for idx, plaintext := range plaintexts {
+		plaintextBytes := []byte(plaintext)
+		adBytes := []byte(ad[idx])
+		ciphertext := EncryptAndAuthenticate(key, plaintextBytes, adBytes)
+		decrypted, err := DecryptAndAuthenticate(key, ciphertext, adBytes)
+		if err != nil {
+			t.Fatal("Encrypt/Decrypt did not work")
+		}
+		if len(plaintext) != len(decrypted) {
+			t.Fatal("Decrypt did not work")
+		}
+		for idx, _ := range plaintext {
+			if plaintext[idx] != decrypted[idx] {
+				t.Fatal("Decrypt did not work")
+			}
+		}
+	}
+}

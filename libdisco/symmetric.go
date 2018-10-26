@@ -123,7 +123,7 @@ func Encrypt(key, plaintext []byte) []byte {
 	if len(key) < 16 {
 		panic("disco: using a key smaller than 128-bit (16 bytes) has security consequences")
 	}
-	ae := strobe.InitStrobe("DiscoAEAD", 128)
+	ae := strobe.InitStrobe("DiscoAE", 128)
 	// absorb the key
 	ae.AD(false, key)
 	// generate 192-bit nonce
@@ -150,9 +150,60 @@ func Decrypt(key, ciphertext []byte) ([]byte, error) {
 		return nil, errors.New("disco: ciphertext is too small, it should contain at a minimum a 192-bit nonce and a 128-bit tag")
 	}
 	// instantiate
+	ae := strobe.InitStrobe("DiscoAE", 128)
+	// absorb the key
+	ae.AD(false, key)
+	// absorb the nonce
+	ae.AD(false, ciphertext[:nonceSize])
+	// decrypt
+	plaintext := ae.Recv_ENC_unauthenticated(false, ciphertext[nonceSize:len(ciphertext)-tagSize])
+	// verify tag
+	ok := ae.Recv_MAC(false, ciphertext[len(ciphertext)-tagSize:])
+	if !ok {
+		return nil, errors.New("disco: cannot decrypt the payload")
+	}
+	return plaintext, nil
+}
+
+// Encrypt allows you to encrypt a plaintext message with a key of any size greater than 128 bits (16 bytes).
+func EncryptAndAuthenticate(key, plaintext, ad []byte) []byte {
+	if len(key) < 16 {
+		panic("disco: using a key smaller than 128-bit (16 bytes) has security consequences")
+	}
 	ae := strobe.InitStrobe("DiscoAEAD", 128)
 	// absorb the key
 	ae.AD(false, key)
+	// absorb the AD
+	ae.AD(false, ad)
+	// generate 192-bit nonce
+	var nonce [nonceSize]byte
+	_, err := rand.Read(nonce[:])
+	if err != nil {
+		panic("disco: golang's random function is not working")
+	}
+	// absorb the nonce
+	ae.AD(false, nonce[:])
+	// nonce + send_ENC(plaintext) + send_MAC(16)
+	ciphertext := append(nonce[:], ae.Send_ENC_unauthenticated(false, plaintext)...)
+	ciphertext = append(ciphertext, ae.Send_MAC(false, tagSize)...)
+	//
+	return ciphertext
+}
+
+// Decrypt allows you to decrypt a message that was encrypted with the Encrypt function.
+func DecryptAndAuthenticate(key, ciphertext, ad []byte) ([]byte, error) {
+	if len(key) < 16 {
+		return nil, errors.New("disco: using a key smaller than 128-bit (16 bytes) has security consequences")
+	}
+	if len(ciphertext) < minimumCiphertextSize {
+		return nil, errors.New("disco: ciphertext is too small, it should contain at a minimum a 192-bit nonce and a 128-bit tag")
+	}
+	// instantiate
+	ae := strobe.InitStrobe("DiscoAEAD", 128)
+	// absorb the key
+	ae.AD(false, key)
+	// absorb the AD
+	ae.AD(false, ad)
 	// absorb the nonce
 	ae.AD(false, ciphertext[:nonceSize])
 	// decrypt
