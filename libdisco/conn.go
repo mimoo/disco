@@ -1,6 +1,7 @@
 package libdisco
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"errors"
 	"io"
@@ -126,7 +127,8 @@ func (c *Conn) Write(b []byte) (int, error) {
 		ciphertext = append(ciphertext, c.out.Send_MAC(false, 16)...)
 
 		// header (length)
-		length := []byte{byte(len(ciphertext) >> 8), byte(len(ciphertext) % 256)}
+		length := make([]byte, 2)
+		binary.BigEndian.PutUint16(length, uint16(len(ciphertext)))
 
 		// Send data
 		_, err := c.conn.Write(append(length, ciphertext...))
@@ -193,7 +195,7 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	if _, err := io.ReadFull(c.conn, bufHeader); err != nil {
 		return readSoFar, err
 	}
-	length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
+	length := binary.BigEndian.Uint16(bufHeader)
 	if length > NoiseMessageLength {
 		return readSoFar, errors.New("disco: Disco message received exceeds DiscoMessageLength")
 	}
@@ -292,7 +294,8 @@ ContinueHandshake:
 			return err
 		}
 		// header (length)
-		length := []byte{byte(len(bufToWrite) >> 8), byte(len(bufToWrite) % 256)}
+		length := make([]byte, 2)
+		binary.BigEndian.PutUint16(length, uint16(len(bufToWrite)))
 		// write
 		_, err = c.conn.Write(append(length, bufToWrite...))
 		if err != nil {
@@ -305,7 +308,7 @@ ContinueHandshake:
 		if _, err := io.ReadFull(c.conn, bufHeader); err != nil {
 			return err
 		}
-		length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
+		length := binary.BigEndian.Uint16(bufHeader)
 		if length > NoiseMessageLength {
 			return errors.New("disco: Disco message received exceeds DiscoMessageLength")
 		}
