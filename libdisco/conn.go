@@ -189,8 +189,8 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	}
 
 	// read header from socket
-	bufHeader, err := readFromUntil(c.conn, 2)
-	if err != nil {
+	bufHeader := make([]byte, 2)
+	if _, err := io.ReadFull(c.conn, bufHeader); err != nil {
 		return readSoFar, err
 	}
 	length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
@@ -199,8 +199,8 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	}
 
 	// read noise message from socket
-	noiseMessage, err := readFromUntil(c.conn, length)
-	if err != nil {
+	noiseMessage := make([]byte, length)
+	if _, err := io.ReadFull(c.conn, noiseMessage); err != nil {
 		return readSoFar, err
 	}
 
@@ -301,19 +301,18 @@ ContinueHandshake:
 
 	} else {
 		// we're reading the next message pattern, as well as reacting to any received data
-		bufHeader, err := readFromUntil(c.conn, 2) // length header
-		if err != nil {
+		bufHeader := make([]byte, 2) // length header
+		if _, err := io.ReadFull(c.conn, bufHeader); err != nil {
 			return err
 		}
 		length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
 		if length > NoiseMessageLength {
 			return errors.New("disco: Disco message received exceeds DiscoMessageLength")
 		}
-		noiseMessage, err := readFromUntil(c.conn, length) // noise message
-		if err != nil {
+		noiseMessage := make([]byte, length) // noise message
+		if _, err := io.ReadFull(c.conn, noiseMessage); err != nil {
 			return err
 		}
-
 		c1, c2, err = hs.ReadMessage(noiseMessage, &receivedPayload)
 		if err != nil {
 			return err
@@ -384,26 +383,6 @@ func (c *Conn) RemotePublicKey() (string, error) {
 		return "", errors.New("disco: handshake not completed")
 	}
 	return c.remotePublicKey, nil
-}
-
-//
-// input/output functions
-//
-
-func readFromUntil(r io.Reader, n int) ([]byte, error) {
-	result := make([]byte, n)
-	offset := 0
-	for {
-		m, err := r.Read(result[offset:])
-		if err != nil {
-			return result, err
-		}
-		offset += m
-		if offset == n {
-			break
-		}
-	}
-	return result, nil
 }
 
 /*
