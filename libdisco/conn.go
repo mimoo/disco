@@ -1,6 +1,7 @@
 package libdisco
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
@@ -114,16 +115,13 @@ func (c *Conn) Write(b []byte) (int, error) {
 	// process the data in a loop
 	var n int
 	data := b
-	for len(data) > 0 {
-
+	buf := bytes.NewBuffer(data)
+	for buf.Len() > 0 {
 		// fragment the data
-		m := len(data)
-		if m > NoiseMaxPlaintextSize {
-			m = NoiseMaxPlaintextSize
-		}
+		fragment := buf.Next(NoiseMaxPlaintextSize)
 
 		// Encrypt
-		ciphertext := c.out.Send_ENC_unauthenticated(false, data[:m])
+		ciphertext := c.out.Send_ENC_unauthenticated(false, fragment)
 		ciphertext = append(ciphertext, c.out.Send_MAC(false, 16)...)
 
 		// header (length)
@@ -135,16 +133,13 @@ func (c *Conn) Write(b []byte) (int, error) {
 		if err != nil {
 			return n, err
 		}
+		n += len(fragment)
 		/*
 			// TODO: should we test if we sent the correct number of bytes?
 			if _ != len(ciphertext) {
 				return errors.New("disco: cannot send the whole data")
 			}
 		*/
-
-		// prepare next loop iteration
-		n += m
-		data = data[m:]
 	}
 
 	return n, nil
