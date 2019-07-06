@@ -1,9 +1,12 @@
 package libdisco
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 
+	ristretto "github.com/bwesterb/go-ristretto"
 	"golang.org/x/crypto/curve25519"
 )
 
@@ -54,4 +57,87 @@ func dh(keyPair KeyPair, publicKey [32]byte) (shared [32]byte) {
 	curve25519.ScalarMult(&shared, &keyPair.PrivateKey, &publicKey)
 
 	return
+}
+
+// uses deterministic Schnorr with strobe
+type SigningKeyPair struct {
+	SecretKey ristretto.Scalar
+	PublicKey ristretto.Point
+}
+
+//
+func GenerateSigningKeyPair() SigningKeyPair {
+	// Generate an El'Gamal keypair
+	var secretKey ristretto.Scalar
+	var publicKey ristretto.Point
+
+	secretKey.Rand()                     // generate a new secret key
+	publicKey.ScalarMultBase(&secretKey) // compute public key
+
+	return SigningKeyPair{secretKey, publicKey}
+}
+
+func (kp SigningKeyPair) ExportPublicKey() string {
+	return hex.EncodeToString(kp.SecretKey.Bytes()) + hex.EncodeToString(kp.PublicKey.Bytes())
+}
+
+//
+func (kp SigningKeyPair) Sign(message []byte) []byte {
+	// 1. deterministic ephemeral k; r=g^k
+	var kBytes [32]byte
+	copy(kBytes[:], Hash(append(kp.SecretKey.Bytes(), message...), 32))
+	var k ristretto.Scalar
+	k.SetBytes(&kBytes)
+	var r ristretto.Point
+	r.ScalarMultBase(&k)
+
+	// 2. e = H(r || M)
+	e := Hash(append(r.Bytes(), message...), 32)
+	var e32 [32]byte
+	copy(e32[:], e)
+	// 3. s = k - xe
+	var xe ristretto.Scalar
+	var eScal ristretto.Scalar
+	eScal.SetBytes(&e32)
+	xe.Mul(&kp.SecretKey, &eScal)
+	var s ristretto.Scalar
+	s.Sub(&k, &xe)
+
+	// 4. return (s, e)
+	return append(s.Bytes(), e...)
+}
+
+//
+func (kp SigningKeyPair) Verify(message, signature []byte) error {
+	// 0. (s, e) = sig
+	if len(signature) != 64 {
+		return fmt.Errorf("disco: signature length incorrect")
+	}
+	var s, e [32]byte
+	copy(s[:], signature[:32])
+	copy(e[:], signature[32:])
+
+	// 1. rv = g^s y^e
+	var gs ristretto.Point
+	var sScal ristretto.Scalar
+	sScal.SetBytes(&s)
+	gs.ScalarMultBase(&sScal)
+	var ye ristretto.Point
+	var eScal ristretto.Scalar
+	eScal.SetBytes(&e)
+	ye.PublicScalarMult(&kp.PublicKey, &eScal)
+
+	var rv ristretto.Point
+	rv.Add(&gs, &ye)
+
+	// 2. ev = H(rv || M)
+	ev := Hash(append(rv.Bytes(), message...), 32)
+
+	// 3. ev = e ?
+	if !bytes.Equal(ev, e[:]) {
+		return fmt.Errorf("disco: signature is invalid")
+	}
+
+	//
+	return nil
 }
