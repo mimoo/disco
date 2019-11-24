@@ -127,22 +127,22 @@ type handshakeState struct {
 // Serialize is a helper function to serialize a handshake state, later to be unserialized via
 // the `RecoverState()` function.
 // For security purposes, the long-term static keypair is not serialized. Same for the psk
-func (hs handshakeState) Serialize() []byte {
+func (h *handshakeState) Serialize() []byte {
 	// [s.pubkey(32), e(64), rs(32), re(32), initiator(1), messagePatterns(?), shouldWrite(1), symmetricState.isKeyed(1) , serializedStrobeState(?)]
 	var serialized bytes.Buffer
 
 	// s.pubkey (not the private key!)
-	serialized.Write(hs.s.PublicKey[:])
+	serialized.Write(h.s.PublicKey[:])
 	// e
-	serialized.Write(hs.e.PrivateKey[:])
-	serialized.Write(hs.e.PublicKey[:]) // TODO: we can re-compute this, do we serialize it?
+	serialized.Write(h.e.PrivateKey[:])
+	serialized.Write(h.e.PublicKey[:]) // TODO: we can re-compute this, do we serialize it?
 	// rs.pubkey
-	serialized.Write(hs.rs.PublicKey[:])
+	serialized.Write(h.rs.PublicKey[:])
 	// re.pubkey
-	serialized.Write(hs.re.PublicKey[:])
+	serialized.Write(h.re.PublicKey[:])
 
 	// initiator
-	if hs.initiator {
+	if h.initiator {
 		serialized.WriteByte(1)
 	} else {
 		serialized.WriteByte(0)
@@ -150,24 +150,24 @@ func (hs handshakeState) Serialize() []byte {
 
 	// we use gob to encode the messagePatterns
 	encoder := gob.NewEncoder(&serialized)
-	encoder.Encode(hs.messagePatterns)
+	encoder.Encode(h.messagePatterns)
 
 	// shouldWrite
-	if hs.shouldWrite {
+	if h.shouldWrite {
 		serialized.WriteByte(1)
 	} else {
 		serialized.WriteByte(0)
 	}
 
 	// symmetricState.isKeyed
-	if hs.symmetricState.isKeyed {
+	if h.symmetricState.isKeyed {
 		serialized.WriteByte(1)
 	} else {
 		serialized.WriteByte(0)
 	}
 
 	// symmetricState.strobeState
-	serialized.Write(hs.symmetricState.strobeState.Serialize())
+	serialized.Write(h.symmetricState.strobeState.Serialize())
 
 	//
 	return serialized.Bytes()
@@ -231,7 +231,7 @@ func RecoverState(serialized []byte, psk []byte, s *KeyPair) handshakeState {
 	return hs
 }
 
-// This allows you to initialize a peer.
+// Initialize allows you to initialize a peer
 // * see `patterns` for a list of available handshakePatterns
 // * initiator = false means the instance is for a responder
 // * prologue is a byte string record of anything that happened prior the Noise handshakeState

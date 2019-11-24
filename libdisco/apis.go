@@ -1,5 +1,5 @@
-// These Utility functions implement the net.Conn interface. Most of this code
-// was either taken directly or inspired from Go's crypto/tls package.
+// Package libdisco these utility functions implement the net.Conn interface.
+// Most of this code was either taken directly or inspired from Go's crypto/tls package.
 package libdisco
 
 import (
@@ -32,7 +32,7 @@ func Client(conn net.Conn, config *Config) *Conn {
 	return &Conn{conn: conn, config: config, isClient: true}
 }
 
-// A listener implements a network listener (net.Listener) for Disco connections.
+// Listener implements a network listener (net.Listener) for Disco connections.
 type Listener struct {
 	net.Listener
 	config *Config
@@ -48,7 +48,7 @@ func (l *Listener) Accept() (net.Conn, error) {
 	return Server(c, l.config), nil
 }
 
-// Accept waits for and returns the next incoming Disco connection.
+// AcceptDisco waits for and returns the next incoming Disco connection.
 // The returned connection is of type *Conn.
 func (l *Listener) AcceptDisco() (*Conn, error) {
 	c, err := l.Listener.Accept()
@@ -123,21 +123,21 @@ var errNoProof = errors.New("Disco: no public key proof set in Config")
 
 func checkRequirements(isClient bool, config *Config) (err error) {
 	ht := config.HandshakePattern
-	if ht == Noise_NX || ht == Noise_KX || ht == Noise_XX || ht == Noise_IX {
+	if ht == NoiseNX || ht == NoiseKX || ht == NoiseXX || ht == NoiseIX {
 		if isClient && config.PublicKeyVerifier == nil {
 			return errNoPubkeyVerifier
 		} else if !isClient && config.StaticPublicKeyProof == nil {
 			return errNoProof
 		}
 	}
-	if ht == Noise_XN || ht == Noise_XK || ht == Noise_XX || ht == Noise_X || ht == Noise_IN || ht == Noise_IK || ht == Noise_IX {
+	if ht == NoiseXN || ht == NoiseXK || ht == NoiseXX || ht == NoiseX || ht == NoiseIN || ht == NoiseIK || ht == NoiseIX {
 		if isClient && config.StaticPublicKeyProof == nil {
 			return errNoProof
 		} else if !isClient && config.PublicKeyVerifier == nil {
 			return errNoPubkeyVerifier
 		}
 	}
-	if ht == Noise_NNpsk2 && len(config.PreSharedKey) != 32 {
+	if ht == NoiseNNpsk2 && len(config.PreSharedKey) != 32 {
 		return errors.New("noise: a 32-byte pre-shared key needs to be passed as noise.Config")
 	}
 	return nil
