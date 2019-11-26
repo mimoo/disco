@@ -14,7 +14,8 @@ func TestSignVerify(t *testing.T) {
 	}
 	sig := kp.Sign(input)
 
-	if ok, err := kp.Verify(input, sig); !ok || err != nil {
+	err = kp.Verify(input, sig)
+	if err != nil {
 		t.Fatal("failed to verify signature with error : ", err)
 	}
 }
@@ -36,39 +37,15 @@ func TestDeterministicSignatures(t *testing.T) {
 	}
 }
 
-func BenchmarkSign(b *testing.B) {
-	input := []byte("benchmark how fast do I get signed")
-
-	for n := 0; n < b.N; n++ {
-		kp, err := GenerateSigningKeypair()
-
-		if err != nil {
-			b.Fatal("failed to generate signing keypair")
-		}
-		sig := kp.Sign(input)
-
-		if ok, err := kp.Verify(input, sig); !ok || err != nil {
-			b.Fatal("failed to verify signature with error : ", err)
-		}
-
-	}
-}
-
-func BenchmarkDeterministicSign(b *testing.B) {
+func BenchmarkSignVerify(b *testing.B) {
 	kp, err := GenerateSigningKeypair()
 	if err != nil {
 		b.Fatal("failed to generate a signing keypair")
 	}
 	input := []byte("benchmark how fast do I get signed and it stays consistent")
-	signature := kp.Sign(input)
-	sigBytes := signature.Encode()
+
 	for n := 0; n < b.N; n++ {
-		sigN := kp.Sign(input)
-
-		sigNBytes := sigN.Encode()
-
-		if !bytes.Equal(sigBytes[:], sigNBytes[:]) {
-			b.Fatal("failed to generate deterministic signatures")
-		}
+		sig := kp.Sign(input)
+		kp.Verify(input, sig)
 	}
 }

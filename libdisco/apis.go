@@ -1,4 +1,4 @@
-// Package libdisco these utility functions implement the net.Conn interface.
+// Package libdisco this file implements a net.Conn interface over Disco.
 // Most of this code was either taken directly or inspired from Go's crypto/tls package.
 package libdisco
 

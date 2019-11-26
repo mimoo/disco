@@ -47,13 +47,13 @@ func (c *Conn) LocalAddr() net.Addr {
 	return c.conn.LocalAddr()
 }
 
-// Addr abstract an address
+// Addr represents a newtork address.
 type Addr struct {
 	network string
 	address string
 }
 
-// Network returns addr network
+// Network returns the network.
 func (a Addr) Network() string {
 	return a.network
 }

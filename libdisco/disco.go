@@ -127,22 +127,22 @@ type handshakeState struct {
 // Serialize is a helper function to serialize a handshake state, later to be unserialized via
 // the `RecoverState()` function.
 // For security purposes, the long-term static keypair is not serialized. Same for the psk
-func (h *handshakeState) Serialize() []byte {
+func (hs *handshakeState) Serialize() []byte {
 	// [s.pubkey(32), e(64), rs(32), re(32), initiator(1), messagePatterns(?), shouldWrite(1), symmetricState.isKeyed(1) , serializedStrobeState(?)]
 	var serialized bytes.Buffer
 
 	// s.pubkey (not the private key!)
-	serialized.Write(h.s.PublicKey[:])
+	serialized.Write(hs.s.PublicKey[:])
 	// e
-	serialized.Write(h.e.PrivateKey[:])
-	serialized.Write(h.e.PublicKey[:]) // TODO: we can re-compute this, do we serialize it?
+	serialized.Write(hs.e.PrivateKey[:])
+	serialized.Write(hs.e.PublicKey[:]) // TODO: we can re-compute this, do we serialize it?
 	// rs.pubkey
-	serialized.Write(h.rs.PublicKey[:])
+	serialized.Write(hs.rs.PublicKey[:])
 	// re.pubkey
-	serialized.Write(h.re.PublicKey[:])
+	serialized.Write(hs.re.PublicKey[:])
 
 	// initiator
-	if h.initiator {
+	if hs.initiator {
 		serialized.WriteByte(1)
 	} else {
 		serialized.WriteByte(0)
@@ -150,24 +150,24 @@ func (h *handshakeState) Serialize() []byte {
 
 	// we use gob to encode the messagePatterns
 	encoder := gob.NewEncoder(&serialized)
-	encoder.Encode(h.messagePatterns)
+	encoder.Encode(hs.messagePatterns)
 
 	// shouldWrite
-	if h.shouldWrite {
+	if hs.shouldWrite {
 		serialized.WriteByte(1)
 	} else {
 		serialized.WriteByte(0)
 	}
 
 	// symmetricState.isKeyed
-	if h.symmetricState.isKeyed {
+	if hs.symmetricState.isKeyed {
 		serialized.WriteByte(1)
 	} else {
 		serialized.WriteByte(0)
 	}
 
 	// symmetricState.strobeState
-	serialized.Write(h.symmetricState.strobeState.Serialize())
+	serialized.Write(hs.symmetricState.strobeState.Serialize())
 
 	//
 	return serialized.Bytes()
@@ -237,32 +237,32 @@ func RecoverState(serialized []byte, psk []byte, s *KeyPair) handshakeState {
 // * prologue is a byte string record of anything that happened prior the Noise handshakeState
 // * s, e, rs, re are the local and remote static/ephemeral key pairs to be set (if they exist)
 // the function returns a handshakeState object.
-func Initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byte, s, e, rs, re *KeyPair) (h handshakeState) {
+func Initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byte, s, e, rs, re *KeyPair) (hs handshakeState) {
 
 	handshakePattern, ok := patterns[handshakeType]
 	if !ok {
 		panic("disco: the supplied handshakePattern does not exist")
 	}
 
-	h.symmetricState.initializeSymmetric("Noise_" + handshakePattern.name + "_25519_STROBEv1.0.2")
+	hs.symmetricState.initializeSymmetric("Noise_" + handshakePattern.name + "_25519_STROBEv1.0.2")
 
-	h.symmetricState.mixHash(prologue)
+	hs.symmetricState.mixHash(prologue)
 
 	if s != nil {
-		h.s = *s
+		hs.s = *s
 	}
 	if e != nil {
 		panic("disco: fallback patterns are not implemented")
 	}
 	if rs != nil {
-		h.rs = *rs
+		hs.rs = *rs
 	}
 	if re != nil {
 		panic("disco: fallback patterns are not implemented")
 	}
 
-	h.initiator = initiator
-	h.shouldWrite = initiator
+	hs.initiator = initiator
+	hs.shouldWrite = initiator
 
 	//Calls MixHash() once for each public key listed in the pre-messages from handshake_pattern, with the specified public key as input (see Section 7 for an explanation of pre-messages). If both initiator and responder have pre-messages, the initiator's public keys are hashed first.
 
@@ -273,12 +273,12 @@ func Initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 				if s == nil {
 					panic("disco: the static key of the client should be set")
 				}
-				h.symmetricState.mixHash(s.PublicKey[:])
+				hs.symmetricState.mixHash(s.PublicKey[:])
 			} else {
 				if rs == nil {
 					panic("disco: the remote static key of the server should be set")
 				}
-				h.symmetricState.mixHash(rs.PublicKey[:])
+				hs.symmetricState.mixHash(rs.PublicKey[:])
 			}
 		} else {
 			panic("disco: token of pre-message not supported")
@@ -292,19 +292,19 @@ func Initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 				if rs == nil {
 					panic("disco: the remote static key of the server should be set")
 				}
-				h.symmetricState.mixHash(rs.PublicKey[:])
+				hs.symmetricState.mixHash(rs.PublicKey[:])
 			} else {
 				if s == nil {
 					panic("disco: the static key of the client should be set")
 				}
-				h.symmetricState.mixHash(s.PublicKey[:])
+				hs.symmetricState.mixHash(s.PublicKey[:])
 			}
 		} else {
 			panic("disco: token of pre-message not supported")
 		}
 	}
 
-	h.messagePatterns = handshakePattern.messagePatterns
+	hs.messagePatterns = handshakePattern.messagePatterns
 
 	return
 }
@@ -312,18 +312,18 @@ func Initialize(handshakeType noiseHandshakeType, initiator bool, prologue []byt
 // WriteMessage takes a (nil) payload and a messageBuffer. It writes the next Noise message into
 // the message buffer.
 // messageBuffer cannot be nil
-func (h *handshakeState) WriteMessage(payload []byte, messageBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
+func (hs *handshakeState) WriteMessage(payload []byte, messageBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
 	// is it our turn to write?
-	if !h.shouldWrite {
+	if !hs.shouldWrite {
 		panic("disco: unexpected call to WriteMessage should be ReadMessage")
 	}
 	// do we have a token to process?
-	if len(h.messagePatterns) == 0 || len(h.messagePatterns[0]) == 0 {
+	if len(hs.messagePatterns) == 0 || len(hs.messagePatterns[0]) == 0 {
 		panic("disco: no more tokens or message patterns to write")
 	}
 
 	// process the patterns
-	for _, pattern := range h.messagePatterns[0] {
+	for _, pattern := range hs.messagePatterns[0] {
 
 		switch pattern {
 
@@ -332,70 +332,70 @@ func (h *handshakeState) WriteMessage(payload []byte, messageBuffer *[]byte) (c1
 
 		case token_e:
 			// debug
-			if h.debugEphemeral != nil {
-				h.e = *h.debugEphemeral
+			if hs.debugEphemeral != nil {
+				hs.e = *hs.debugEphemeral
 			} else {
-				h.e = *GenerateKeypair(nil)
+				hs.e = *GenerateKeypair(nil)
 			}
-			*messageBuffer = append(*messageBuffer, h.e.PublicKey[:]...)
-			h.symmetricState.mixHash(h.e.PublicKey[:])
-			if len(h.psk) > 0 {
-				h.symmetricState.mixKey(h.e.PublicKey)
+			*messageBuffer = append(*messageBuffer, hs.e.PublicKey[:]...)
+			hs.symmetricState.mixHash(hs.e.PublicKey[:])
+			if len(hs.psk) > 0 {
+				hs.symmetricState.mixKey(hs.e.PublicKey)
 			}
 
 		case token_s:
 			var ciphertext []byte
-			ciphertext, err = h.symmetricState.encryptAndHash(h.s.PublicKey[:])
+			ciphertext, err = hs.symmetricState.encryptAndHash(hs.s.PublicKey[:])
 			if err != nil {
 				return
 			}
 			*messageBuffer = append(*messageBuffer, ciphertext...)
 
 		case token_ee:
-			h.symmetricState.mixKey(dh(h.e, h.re.PublicKey))
+			hs.symmetricState.mixKey(dh(hs.e, hs.re.PublicKey))
 
 		case token_es:
-			if h.initiator {
-				h.symmetricState.mixKey(dh(h.e, h.rs.PublicKey))
+			if hs.initiator {
+				hs.symmetricState.mixKey(dh(hs.e, hs.rs.PublicKey))
 			} else {
-				h.symmetricState.mixKey(dh(h.s, h.re.PublicKey))
+				hs.symmetricState.mixKey(dh(hs.s, hs.re.PublicKey))
 			}
 
 		case token_se:
-			if h.initiator {
-				h.symmetricState.mixKey(dh(h.s, h.re.PublicKey))
+			if hs.initiator {
+				hs.symmetricState.mixKey(dh(hs.s, hs.re.PublicKey))
 			} else {
-				h.symmetricState.mixKey(dh(h.e, h.rs.PublicKey))
+				hs.symmetricState.mixKey(dh(hs.e, hs.rs.PublicKey))
 			}
 
 		case token_ss:
-			h.symmetricState.mixKey(dh(h.s, h.rs.PublicKey))
+			hs.symmetricState.mixKey(dh(hs.s, hs.rs.PublicKey))
 
 		case token_psk:
-			h.symmetricState.mixKeyAndHash(h.psk)
+			hs.symmetricState.mixKeyAndHash(hs.psk)
 		}
 	}
 
 	// Appends EncryptAndHash(payload) to the buffer
 	var ciphertext []byte
-	ciphertext, err = h.symmetricState.encryptAndHash(payload)
+	ciphertext, err = hs.symmetricState.encryptAndHash(payload)
 	if err != nil {
 		return
 	}
 	*messageBuffer = append(*messageBuffer, ciphertext...)
 
 	// are there more message patterns to process?
-	if len(h.messagePatterns) == 1 {
+	if len(hs.messagePatterns) == 1 {
 		// If there are no more message patterns returns two new CipherState objects
-		h.messagePatterns = nil
-		c1, c2 = h.symmetricState.Split()
+		hs.messagePatterns = nil
+		c1, c2 = hs.symmetricState.Split()
 	} else {
 		// remove the pattern from the messagePattern
-		h.messagePatterns = h.messagePatterns[1:]
+		hs.messagePatterns = hs.messagePatterns[1:]
 	}
 
 	// change the direction
-	h.shouldWrite = false
+	hs.shouldWrite = false
 
 	return
 }
@@ -403,20 +403,20 @@ func (h *handshakeState) WriteMessage(payload []byte, messageBuffer *[]byte) (c1
 // ReadMessage takes a byte sequence containing a Noise handshake message,
 // and a payload_buffer to write the message's plaintext payload into.
 // payload_buffer cannot be nil
-func (h *handshakeState) ReadMessage(message []byte, payloadBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
+func (hs *handshakeState) ReadMessage(message []byte, payloadBuffer *[]byte) (c1, c2 *strobe.Strobe, err error) {
 	// is it our turn to read?
-	if h.shouldWrite {
+	if hs.shouldWrite {
 		panic("disco: unexpected call to ReadMessage should be WriteMessage")
 	}
 	// do we have a token to process?
-	if len(h.messagePatterns) == 0 || len(h.messagePatterns[0]) == 0 {
+	if len(hs.messagePatterns) == 0 || len(hs.messagePatterns[0]) == 0 {
 		panic("disco: no more message pattern to read")
 	}
 
 	// process the patterns
 	offset := 0
 
-	for _, pattern := range h.messagePatterns[0] {
+	for _, pattern := range hs.messagePatterns[0] {
 
 		switch pattern {
 
@@ -427,73 +427,73 @@ func (h *handshakeState) ReadMessage(message []byte, payloadBuffer *[]byte) (c1,
 			if len(message[offset:]) < dhLen {
 				return nil, nil, errors.New("disco: the received ephemeral key is to short")
 			}
-			copy(h.re.PublicKey[:], message[offset:offset+dhLen])
+			copy(hs.re.PublicKey[:], message[offset:offset+dhLen])
 			offset += dhLen
-			h.symmetricState.mixHash(h.re.PublicKey[:])
-			if len(h.psk) > 0 {
-				h.symmetricState.mixKey(h.re.PublicKey)
+			hs.symmetricState.mixHash(hs.re.PublicKey[:])
+			if len(hs.psk) > 0 {
+				hs.symmetricState.mixKey(hs.re.PublicKey)
 			}
 
 		case token_s:
 			tagLen := 0
-			if h.symmetricState.isKeyed {
+			if hs.symmetricState.isKeyed {
 				tagLen = 16
 			}
 			if len(message[offset:]) < dhLen+tagLen {
 				return nil, nil, errors.New("disco: the received static key is to short")
 			}
 			var plaintext []byte
-			plaintext, err = h.symmetricState.decryptAndHash(message[offset : offset+dhLen+tagLen])
+			plaintext, err = hs.symmetricState.decryptAndHash(message[offset : offset+dhLen+tagLen])
 			if err != nil {
 				return
 			}
-			copy(h.rs.PublicKey[:], plaintext)
+			copy(hs.rs.PublicKey[:], plaintext)
 			offset += dhLen + tagLen
 
 		case token_ee:
-			h.symmetricState.mixKey(dh(h.e, h.re.PublicKey))
+			hs.symmetricState.mixKey(dh(hs.e, hs.re.PublicKey))
 
 		case token_es:
-			if h.initiator {
-				h.symmetricState.mixKey(dh(h.e, h.rs.PublicKey))
+			if hs.initiator {
+				hs.symmetricState.mixKey(dh(hs.e, hs.rs.PublicKey))
 			} else {
-				h.symmetricState.mixKey(dh(h.s, h.re.PublicKey))
+				hs.symmetricState.mixKey(dh(hs.s, hs.re.PublicKey))
 			}
 
 		case token_se:
-			if h.initiator {
-				h.symmetricState.mixKey(dh(h.s, h.re.PublicKey))
+			if hs.initiator {
+				hs.symmetricState.mixKey(dh(hs.s, hs.re.PublicKey))
 			} else {
-				h.symmetricState.mixKey(dh(h.e, h.rs.PublicKey))
+				hs.symmetricState.mixKey(dh(hs.e, hs.rs.PublicKey))
 			}
 
 		case token_ss:
-			h.symmetricState.mixKey(dh(h.s, h.rs.PublicKey))
+			hs.symmetricState.mixKey(dh(hs.s, hs.rs.PublicKey))
 
 		case token_psk:
-			h.symmetricState.mixKeyAndHash(h.psk)
+			hs.symmetricState.mixKeyAndHash(hs.psk)
 		}
 	}
 
 	// Appends decrpyAndHash(payload) to the buffer
 	var plaintext []byte
-	plaintext, err = h.symmetricState.decryptAndHash(message[offset:])
+	plaintext, err = hs.symmetricState.decryptAndHash(message[offset:])
 	if err != nil {
 		return
 	}
 	*payloadBuffer = append(*payloadBuffer, plaintext...)
 
 	// remove the pattern from the messagePattern
-	if len(h.messagePatterns) == 1 {
+	if len(hs.messagePatterns) == 1 {
 		// If there are no more message patterns returns two new CipherState objects
-		h.messagePatterns = nil
-		c1, c2 = h.symmetricState.Split()
+		hs.messagePatterns = nil
+		c1, c2 = hs.symmetricState.Split()
 	} else {
-		h.messagePatterns = h.messagePatterns[1:]
+		hs.messagePatterns = hs.messagePatterns[1:]
 	}
 
 	// change the direction
-	h.shouldWrite = true
+	hs.shouldWrite = true
 
 	return
 }
@@ -503,11 +503,11 @@ func (h *handshakeState) ReadMessage(message []byte, payloadBuffer *[]byte) (c1,
 //
 
 // TODO: is there a better way to get rid of secrets in Go?
-func (h *handshakeState) clear() {
-	h.s.clear()
-	h.e.clear()
-	h.rs.clear()
-	h.re.clear()
+func (hs *handshakeState) clear() {
+	hs.s.clear()
+	hs.e.clear()
+	hs.rs.clear()
+	hs.re.clear()
 }
 
 // TODO: is there a better way to get rid of secrets in Go?

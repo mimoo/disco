@@ -233,7 +233,7 @@ func TestRemotePublicKey(t *testing.T) {
 	}
 
 	// need to send a message for the handshake to start
-	_, err = clientSocket.Write([]byte(clientConfig.KeyPair.String()))
+	_, err = clientSocket.Write([]byte(clientConfig.KeyPair.ExportPublicKey()))
 	if err != nil {
 		t.Fatal("client can't write on socket")
 	}

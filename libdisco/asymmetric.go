@@ -4,18 +4,13 @@ import (
 	"bytes"
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 
 	ristretto "github.com/gtank/ristretto255"
 	"golang.org/x/crypto/curve25519"
 )
 
-//
 // The following code defines the X25519, chacha20poly1305, SHA-256 suite.
-//
-// The following code implements the Schnorrkel variant of Schnorr signatures
-// over ristretto255.
-// This implementation was picked from https://github.com/w3f/schnorrkel
-
 const (
 	dhLen  = 32 // A constant specifying the size in bytes of public keys and DH outputs. For security reasons, dhLen must be 32 or greater.
 	skSize = 32 // a secret key is encoded as a 32 byte array.
@@ -27,7 +22,7 @@ const (
 
 // KeyPair contains a private and a public part, both of 32-byte.
 // It can be generated via the GenerateKeyPair() function.
-// The public part can also be extracted via the String() function.
+// The public part can also be extracted via the ExportPublicKey function.
 type KeyPair struct {
 	PrivateKey [32]byte // must stay a [32]byte because of Serialize()
 	PublicKey  [32]byte // must stay a [32]byte because of Serialize()
@@ -50,8 +45,8 @@ func GenerateKeypair(privateKey *[32]byte) *KeyPair {
 	return &keyPair
 }
 
-// String returns the public part in hex format of a static key pair.
-func (kp KeyPair) String() string {
+// ExportPublicKey returns the public part in hex format of a static key pair.
+func (kp KeyPair) ExportPublicKey() string {
 	return hex.EncodeToString(kp.PublicKey[:])
 }
 
@@ -61,6 +56,10 @@ func dh(keyPair KeyPair, publicKey [32]byte) (shared [32]byte) {
 
 	return
 }
+
+// The following code implements the Schnorrkel variant of Schnorr signatures
+// over ristretto255.
+// This implementation was picked from https://github.com/w3f/schnorrkel
 
 // SigningKeypair uses deterministic Schnorr with strobe
 type SigningKeypair struct {
@@ -122,8 +121,8 @@ func GenerateSigningKeypair() (SigningKeypair, error) {
 	return sigpair, nil
 }
 
-// String returns a hexstring encoding of the signing keypair.
-func (kp SigningKeypair) String() string {
+// ExportPublicKey returns a hexstring encoding of the signing keypair.
+func (kp SigningKeypair) ExportPublicKey() string {
 	return hex.EncodeToString(kp.SecretKey.Encode(nil)) + hex.EncodeToString(kp.PublicKey.Encode(nil))
 }
 
@@ -174,7 +173,7 @@ func (kp SigningKeypair) Sign(message []byte) Signature {
 }
 
 // Verify a signature
-func (kp SigningKeypair) Verify(message []byte, signature Signature) (bool, error) {
+func (kp SigningKeypair) Verify(message []byte, signature Signature) error {
 
 	// Verifying a signature of the form R,s
 	// Decoding the signature
@@ -198,7 +197,10 @@ func (kp SigningKeypair) Verify(message []byte, signature Signature) (bool, erro
 
 	Rp.Subtract(&Rp, &ky)
 
-	return Rp.Equal(&R) == 1, nil
+	if Rp.Equal(&R) != 1 {
+		return errors.New("failed to verify signature")
+	}
+	return nil
 
 }
 
