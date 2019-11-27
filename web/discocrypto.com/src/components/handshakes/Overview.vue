@@ -98,7 +98,7 @@ func main() {
 	serverKeyPair := libdisco.GenerateKeypair(nil)
 
 	serverConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_NK,
+		HandshakePattern: libdisco.NoiseNK,
 		KeyPair:          serverKeyPair,
 	}
 
@@ -132,7 +132,7 @@ func main() {
 	<h3><i class="fa fa-caret-right" aria-hidden="true"></i> Client</h3>
 
 	<p>The client can simply use the <code>Dial()</code> paradigm using the public key of the server:</p>
-	
+
 	<pre><code>package main
 
 import (
@@ -146,7 +146,7 @@ func main() {
 	// replace this with the server's public key!
 	serverKey, _ := hex.DecodeString("e424214ab16f56def7778e9a3d36d891221c4f5b38c8b2679ccbdaed5c27e735")
 	clientConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_NK,
+		HandshakePattern: libdisco.NoiseNK,
 		RemoteKey:        serverKey,
 	}
 

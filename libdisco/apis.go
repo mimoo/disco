@@ -1,7 +1,7 @@
-// Package libdisco this file implements a net.Conn interface over Disco.
-// Most of this code was either taken directly or inspired from Go's crypto/tls package.
 package libdisco
 
+// This file implements a net.Conn interface over Disco.
+// Most of this code was either taken directly or inspired from Go's crypto/tls package.
 import (
 	"crypto"
 	"crypto/rand"

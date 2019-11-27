@@ -21,7 +21,7 @@ func main() {
 
 	// configuring the Disco connection
 	serverConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_NNpsk2,
+		HandshakePattern: libdisco.NoiseNNpsk2,
 		PreSharedKey:     sharedSecret,
 	}
 

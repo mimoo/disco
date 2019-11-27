@@ -8,12 +8,12 @@
 
 		<img src="./assets/Noise_N.png" alt="Noise_N handshake">
 
-		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2>
 
 		<p>This handshake pattern is useful for clients that always talk to a single server. In addition, since it is a one-way pattern, the server never talks back to them. The server also doesn't require the client to authenticate itself.</p>
 
 		<p>If client authentication is needed, refer to <router-link to="/protocol/Noise_K">Noise_K</router-link> or <router-link to="/protocol/Noise_X">Noise_X</router-link>.</p>
-	
+
 		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Example of configuration</h2>
 
 		<p>The client needs to have prior knowledge to the server's public static key. In this example we just pass it as an <code>stdin</code> argument to the client's CLI, but in practice it should be hardcoded.</p>
@@ -30,7 +30,7 @@ serverKeyPair := libdisco.GenerateKeypair(nil)
 // configuring the Disco connection with a Noise_N handshake
 // in which the client already knows the server's static public key
 serverConfig := libdisco.Config{
-	HandshakePattern: libdisco.Noise_N,
+	HandshakePattern: libdisco.NoiseN,
 	KeyPair:          serverKeyPair,
 }
 // listen on port 6666
@@ -53,7 +53,7 @@ serverKey, _ := hex.DecodeString(serverPubKey)
 // configure the Disco connection with Noise_N
 // meaning the client knows the server's static public key (retrieved from the CLI)
 clientConfig := libdisco.Config{
-	HandshakePattern: libdisco.Noise_N,
+	HandshakePattern: libdisco.NoiseN,
 	RemoteKey:        serverKey,
 }
 // Dial the port 6666 of localhost

@@ -8,7 +8,7 @@
 
 		<img src="./assets/Noise_NNpsk2.png" alt="Noise_NNpsk2 handshake">
 
-		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2>
 
 		<p>If you are only dealing with one client and one server, and can manually hardcode a common 32-byte random value on each peer, you probably do not need to deal with public keys and should use this handshake pattern.</p>
 
@@ -17,7 +17,7 @@
 		    <p>Security Consideration</p>
 		  </div>
 		  <div class="message-body">
-		    The same amount of care as with private keys should be taken to store and protect shared secrets. 
+		    The same amount of care as with private keys should be taken to store and protect shared secrets.
 		  </div>
 		</article>
 
@@ -31,9 +31,9 @@
 
 		<pre><code>// configuring the Disco connection
 serverConfig := libdisco.Config{
-	HandshakePattern: libdisco.Noise_NNpsk2,
+	HandshakePattern: libdisco.NoiseNNpsk2,
 	// your 32-byte shared secret
-	PreSharedKey: sharedSecret, 
+	PreSharedKey: sharedSecret,
 }
 
 // listen on port 6666
@@ -49,9 +49,9 @@ fmt.Println("listening on:", addr)</code></pre>
 
 		<pre><code>// configure the Disco connection
 clientConfig := libdisco.Config{
-	HandshakePattern: libdisco.Noise_NNpsk2,
+	HandshakePattern: libdisco.NoiseNNpsk2,
 	// your 32-byte shared secret
-	PreSharedKey: sharedSecret, 
+	PreSharedKey: sharedSecret,
 }
 
 // Dial the port 6666 of localhost

@@ -14,7 +14,7 @@ func main() {
 	// configuring the Disco connection with a Noise_N handshake
 	// in which the client already knows the server's static public key
 	serverConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_N,
+		HandshakePattern: libdisco.NoiseN,
 		KeyPair:          serverKeyPair,
 	}
 	// listen on port 6666

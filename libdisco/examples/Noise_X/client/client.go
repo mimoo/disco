@@ -59,7 +59,7 @@ func main() {
 		clientConfig := libdisco.Config{
 			KeyPair:              clientKeyPair,
 			RemoteKey:            serverPublicKey,
-			HandshakePattern:     libdisco.Noise_X,
+			HandshakePattern:     libdisco.NoiseX,
 			StaticPublicKeyProof: proof,
 		}
 
