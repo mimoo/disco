@@ -40,7 +40,7 @@
     <p>To set it up, follow <a href="https://golang.org/pkg/net/" target="_blank">Golang's net/conn</a> standard way of setting up a server with a libdisco config:</p>
 
     <pre><code>serverConfig := libdisco.Config{
-  HandshakePattern: libdisco.Noise_NK,
+  HandshakePattern: libdisco.NoiseNK,
   KeyPair:          serverKeyPair,
 }
 listener, err := libdisco.Listen("tcp", "127.0.0.1:6666", &serverConfig)
@@ -49,7 +49,7 @@ server, err := listener.Accept()</code></pre>
     <p>and the standard way of setting up a client with a libdisco config:</p>
 
     <pre><code>clientConfig := libdisco.Config{
-  HandshakePattern: libdisco.Noise_NK,
+  HandshakePattern: libdisco.NoiseNK,
   RemoteKey:        serverKey,
 }
 client, err := libdisco.Dial("tcp", "127.0.0.1:6666", &clientConfig)

@@ -8,7 +8,7 @@
 
 		<img src="./assets/Noise_K.png" alt="Noise_K handshake">
 
-		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2> 
+		<h2><i class="fa fa-caret-right" aria-hidden="true"></i> Use cases</h2>
 
 		<p>Like any one-way pattern. If the server never needs to (or cannot) reply to the client, Noise_K might be a good fit. In addition, this handshake authenticates both side of the connection via <strong>public-key pinning</strong>. This means that both sides need to know in advance each other's static public key.</p>
 
@@ -30,7 +30,7 @@ fmt.Println("server's public key:", serverKeyPair.ExportPublicKey())
 
 // configuring the Disco connection
 serverConfig := libdisco.Config{
-	HandshakePattern: libdisco.Noise_K,
+	HandshakePattern: libdisco.NoiseK,
 	KeyPair:          serverKeyPair,
 }
 
@@ -57,7 +57,7 @@ fmt.Println("client's public key:", clientKeyPair.ExportPublicKey())
 
 // configure the Disco connection
 clientConfig := libdisco.Config{
-	HandshakePattern: libdisco.Noise_K,
+	HandshakePattern: libdisco.NoiseK,
 	KeyPair:          clientKeyPair,
 }
 

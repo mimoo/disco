@@ -7,61 +7,71 @@ package libdisco
 type noiseHandshakeType int8
 
 const (
-	// Noise_N is a one-way pattern where a client can send
+	// NoiseUnknown is for specifying an unknown pattern
+	NoiseUnknown noiseHandshakeType = iota
+	// NoiseN is a one-way pattern where a client can send
 	// data to a server with a known static key. The server
 	// can only receive data and cannot reply back.
-	Noise_N noiseHandshakeType = iota
+	NoiseN
 
-	// Noise_K is a one-way pattern where a client can send
+	// NoiseK is a one-way pattern where a client can send
 	// data to a server with a known static key. The server
 	// can only receive data and cannot reply back. The server
 	// authenticates the client via a known key.
-	Noise_K
+	NoiseK
 
-	// Noise_X is a one-way pattern where a client can send
+	// NoiseX is a one-way pattern where a client can send
 	// data to a server with a known static key. The server
 	// can only receive data and cannot reply back. The server
 	// authenticates the client via a key transmitted as part
 	// of the handshake.
-	Noise_X
+	NoiseX
 
-	// Noise_KK is a pattern where both the client static key and the
+	// NoiseKK is a pattern where both the client static key and the
 	// server static key are known.
-	Noise_KK
+	NoiseKK
 
-	// Noise_NX is a "HTTPS"-like pattern where the client is
+	// NoiseNX is a "HTTPS"-like pattern where the client is
 	// not authenticated, and the static public key of the server
 	// is transmitted during the handshake. It is the responsability of the client to validate the received key properly.
-	Noise_NX
+	NoiseNX
 
-	// Noise_NK is a "Public Key Pinning"-like pattern where the client
+	// NoiseNK is a "Public Key Pinning"-like pattern where the client
 	// is not authenticated, and the static public key of the server
 	// is already known.
-	Noise_NK
+	NoiseNK
 
-	// Noise_XX is a pattern where both static keys are transmitted.
+	// NoiseXX is a pattern where both static keys are transmitted.
 	// It is the responsability of the server and of the client to
 	// validate the received keys properly.
-	Noise_XX
+	NoiseXX
 
-	// Not documented
-	Noise_KX
-	Noise_XK
-	Noise_IK
-	Noise_IX
-	Noise_NNpsk2
+	// NoiseKX Not documented
+	NoiseKX
+	// NoiseXK Not documented
+	NoiseXK
+	// NoiseIK Not documented
+	NoiseIK
+	// NoiseIX Not documented
+	NoiseIX
+	// NoiseNNpsk2 Not documented
+	NoiseNNpsk2
 
-	// Not implemented
-	Noise_NN
-	Noise_KN
-	Noise_XN
-	Noise_IN
+	// NoiseNN Not implemented
+	NoiseNN
+	// NoiseKN Not implemented
+	NoiseKN
+	// NoiseXN Not implemented
+	NoiseXN
+	// NoiseIN Not implemented
+	NoiseIN
 )
 
 type token uint8
 
 const (
-	token_e token = iota
+	tokenUnknown token = iota
+	token_e
 	token_s
 	token_es
 	token_se
@@ -83,7 +93,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 
 	// 7.2. One-way patterns
 
-	Noise_N: handshakePattern{
+	NoiseN: handshakePattern{
 		name: "N",
 		preMessagePatterns: []messagePattern{
 			messagePattern{},        // →
@@ -101,7 +111,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		  ...
 		  -> e, es, ss
 	*/
-	Noise_K: handshakePattern{
+	NoiseK: handshakePattern{
 		name: "K",
 		preMessagePatterns: []messagePattern{
 			messagePattern{token_s}, // →
@@ -117,7 +127,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		 ...
 		 -> e, es, s, ss
 	*/
-	Noise_X: handshakePattern{
+	NoiseX: handshakePattern{
 		name: "X",
 		preMessagePatterns: []messagePattern{
 			messagePattern{},        // →
@@ -130,7 +140,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 	//
 	// 7.3. Interactive patterns
 	//
-	Noise_KK: handshakePattern{
+	NoiseKK: handshakePattern{
 		name: "KK",
 		preMessagePatterns: []messagePattern{
 			messagePattern{token_s}, // →
@@ -142,7 +152,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		},
 	},
 
-	Noise_NX: handshakePattern{
+	NoiseNX: handshakePattern{
 		name: "NX",
 		preMessagePatterns: []messagePattern{
 			messagePattern{}, // →
@@ -154,7 +164,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		},
 	},
 
-	Noise_NK: handshakePattern{
+	NoiseNK: handshakePattern{
 		name: "NK",
 		preMessagePatterns: []messagePattern{
 			messagePattern{},        // →
@@ -166,7 +176,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		},
 	},
 
-	Noise_XX: handshakePattern{
+	NoiseXX: handshakePattern{
 		name: "XX",
 		preMessagePatterns: []messagePattern{
 			messagePattern{}, // →
@@ -186,14 +196,14 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		      -> e
 		      <- e, ee, se, s, es
 	*/
-	Noise_KX: handshakePattern{
+	NoiseKX: handshakePattern{
 		name: "KX",
 		preMessagePatterns: []messagePattern{
 			messagePattern{token_s}, // →
 			messagePattern{},        // ←
 		},
 		messagePatterns: []messagePattern{
-			messagePattern{token_e},                                        // →
+			messagePattern{token_e}, // →
 			messagePattern{token_e, token_ee, token_se, token_s, token_es}, // ←
 		},
 	},
@@ -205,7 +215,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		  <- e, ee
 		  -> s, se
 	*/
-	Noise_XK: handshakePattern{
+	NoiseXK: handshakePattern{
 		name: "XK",
 		preMessagePatterns: []messagePattern{
 			messagePattern{},        // →
@@ -224,7 +234,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		-> e, es, s, ss
 		<- e, ee, se
 	*/
-	Noise_IK: handshakePattern{
+	NoiseIK: handshakePattern{
 		name: "IK",
 		preMessagePatterns: []messagePattern{
 			messagePattern{},        // →
@@ -240,7 +250,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		 -> e, s
 		 <- e, ee, se, s, es
 	*/
-	Noise_IX: handshakePattern{
+	NoiseIX: handshakePattern{
 		name: "IX",
 		preMessagePatterns: []messagePattern{
 			messagePattern{}, // →
@@ -257,7 +267,7 @@ var patterns = map[noiseHandshakeType]handshakePattern{
 		  -> e
 		  <- e, ee, psk
 	*/
-	Noise_NNpsk2: handshakePattern{
+	NoiseNNpsk2: handshakePattern{
 		name: "NNpsk2",
 		preMessagePatterns: []messagePattern{
 			messagePattern{}, // →

@@ -33,7 +33,7 @@ func main() {
 	// configuring the Disco connection
 	// in which the client already knows the server's public key
 	serverConfig := libdisco.Config{
-		HandshakePattern:  libdisco.Noise_X,
+		HandshakePattern:  libdisco.NoiseX,
 		KeyPair:           serverKeyPair,
 		PublicKeyVerifier: verifier,
 	}

@@ -47,14 +47,18 @@ func (c *Conn) LocalAddr() net.Addr {
 	return c.conn.LocalAddr()
 }
 
+// Addr represents a newtork address.
 type Addr struct {
 	network string
 	address string
 }
 
+// Network returns the network.
 func (a Addr) Network() string {
 	return a.network
 }
+
+// String implements stringer interface
 func (a Addr) String() string {
 	return a.address
 }
@@ -94,7 +98,7 @@ func (c *Conn) SetWriteDeadline(t time.Time) error {
 func (c *Conn) Write(b []byte) (int, error) {
 
 	//
-	if hp := c.config.HandshakePattern; !c.isClient && (hp == Noise_N || hp == Noise_K || hp == Noise_X) {
+	if hp := c.config.HandshakePattern; !c.isClient && (hp == NoiseN || hp == NoiseK || hp == NoiseX) {
 		panic("disco: a server should not write on one-way patterns")
 	}
 
@@ -160,7 +164,7 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	}
 
 	// If this is a one-way pattern, do some checks
-	if hp := c.config.HandshakePattern; c.isClient && (hp == Noise_N || hp == Noise_K || hp == Noise_X) {
+	if hp := c.config.HandshakePattern; c.isClient && (hp == NoiseN || hp == NoiseK || hp == NoiseX) {
 		panic("disco: a client should not read on one-way patterns")
 	}
 

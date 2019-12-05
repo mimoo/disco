@@ -18,7 +18,7 @@ func main() {
 	// in which the client knows the static public key of the server
 	// and the server knows the static public key of the client
 	clientConfig := libdisco.Config{
-		HandshakePattern: libdisco.Noise_KK,
+		HandshakePattern: libdisco.NoiseKK,
 		KeyPair:          clientKeyPair,
 	}
 

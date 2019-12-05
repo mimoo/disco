@@ -16,13 +16,13 @@ func TestSeveralWriteRead(t *testing.T) {
 	// init
 	clientConfig := Config{
 		KeyPair:              GenerateKeypair(nil),
-		HandshakePattern:     Noise_XX,
+		HandshakePattern:     NoiseXX,
 		StaticPublicKeyProof: []byte{},
 		PublicKeyVerifier:    verifier,
 	}
 	serverConfig := Config{
 		KeyPair:              GenerateKeypair(nil),
-		HandshakePattern:     Noise_XX,
+		HandshakePattern:     NoiseXX,
 		StaticPublicKeyProof: []byte{},
 		PublicKeyVerifier:    verifier,
 	}
@@ -83,14 +83,14 @@ func TestHalfDuplex(t *testing.T) {
 	// init
 	clientConfig := Config{
 		KeyPair:              GenerateKeypair(nil),
-		HandshakePattern:     Noise_XX,
+		HandshakePattern:     NoiseXX,
 		StaticPublicKeyProof: []byte{},
 		PublicKeyVerifier:    verifier,
 		HalfDuplex:           true,
 	}
 	serverConfig := Config{
 		KeyPair:              GenerateKeypair(nil),
-		HandshakePattern:     Noise_XX,
+		HandshakePattern:     NoiseXX,
 		StaticPublicKeyProof: []byte{},
 		PublicKeyVerifier:    verifier,
 		HalfDuplex:           true,
@@ -183,13 +183,13 @@ func TestRemotePublicKey(t *testing.T) {
 	// init
 	clientConfig := Config{
 		KeyPair:              GenerateKeypair(nil),
-		HandshakePattern:     Noise_XX,
+		HandshakePattern:     NoiseXX,
 		StaticPublicKeyProof: []byte{},
 		PublicKeyVerifier:    verifier,
 	}
 	serverConfig := Config{
 		KeyPair:                        GenerateKeypair(nil),
-		HandshakePattern:               Noise_XX,
+		HandshakePattern:               NoiseXX,
 		StaticPublicKeyProof:           []byte{},
 		PublicKeyVerifier:              verifier,
 		RemoteAddrContainsRemotePubkey: true,

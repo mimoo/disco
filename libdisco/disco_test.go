@@ -49,7 +49,7 @@ func throughput(b *testing.B, totalBytes int64) {
 				panic(fmt.Errorf("accept: %v", err))
 			}
 			serverConfig := &Config{
-				HandshakePattern: Noise_NK,
+				HandshakePattern: NoiseNK,
 				KeyPair:          serverKeyPair,
 			}
 			srv := Server(sconn, serverConfig)
@@ -64,7 +64,7 @@ func throughput(b *testing.B, totalBytes int64) {
 
 	b.SetBytes(totalBytes)
 	clientConfig := &Config{
-		HandshakePattern: Noise_NK,
+		HandshakePattern: NoiseNK,
 		RemoteKey:        serverKeyPair.PublicKey[:],
 	}
 
@@ -143,7 +143,7 @@ func latency(b *testing.B, bps int) {
 				panic(fmt.Errorf("accept: %v", err))
 			}
 			serverConfig := &Config{
-				HandshakePattern: Noise_NK,
+				HandshakePattern: NoiseNK,
 				KeyPair:          serverKeyPair,
 			}
 			srv := Server(&slowConn{sconn, bps}, serverConfig)
@@ -155,7 +155,7 @@ func latency(b *testing.B, bps int) {
 	}()
 
 	clientConfig := &Config{
-		HandshakePattern: Noise_NK,
+		HandshakePattern: NoiseNK,
 		RemoteKey:        serverKeyPair.PublicKey[:],
 	}
 
@@ -197,7 +197,7 @@ func TestSerialize(t *testing.T) {
 	// init
 	s := GenerateKeypair(nil)
 	rs := GenerateKeypair(nil)
-	hs := Initialize(Noise_IK, true, nil, s, nil, rs, nil)
+	hs := Initialize(NoiseIK, true, nil, s, nil, rs, nil)
 	// write first message
 	var msg []byte
 	hs.WriteMessage(nil, &msg)
@@ -207,18 +207,18 @@ func TestSerialize(t *testing.T) {
 	hs2 := RecoverState(serialized, nil, s)
 
 	// let's write a message to parse
-	hs_bob := Initialize(Noise_IK, false, nil, rs, nil, s, nil)
+	hsBob := Initialize(NoiseIK, false, nil, rs, nil, s, nil)
 	var msg2 []byte
-	hs_bob.ReadMessage(msg, &msg2)
+	hsBob.ReadMessage(msg, &msg2)
 	msg2 = msg2[:0]
-	hs_bob.WriteMessage([]byte("hello"), &msg2)
+	hsBob.WriteMessage([]byte("hello"), &msg2)
 
 	// let's parse it
-	var msg_rcv1, msg_rcv2 []byte
-	c1, c2, _ := hs.ReadMessage(msg2, &msg_rcv1)
-	t1, t2, _ := hs2.ReadMessage(msg2, &msg_rcv2)
+	var msgRcv1, msgRcv2 []byte
+	c1, c2, _ := hs.ReadMessage(msg2, &msgRcv1)
+	t1, t2, _ := hs2.ReadMessage(msg2, &msgRcv2)
 
-	if !bytes.Equal(msg_rcv1, msg_rcv2) {
+	if !bytes.Equal(msgRcv1, msgRcv2) {
 		t.Fatal("received message not as expected")
 	}
 
