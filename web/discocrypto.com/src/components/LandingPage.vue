@@ -32,7 +32,7 @@
     </ul>
 
     <p>
-      Want to know more about the technical details? <a href="https://www.youtube.com/watch?v=bTGLO4obxco" target="_blank">Watch our <i class="fab fa-youtube"></i> presentation at Black Hat Europe 2017</a>.
+      Want to know more about the technical details? <a href="https://www.youtube.com/watch?v=bTGLO4obxco" target="_blank">Watch our <i class="fab fa-youtube"></i> presentation at Black Hat Europe 2017</a> and read our <a href="https://eprint.iacr.org/2019/180"><i class="fas fa-file-alt"></i> whitepaper</a>.
     </p>
 
     <hr>
