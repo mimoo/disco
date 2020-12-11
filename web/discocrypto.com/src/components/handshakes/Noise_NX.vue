@@ -88,7 +88,7 @@ proof := CreateStaticPublicKeyProof(rootPrivateKey, peerPublicKey)
 		<p>Once the proof has been computed, it can be passed to the server which will be able to configure itself for a Noise_NX setup:</p>
 
 		<pre><code>serverConfig := libdisco.Config{
-  HandshakePattern:     libdisco.Noise_NX,
+  HandshakePattern:     libdisco.NoiseNX,
   KeyPair:              serverKeyPair,
   StaticPublicKeyProof: proof,
 }
@@ -106,7 +106,7 @@ fmt.Println("listening on:", addr)</code></pre>
 		<p>the client needs to be configured with a function capable of acting on the static public key the server will send (as part of the handshake). Without this, there are no guarantees that the static public key the server sends is "legit".</p>
 
 		<pre><code>clientConfig := libdisco.Config{
-  HandshakePattern:  libdisco.Noise_NX,
+  HandshakePattern:  libdisco.NoiseNX,
   PublicKeyVerifier: verifier,
 }</code></pre>
 
@@ -123,7 +123,7 @@ verifier := libdisco.CreatePublicKeyVerifier(rootPublicKey)
 
 // configure the Disco connection
 clientConfig := libdisco.Config{
-	HandshakePattern:  libdisco.Noise_NX,
+	HandshakePattern:  libdisco.NoiseNX,
 	PublicKeyVerifier: verifier,
 }
 

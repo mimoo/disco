@@ -69,7 +69,7 @@ proof := libdisco.CreateStaticPublicKeyProof(rootPrivateKey, serverKeyPair.Publi
 		<p>3. configure the server to send its static public key along with its proof:</p>
 
 		<pre><code>serverConfig := libdisco.Config{
-  HandshakePattern:     libdisco.Noise_NX,
+  HandshakePattern:     libdisco.NoiseNX,
   KeyPair:              serverKeyPair,
   StaticPublicKeyProof: proof,
 }</code></pre>
@@ -87,7 +87,7 @@ someCallbackFunction := CreatePublicKeyVerifier(rootPublicKey)
 
 // we configure the client
 clientConfig := libdisco.Config{
-  HandshakePattern:  libdisco.Noise_NK,
+  HandshakePattern:  libdisco.NoiseNK,
   PublicKeyVerifier: someCallbackFunction,
 }
 </code></pre>

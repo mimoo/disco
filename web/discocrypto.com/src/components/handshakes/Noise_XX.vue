@@ -81,7 +81,7 @@ verifier := libdisco.CreatePublicKeyVerifier(rootPublicKey)
 
 // configure the Disco connection with Noise_XX
 serverConfig := libdisco.Config{
-	HandshakePattern:     libdisco.Noise_XX,
+	HandshakePattern:     libdisco.NoiseXX,
 	KeyPair:              serverKeyPair,
 	PublicKeyVerifier:    verifier,
 	StaticPublicKeyProof: proof,
@@ -111,7 +111,7 @@ verifier := libdisco.CreatePublicKeyVerifier(rootPublicKey)
 // configure the Disco connection with Noise_XX
 clientConfig := libdisco.Config{
 	KeyPair:              clientKeyPair,
-	HandshakePattern:     libdisco.Noise_XX,
+	HandshakePattern:     libdisco.NoiseXX,
 	PublicKeyVerifier:    verifier,
 	StaticPublicKeyProof: proof,
 }

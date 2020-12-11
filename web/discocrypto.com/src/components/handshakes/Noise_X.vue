@@ -86,7 +86,7 @@ verifier := libdisco.CreatePublicKeyVerifier(rootPublicKey)
 // configuring the Disco connection
 // in which the client already knows the server's public key
 serverConfig := libdisco.Config{
-	HandshakePattern:  libdisco.Noise_X,
+	HandshakePattern:  libdisco.NoiseX,
 	KeyPair:           serverKeyPair,
 	PublicKeyVerifier: verifier,
 }
@@ -127,7 +127,7 @@ if err != nil || len(proof) != 64 {
 clientConfig := libdisco.Config{
 	KeyPair:              clientKeyPair,
 	RemoteKey:            serverPublicKey,
-	HandshakePattern:     libdisco.Noise_X,
+	HandshakePattern:     libdisco.NoiseX,
 	StaticPublicKeyProof: proof,
 }
 

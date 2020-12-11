@@ -26,11 +26,11 @@ func TestNoiseKK(t *testing.T) {
 	// init
 	clientConfig := Config{
 		KeyPair:          GenerateKeypair(nil),
-		HandshakePattern: Noise_KK,
+		HandshakePattern: NoiseKK,
 	}
 	serverConfig := Config{
 		KeyPair:          GenerateKeypair(nil),
-		HandshakePattern: Noise_KK,
+		HandshakePattern: NoiseKK,
 	}
 
 	// set up remote keys
@@ -86,16 +86,16 @@ func TestNoiseKK(t *testing.T) {
 
 func TestNoiseNK(t *testing.T) {
 
-	test_pattern := Noise_NK
+	testPattern := NoiseNK
 
 	// init
 	clientConfig := Config{
 		KeyPair:          GenerateKeypair(nil),
-		HandshakePattern: test_pattern,
+		HandshakePattern: testPattern,
 	}
 	serverConfig := Config{
 		KeyPair:          GenerateKeypair(nil),
-		HandshakePattern: test_pattern,
+		HandshakePattern: testPattern,
 	}
 
 	// setup remote key
@@ -154,14 +154,14 @@ func TestNoiseXX(t *testing.T) {
 	clientKeyPair := GenerateKeypair(nil)
 	clientConfig := Config{
 		KeyPair:              clientKeyPair,
-		HandshakePattern:     Noise_XX,
+		HandshakePattern:     NoiseXX,
 		PublicKeyVerifier:    publicKeyVerifier,
 		StaticPublicKeyProof: CreateStaticPublicKeyProof(rootKey.privateKey, clientKeyPair.PublicKey[:]),
 	}
 	serverKeyPair := GenerateKeypair(nil)
 	serverConfig := Config{
 		KeyPair:              serverKeyPair,
-		HandshakePattern:     Noise_XX,
+		HandshakePattern:     NoiseXX,
 		PublicKeyVerifier:    publicKeyVerifier,
 		StaticPublicKeyProof: CreateStaticPublicKeyProof(rootKey.privateKey, serverKeyPair.PublicKey[:]),
 	}
@@ -218,12 +218,12 @@ func TestNoiseN(t *testing.T) {
 	// init
 	serverConfig := Config{
 		KeyPair:          GenerateKeypair(nil),
-		HandshakePattern: Noise_N,
+		HandshakePattern: NoiseN,
 	}
 
 	clientConfig := Config{
 		KeyPair:          GenerateKeypair(nil),
-		HandshakePattern: Noise_N,
+		HandshakePattern: NoiseN,
 		RemoteKey:        serverConfig.KeyPair.PublicKey[:],
 	}
 

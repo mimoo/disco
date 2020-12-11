@@ -1,6 +1,8 @@
 package libdisco
 
 import (
+	"bytes"
+	"encoding/binary"
 	"encoding/hex"
 	"errors"
 	"io"
@@ -45,14 +47,18 @@ func (c *Conn) LocalAddr() net.Addr {
 	return c.conn.LocalAddr()
 }
 
+// Addr represents a newtork address.
 type Addr struct {
 	network string
 	address string
 }
 
+// Network returns the network.
 func (a Addr) Network() string {
 	return a.network
 }
+
+// String implements stringer interface
 func (a Addr) String() string {
 	return a.address
 }
@@ -92,7 +98,7 @@ func (c *Conn) SetWriteDeadline(t time.Time) error {
 func (c *Conn) Write(b []byte) (int, error) {
 
 	//
-	if hp := c.config.HandshakePattern; !c.isClient && (hp == Noise_N || hp == Noise_K || hp == Noise_X) {
+	if hp := c.config.HandshakePattern; !c.isClient && (hp == NoiseN || hp == NoiseK || hp == NoiseX) {
 		panic("disco: a server should not write on one-way patterns")
 	}
 
@@ -113,36 +119,31 @@ func (c *Conn) Write(b []byte) (int, error) {
 	// process the data in a loop
 	var n int
 	data := b
-	for len(data) > 0 {
-
+	buf := bytes.NewBuffer(data)
+	for buf.Len() > 0 {
 		// fragment the data
-		m := len(data)
-		if m > NoiseMaxPlaintextSize {
-			m = NoiseMaxPlaintextSize
-		}
+		fragment := buf.Next(NoiseMaxPlaintextSize)
 
 		// Encrypt
-		ciphertext := c.out.Send_ENC_unauthenticated(false, data[:m])
+		ciphertext := c.out.Send_ENC_unauthenticated(false, fragment)
 		ciphertext = append(ciphertext, c.out.Send_MAC(false, 16)...)
 
 		// header (length)
-		length := []byte{byte(len(ciphertext) >> 8), byte(len(ciphertext) % 256)}
+		length := make([]byte, 2)
+		binary.BigEndian.PutUint16(length, uint16(len(ciphertext)))
 
 		// Send data
 		_, err := c.conn.Write(append(length, ciphertext...))
 		if err != nil {
 			return n, err
 		}
+		n += len(fragment)
 		/*
 			// TODO: should we test if we sent the correct number of bytes?
 			if _ != len(ciphertext) {
 				return errors.New("disco: cannot send the whole data")
 			}
 		*/
-
-		// prepare next loop iteration
-		n += m
-		data = data[m:]
 	}
 
 	return n, nil
@@ -163,7 +164,7 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	}
 
 	// If this is a one-way pattern, do some checks
-	if hp := c.config.HandshakePattern; c.isClient && (hp == Noise_N || hp == Noise_K || hp == Noise_X) {
+	if hp := c.config.HandshakePattern; c.isClient && (hp == NoiseN || hp == NoiseK || hp == NoiseX) {
 		panic("disco: a client should not read on one-way patterns")
 	}
 
@@ -189,18 +190,18 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	}
 
 	// read header from socket
-	bufHeader, err := readFromUntil(c.conn, 2)
-	if err != nil {
+	bufHeader := make([]byte, 2)
+	if _, err := io.ReadFull(c.conn, bufHeader); err != nil {
 		return readSoFar, err
 	}
-	length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
+	length := binary.BigEndian.Uint16(bufHeader)
 	if length > NoiseMessageLength {
 		return readSoFar, errors.New("disco: Disco message received exceeds DiscoMessageLength")
 	}
 
 	// read noise message from socket
-	noiseMessage, err := readFromUntil(c.conn, length)
-	if err != nil {
+	noiseMessage := make([]byte, length)
+	if _, err := io.ReadFull(c.conn, noiseMessage); err != nil {
 		return readSoFar, err
 	}
 
@@ -292,7 +293,8 @@ ContinueHandshake:
 			return err
 		}
 		// header (length)
-		length := []byte{byte(len(bufToWrite) >> 8), byte(len(bufToWrite) % 256)}
+		length := make([]byte, 2)
+		binary.BigEndian.PutUint16(length, uint16(len(bufToWrite)))
 		// write
 		_, err = c.conn.Write(append(length, bufToWrite...))
 		if err != nil {
@@ -301,19 +303,18 @@ ContinueHandshake:
 
 	} else {
 		// we're reading the next message pattern, as well as reacting to any received data
-		bufHeader, err := readFromUntil(c.conn, 2) // length header
-		if err != nil {
+		bufHeader := make([]byte, 2) // length header
+		if _, err := io.ReadFull(c.conn, bufHeader); err != nil {
 			return err
 		}
-		length := (int(bufHeader[0]) << 8) | int(bufHeader[1])
+		length := binary.BigEndian.Uint16(bufHeader)
 		if length > NoiseMessageLength {
 			return errors.New("disco: Disco message received exceeds DiscoMessageLength")
 		}
-		noiseMessage, err := readFromUntil(c.conn, length) // noise message
-		if err != nil {
+		noiseMessage := make([]byte, length) // noise message
+		if _, err := io.ReadFull(c.conn, noiseMessage); err != nil {
 			return err
 		}
-
 		c1, c2, err = hs.ReadMessage(noiseMessage, &receivedPayload)
 		if err != nil {
 			return err
@@ -384,26 +385,6 @@ func (c *Conn) RemotePublicKey() (string, error) {
 		return "", errors.New("disco: handshake not completed")
 	}
 	return c.remotePublicKey, nil
-}
-
-//
-// input/output functions
-//
-
-func readFromUntil(r io.Reader, n int) ([]byte, error) {
-	result := make([]byte, n)
-	offset := 0
-	for {
-		m, err := r.Read(result[offset:])
-		if err != nil {
-			return result, err
-		}
-		offset += m
-		if offset == n {
-			break
-		}
-	}
-	return result, nil
 }
 
 /*

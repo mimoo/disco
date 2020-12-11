@@ -30,7 +30,7 @@ func TestSum(t *testing.T) {
 	h2.Write([]byte(fullmessage))
 	out2 := h2.Sum()
 
-	for idx, _ := range out1 {
+	for idx := range out1 {
 		if out1[idx] != out2[idx] {
 			t.Fatal("Sum function does not work")
 		}
@@ -39,7 +39,7 @@ func TestSum(t *testing.T) {
 	// trying with Hash()
 	out3 := Hash([]byte(fullmessage), 32)
 
-	for idx, _ := range out1 {
+	for idx := range out1 {
 		if out1[idx] != out3[idx] {
 			t.Fatal("Sum function does not work")
 		}
@@ -51,7 +51,7 @@ func TestSum(t *testing.T) {
 	h2.Write([]byte(message3))
 	out2 = h2.Sum()
 
-	for idx, _ := range out1 {
+	for idx := range out1 {
 		if out1[idx] != out2[idx] {
 			t.Fatal("Sum function does not work")
 		}
@@ -60,7 +60,7 @@ func TestSum(t *testing.T) {
 	// tring with Hash()
 	out3 = Hash([]byte(fullmessage+message3), 32)
 
-	for idx, _ := range out1 {
+	for idx := range out1 {
 		if out1[idx] != out3[idx] {
 			t.Fatal("Sum function does not work")
 		}
@@ -85,7 +85,7 @@ func TestHashOutputHashOutput(t *testing.T) {
 	h2.Write([]byte(message3))
 	out2 := h2.Sum()
 
-	for idx, _ := range out1 {
+	for idx := range out1 {
 		if out1[idx] != out2[idx] {
 			t.Fatal("Sum function affects the hash state")
 		}
@@ -112,7 +112,7 @@ func TestTupleHash(t *testing.T) {
 	out2 := h2.Sum()
 
 	same := true
-	for idx, _ := range out1 {
+	for idx := range out1 {
 		if out1[idx] != out2[idx] {
 			same = false
 			break
@@ -136,7 +136,7 @@ func TestTupleHash(t *testing.T) {
 	h4.WriteTuple([]byte(message4))
 	out4 := h4.Sum()
 
-	for idx, _ := range out3 {
+	for idx := range out3 {
 		if out3[idx] != out4[idx] {
 			t.Fatal("Tuple hashing doesn't work properly with streaming")
 		}
@@ -164,14 +164,14 @@ func TestProtectVerifyIntegrity(t *testing.T) {
 	if err != nil {
 		t.Fatal("Protect/Verify did not work")
 	}
-	for idx, _ := range message {
+	for idx := range message {
 		if message[idx] != retrievedMessage[idx] {
 			t.Fatal("Verify did not work")
 		}
 	}
 
 	// tamper
-	plaintextAndTag[len(plaintextAndTag)-1] += 1
+	plaintextAndTag[len(plaintextAndTag)-1]++
 
 	_, err = VerifyIntegrity(key, plaintextAndTag)
 	if err == nil {
@@ -213,7 +213,7 @@ func TestEncryptDecrypt(t *testing.T) {
 		if len(plaintext) != len(decrypted) {
 			t.Fatal("Decrypt did not work")
 		}
-		for idx, _ := range plaintext {
+		for idx := range plaintext {
 			if plaintext[idx] != decrypted[idx] {
 				t.Fatal("Decrypt did not work")
 			}
@@ -257,7 +257,7 @@ func TestEncryptDecryptAndAuthenticate(t *testing.T) {
 		if len(plaintext) != len(decrypted) {
 			t.Fatal("Decrypt did not work")
 		}
-		for idx, _ := range plaintext {
+		for idx := range plaintext {
 			if plaintext[idx] != decrypted[idx] {
 				t.Fatal("Decrypt did not work")
 			}

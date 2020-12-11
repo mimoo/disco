@@ -23,6 +23,7 @@ func Hash(input []byte, outputLength int) []byte {
 	return hash.PRF(outputLength)
 }
 
+// DiscoHash represents a strobe hash
 type DiscoHash struct {
 	strobeState  strobe.Strobe
 	streaming    bool
@@ -56,7 +57,7 @@ func (d *DiscoHash) WriteTuple(inputData []byte) (written int, err error) {
 	return
 }
 
-// Read reads more output from the hash; reading affects the hash's
+// Sum reads more output from the hash; reading affects the hash's
 // state. (DiscoHash.Read is thus very different from Hash.Sum)
 // It never returns an error.
 func (d *DiscoHash) Sum() []byte {
@@ -112,10 +113,9 @@ func VerifyIntegrity(key, plaintextAndTag []byte) ([]byte, error) {
 	// verify tag
 	if !hash.Recv_MAC(false, tag) {
 		return nil, errors.New("disco: the plaintext has been modified")
-	} else {
-		return plaintext, nil
 	}
 
+	return plaintext, nil
 }
 
 // Encrypt allows you to encrypt a plaintext message with a key of any size greater than 128 bits (16 bytes).
@@ -165,7 +165,7 @@ func Decrypt(key, ciphertext []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-// Encrypt allows you to encrypt a plaintext message with a key of any size greater than 128 bits (16 bytes).
+// EncryptAndAuthenticate allows you to encrypt a plaintext message with a key of any size greater than 128 bits (16 bytes).
 func EncryptAndAuthenticate(key, plaintext, ad []byte) []byte {
 	if len(key) < 16 {
 		panic("disco: using a key smaller than 128-bit (16 bytes) has security consequences")
@@ -190,7 +190,7 @@ func EncryptAndAuthenticate(key, plaintext, ad []byte) []byte {
 	return ciphertext
 }
 
-// Decrypt allows you to decrypt a message that was encrypted with the Encrypt function.
+// DecryptAndAuthenticate allows you to decrypt a message that was encrypted with the Encrypt function.
 func DecryptAndAuthenticate(key, ciphertext, ad []byte) ([]byte, error) {
 	if len(key) < 16 {
 		return nil, errors.New("disco: using a key smaller than 128-bit (16 bytes) has security consequences")
